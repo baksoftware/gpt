@@ -77,5 +77,5 @@ manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
 user_proxy.initiate_chat(
     manager,
-    message="""find the latest LLM paper from arxiv, and make a markdown file with the title, abstract, and authors""",
+    message="""find the latest 3 LLM papers from arxiv, and make a markdown file with the title, abstract, and authors""",
 )
