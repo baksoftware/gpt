@@ -1,36 +1,36 @@
 import os
-import autogen # pip install --upgrade pyautogen
+import autogen  # pip install --upgrade pyautogen
 
 # Slightly modified version of
 # https://github.com/microsoft/autogen/blob/main/notebook/agentchat_groupchat_research.ipynb
 
 
-# put your Azure OpenAI key in the environment variable OPENAI_KEY
-# Find it at 
+# put your Azure OpenAI key in the environment variable AZURE_OPENAI_KEY
+# Find it at
 AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 
 config_list = [
-    {        
+    {
         'model': 'ba-gpt-4-32k',
         'api_key': AZURE_OPENAI_KEY,
         'api_base': 'https://d-analytics-eus-oai-gpttest-1.openai.azure.com/',
         'api_type': 'azure',
-        'api_version': '2023-06-01-preview',        
+        'api_version': '2023-06-01-preview',
     },
 ]
 
-llm_config={
-    'request_timeout' : 120,
-    'seed' : 42, # change the seed number to avoid getting the same result
+llm_config = {
+    'request_timeout': 120,
+    'seed': 42,  # change the seed number to avoid getting the same result
     'config_list': config_list,
-    'temperature' : 0
+    'temperature': 0
 }
 
 
 user_proxy = autogen.UserProxyAgent(
-   name="Admin",
-   system_message="A human admin. Interact with the planner to discuss the plan. Plan execution needs to be approved by this admin.",
-   code_execution_config=False,
+    name="Admin",
+    system_message="A human admin. Interact with the planner to discuss the plan. Plan execution needs to be approved by this admin.",
+    code_execution_config=False,
 )
 
 engineer = autogen.AssistantAgent(
@@ -59,10 +59,10 @@ executor = autogen.UserProxyAgent(
     system_message="Executor. Execute the code written by the engineer and report the result.",
     human_input_mode="NEVER",
     code_execution_config={
-        "last_n_messages" : 3,
+        "last_n_messages": 3,
         "work_dir": "paper",
         "use_docker": "arxiv:latest"
-        },
+    },
 )
 critic = autogen.AssistantAgent(
     name="Critic",
@@ -70,7 +70,8 @@ critic = autogen.AssistantAgent(
     llm_config=llm_config,
 )
 
-groupchat = autogen.GroupChat(agents=[user_proxy, engineer, scientist, planner, executor, critic], messages=[], max_round=50)
+groupchat = autogen.GroupChat(agents=[
+                              user_proxy, engineer, scientist, planner, executor, critic], messages=[], max_round=50)
 manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
 
