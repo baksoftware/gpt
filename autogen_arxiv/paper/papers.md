@@ -1,45 +1,75 @@
-## Higher Dimensional Chain Conditions
+## Seeking Neural Nuggets: Knowledge Transfer in Large Language Models from a Parametric Perspective
 
-**Authors:** Stevo Todorcevic, Jing Zhang
+**Authors:** Ming Zhong, Chenxin An, Weizhu Chen, Jiawei Han, Pengcheng He
 
-We investigate higher dimensional chain conditions, where the largeness
-notion is given by Fubini products of a given ideal. From strong saturation
-properties of an ideal, we derive abstractly versions of higher dimensional
-$\Delta$-system lemma, which imply many posets, including any finite support
-iteration of $\sigma$-centered posets and measure algebras, satisfy the higher
-dimensional chain conditions. We then show that if a poset satisfies a
-strengthening of the $\sigma$-finite chain condition by Horn and Tarski, then
-it satisfies higher dimensional chain conditions. As an application, we derive
-Ramsey-theoretic consequences, namely various partition hypotheses as studied
-by Bannister, Bergfalk, Moore and Todorcevic, from the existence of ideals
-satisfying strong chain conditions.
+Large Language Models (LLMs) inherently encode a wealth of knowledge within
+their parameters through pre-training on extensive corpora. While prior
+research has delved into operations on these parameters to manipulate the
+underlying implicit knowledge (encompassing detection, editing, and merging),
+there remains an ambiguous understanding regarding their transferability across
+models with varying scales. In this paper, we seek to empirically investigate
+knowledge transfer from larger to smaller models through a parametric
+perspective. To achieve this, we employ sensitivity-based techniques to extract
+and align knowledge-specific parameters between different LLMs. Moreover, the
+LoRA module is used as the intermediary mechanism for injecting the extracted
+knowledge into smaller models. Evaluations across four benchmarks validate the
+efficacy of our proposed method. Our findings highlight the critical factors
+contributing to the process of parametric knowledge transfer, underscoring the
+transferability of model parameters across LLMs of different scales. We release
+code and data at \url{https://github.com/maszhongming/ParaKnowTransfer}.
 
-[Read more](http://arxiv.org/abs/2310.11369v1)
+[Read more](http://arxiv.org/abs/2310.11451v1)
 
-## Cyclic Proofs for iGL via Corecursion
+## EvalCrafter: Benchmarking and Evaluating Large Video Generation Models
 
-**Authors:** Borja Sierra-Miranda
+**Authors:** Yaofang Liu, Xiaodong Cun, Xuebo Liu, Xintao Wang, Yong Zhang, Haoxin Chen, Yang Liu, Tieyong Zeng, Raymond Chan, Ying Shan
 
-Daniyar Shamkanov proved that three distinct systems of sequent calculi for
-GL are equivalent. These systems consist in one with finite proofs, another
-with ill-founded proofs and the last one with cyclic proofs. The main tool used
-for proving the equivalence is corecursion. In this project, we prove the
-equivalence between a finitary sequent calculus for iGL and a cyclic calculus,
-using also coinductive methods.
+The vision and language generative models have been overgrown in recent
+years. For video generation, various open-sourced models and public-available
+services are released for generating high-visual quality videos. However, these
+methods often use a few academic metrics, for example, FVD or IS, to evaluate
+the performance. We argue that it is hard to judge the large conditional
+generative models from the simple metrics since these models are often trained
+on very large datasets with multi-aspect abilities. Thus, we propose a new
+framework and pipeline to exhaustively evaluate the performance of the
+generated videos. To achieve this, we first conduct a new prompt list for
+text-to-video generation by analyzing the real-world prompt list with the help
+of the large language model. Then, we evaluate the state-of-the-art video
+generative models on our carefully designed benchmarks, in terms of visual
+qualities, content qualities, motion qualities, and text-caption alignment with
+around 18 objective metrics. To obtain the final leaderboard of the models, we
+also fit a series of coefficients to align the objective metrics to the users'
+opinions. Based on the proposed opinion alignment method, our final score shows
+a higher correlation than simply averaging the metrics, showing the
+effectiveness of the proposed evaluation method.
 
-[Read more](http://arxiv.org/abs/2310.10785v1)
+[Read more](http://arxiv.org/abs/2310.11440v1)
 
-## Implicative models of set theory
+## Identifying Interpretable Visual Features in Artificial and Biological Neural Systems
 
-**Authors:** Samuele Maschio, Alexandre Miquel
+**Authors:** David Klindt, Sophia Sanborn, Francisco Acosta, Frédéric Poitevin, Nina Miolane
 
-In this paper we show that using implicative algebras one can produce models
-of set theory generalizing Heyting/Boolean-valued models and realizability
-models of (I)ZF, both in intuitionistic and classical logic. This has as
-consequence that any topos which is obtained from a Set-based tripos as the
-result of the tripos-to-topos construction hosts a model of intuitionistic or
-classical set theory, provided a large enough strongly inaccessible cardinal
-exists.
+Single neurons in neural networks are often ``interpretable'' in that they
+represent individual, intuitively meaningful features. However, many neurons
+exhibit $\textit{mixed selectivity}$, i.e., they represent multiple unrelated
+features. A recent hypothesis proposes that features in deep networks may be
+represented in $\textit{superposition}$, i.e., on non-orthogonal axes by
+multiple neurons, since the number of possible interpretable features in
+natural data is generally larger than the number of neurons in a given network.
+Accordingly, we should be able to find meaningful directions in activation
+space that are not aligned with individual neurons. Here, we propose (1) an
+automated method for quantifying visual interpretability that is validated
+against a large database of human psychophysics judgments of neuron
+interpretability, and (2) an approach for finding meaningful directions in
+network activation space. We leverage these methods to discover directions in
+convolutional neural networks that are more intuitively meaningful than
+individual neurons, as we confirm and investigate in a series of analyses.
+Moreover, we apply the same method to two recent datasets of visual neural
+responses in the brain and find that our conclusions largely transfer to real
+neural data, suggesting that superposition might be deployed by the brain. This
+also provides a link with disentanglement and raises fundamental questions
+about robust, efficient and factorized representations in both artificial and
+biological neural systems.
 
-[Read more](http://arxiv.org/abs/2310.10576v1)
+[Read more](http://arxiv.org/abs/2310.11431v1)
 
