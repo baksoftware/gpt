@@ -23,5 +23,7 @@ Set your GPG key
 git config --global user.signingkey 660BEF7851EA95F6
 ```
 
+Then start signing your commits, and check on github if you have the 'verified' status for your commits
+
 
 
