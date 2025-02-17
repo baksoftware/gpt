@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Cable Lay Simulation</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.173.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/"
+            }
+        }
+    </script>    
+  <!-- Include Three.js from a CDN -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ----- Simulation Parameters -----
+    const dt = 0.016; // time step (~60 FPS)
+    const gravity = new THREE.Vector3(0, -9.81, 0);
+    const numNodes = 20;
+    const cableLength = 300;  // total cable length (in simulation units)
+    const nodeMass = 1;
+    const stiffness = 500;    // spring stiffness
+    const damping = 0.1;      // damping coefficient
+    const restLength = cableLength / (numNodes - 1);
+    const seabedY = -50;      // y–coordinate for the seabed plane
+
+    // ----- Cable Node Setup -----
+    // Each node has a position, velocity, and a flag indicating if it is fixed.
+    const nodes = [];
+    for (let i = 0; i < numNodes; i++) {
+      // Arrange nodes vertically along the y–axis.
+      // The top node is fixed (attached to the vessel), the others are free.
+      const pos = new THREE.Vector3(0, cableLength - i * restLength, 0);
+      nodes.push({
+        position: pos,
+        velocity: new THREE.Vector3(0, 0, 0),
+        mass: nodeMass,
+        fixed: (i === 0) // fix the top node
+      });
+    }
+
+    // ----- Three.js Scene Setup -----
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(100, 150, 300);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Add some lights
+    const ambientLight = new THREE.AmbientLight(0xaaaaaa);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(100, 200, 100);
+    scene.add(directionalLight);
+
+    // ----- Create Cable Graphics -----
+    // Cable will be represented as a blue line connecting the nodes.
+    const cableGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(numNodes * 3); // 3 coordinates per node
+    cableGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const cableMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+    const cableLine = new THREE.Line(cableGeometry, cableMaterial);
+    scene.add(cableLine);
+
+    // Represent each node as a small red sphere.
+    const nodeGeometry = new THREE.SphereGeometry(2, 16, 16);
+    const nodeMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    const nodeMeshes = [];
+    for (let i = 0; i < numNodes; i++) {
+      const sphere = new THREE.Mesh(nodeGeometry, nodeMaterial);
+      sphere.position.copy(nodes[i].position);
+      scene.add(sphere);
+      nodeMeshes.push(sphere);
+    }
+
+    // ----- Create the Seabed -----
+    // A green plane at y = seabedY to represent the seabed.
+    const seabedGeometry = new THREE.PlaneGeometry(500, 500);
+    const seabedMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22, side: THREE.DoubleSide });
+    const seabed = new THREE.Mesh(seabedGeometry, seabedMaterial);
+    seabed.rotation.x = Math.PI / 2; // make the plane horizontal
+    seabed.position.y = seabedY;
+    scene.add(seabed);
+
+    // ----- Simulation Function -----
+    function simulate() {
+      // 1. Reset forces: start with gravity for each node.
+      for (let node of nodes) {
+        // We'll store the current force in a temporary property.
+        node.force = gravity.clone().multiplyScalar(node.mass);
+      }
+
+      // 2. Compute spring forces between adjacent nodes.
+      for (let i = 0; i < numNodes - 1; i++) {
+        const n1 = nodes[i];
+        const n2 = nodes[i + 1];
+        const delta = new THREE.Vector3().subVectors(n2.position, n1.position);
+        const currentLength = delta.length();
+        if (currentLength === 0) continue;
+        const diff = currentLength - restLength;
+        // Hooke's law: F = -k * (extension)
+        const forceMag = stiffness * diff;
+        // Direction from n1 to n2
+        const forceDir = delta.clone().normalize();
+        const force = forceDir.multiplyScalar(forceMag);
+        if (!n1.fixed) n1.force.add(force);
+        if (!n2.fixed) n2.force.sub(force);
+      }
+
+      // 3. Apply damping (force proportional to velocity)
+      for (let node of nodes) {
+        if (!node.fixed) {
+          const dampingForce = node.velocity.clone().multiplyScalar(damping);
+          node.force.sub(dampingForce);
+        }
+      }
+
+      // 4. Integrate the motion using Euler integration.
+      for (let node of nodes) {
+        if (!node.fixed) {
+          // acceleration = force / mass
+          const acceleration = node.force.clone().divideScalar(node.mass);
+          node.velocity.add(acceleration.multiplyScalar(dt));
+          node.position.add(node.velocity.clone().multiplyScalar(dt));
+        }
+      }
+
+      // 5. Seabed contact: if a node goes below the seabed, clamp it.
+      for (let node of nodes) {
+        if (node.position.y < seabedY) {
+          node.position.y = seabedY;
+          if (node.velocity.y < 0) node.velocity.y = 0;
+        }
+      }
+    }
+
+    // ----- Graphics Update Function -----
+    function updateGraphics() {
+      // Update the cable's geometry.
+      const posAttr = cableGeometry.attributes.position.array;
+      for (let i = 0; i < numNodes; i++) {
+        posAttr[i * 3]     = nodes[i].position.x;
+        posAttr[i * 3 + 1] = nodes[i].position.y;
+        posAttr[i * 3 + 2] = nodes[i].position.z;
+        // Update each node's mesh position.
+        nodeMeshes[i].position.copy(nodes[i].position);
+      }
+      cableGeometry.attributes.position.needsUpdate = true;
+    }
+
+    // ----- Animation Loop -----
+    function animate() {
+      requestAnimationFrame(animate);
+      simulate();
+      updateGraphics();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // ----- Handle Window Resize -----
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

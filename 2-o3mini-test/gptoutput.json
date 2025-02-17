@@ -1,0 +1,42 @@
+{
+    "Ringdrossel": {
+      "color": "Black with white collar",
+      "temperament": "Shy and elusive",
+      "taste": "Not typically eaten",
+      "typical_number_of_eggs": 4,
+      "incubation_period": "13-14 days",
+      "danish_common_name": "Ringdrossel"
+    },
+    "Amerikansk Robin": {
+      "color": "Gray-brown with red breast",
+      "temperament": "Friendly and approachable",
+      "taste": "Not typically eaten",
+      "typical_number_of_eggs": 3-5,
+      "incubation_period": "12-14 days",
+      "danish_common_name": "Amerikansk Robin"
+    },
+    "Rødhals": {
+      "color": "Brown with red throat and breast",
+      "temperament": "Bold and curious",
+      "taste": "Not typically eaten",
+      "typical_number_of_eggs": 4-5,
+      "incubation_period": "12-13 days",
+      "danish_common_name": "Rødhals"
+    },
+    "Kaffersolsort": {
+      "color": "Dark brown with lighter breast",
+      "temperament": "Cautious and solitary",
+      "taste": "Not typically eaten",
+      "typical_number_of_eggs": 3-4,
+      "incubation_period": "13-15 days",
+      "danish_common_name": "Kaffersolsort"
+    },
+    "Australsk solsort": {
+      "color": "Black or dark brown",
+      "temperament": "Adaptable and bold",
+      "taste": "Not typically eaten",
+      "typical_number_of_eggs": 2-4,
+      "incubation_period": "12-14 days",
+      "danish_common_name": "Australsk Solsort"
+    }
+  }
