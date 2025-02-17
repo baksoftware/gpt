@@ -23,6 +23,12 @@ Set your GPG key
 git config --global user.signingkey 51EA95F6
 ```
 
+Make sure to set your git name and email
+```bash
+git config --global user.name "Mads Bak"
+git config --global user.email "madsbak@outlook.com"
+```
+
 Then start signing your commits, and check on github if you have the 'verified' status for your commits
 
 
