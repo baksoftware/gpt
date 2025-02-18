@@ -2,4 +2,157 @@
 description: 
 globs: 
 ---
- 
+# TypeScript React Best Practices
+
+## Type Safety
+
+- Always define proper interfaces/types for props
+- Avoid using `any` type - use `unknown` if type is truly uncertain
+- Use strict TypeScript configuration (strict: true)
+- Define return types for non-trivial functions
+- Use discriminated unions for complex state management
+
+## Component Structure
+
+- One component per file
+- Use functional components with proper type annotations
+- Keep components small and focused (Single Responsibility)
+- Extract reusable logic into custom hooks
+- Use proper file naming: PascalCase for components (e.g., UserProfile.tsx)
+
+## Props and State
+
+- Make props interfaces explicit and documented
+- Use readonly modifier for props to prevent accidental mutations
+- Define default props using modern syntax:
+  ```typescript
+  function Component({ prop = defaultValue }: Props) {}
+  ```
+- Use proper state management based on complexity:
+  - useState for simple state
+  - useReducer for complex state
+  - Context for global state
+  - External state management (Redux/Zustand) for very complex apps
+
+## Hooks
+
+- Follow hooks naming convention: use[HookName]
+- Place hooks at the top level of component
+- Don't use hooks inside loops or conditions
+- Create custom hooks to share stateful logic
+- Use appropriate dependency arrays in useEffect
+
+## Event Handling
+
+- Type event handlers properly
+- Use proper event types from React:
+  ```typescript
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  ```
+- Name handlers with handle prefix: handleClick, handleChange
+
+## Performance
+
+- Memoize expensive calculations with useMemo
+- Optimize callback functions with useCallback
+- Use React.memo for expensive pure components
+- Implement proper key props in lists
+- Avoid inline object creation in render
+
+## File Organization
+
+- Group related components in folders
+- Separate types into types.ts or interfaces.ts
+- Keep shared utilities in utils folder
+- Organize styles close to components
+- Structure:
+  ```
+  src/
+    components/
+      ComponentName/
+        index.tsx
+        styles.ts
+        types.ts
+        hooks.ts
+    hooks/
+    utils/
+    types/
+    constants/
+  ```
+
+## Error Handling
+
+- Implement error boundaries for component error catching
+- Use proper type guards for runtime checks
+- Handle async errors in try/catch blocks
+- Provide meaningful error messages
+- Use ErrorBoundary components strategically
+
+## Testing
+
+- Write tests with proper type coverage
+- Use React Testing Library over Enzyme
+- Test component behavior, not implementation
+- Mock complex dependencies
+- Test error states and edge cases
+
+## Code Style
+
+- Use consistent naming conventions
+- Implement proper ESLint rules
+- Use Prettier for formatting
+- Document complex logic with JSDoc
+- Follow project-specific style guide
+
+## React Specific
+
+- Prefer controlled components over uncontrolled
+- Use fragments to avoid unnecessary divs
+- Implement proper cleanup in useEffect
+- Use portals for modals and overlays
+- Keep render methods pure
+
+## TypeScript Configuration
+
+- Enable strict mode
+- Use path aliases for clean imports
+- Configure proper module resolution
+- Enable all relevant strict checks:
+  ```json
+  {
+    "compilerOptions": {
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictBindCallApply": true,
+      "strictPropertyInitialization": true,
+      "noImplicitThis": true,
+      "alwaysStrict": true
+    }
+  }
+  ```
+
+## Common Patterns
+
+- Use compound components for complex UIs
+- Implement render props when needed
+- Use proper context providers
+- Follow container/presenter pattern when applicable
+- Use proper dependency injection
+
+## Security
+
+- Sanitize user input
+- Avoid using dangerouslySetInnerHTML
+- Implement proper XSS protection
+- Use proper CSRF tokens
+- Follow security best practices
+
+Remember:
+- Keep components pure and predictable
+- Maintain type safety throughout the codebase
+- Follow React's best practices and patterns
+- Write maintainable and scalable code
+- Consider performance implications 
