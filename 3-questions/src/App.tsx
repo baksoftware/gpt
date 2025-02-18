@@ -50,7 +50,8 @@ function App() {
       width: '100vw', 
       height: '100vh', 
       display: 'flex', 
-      flexDirection: 'column' 
+      flexDirection: 'column',
+      overflow: 'hidden'
     }}>
       <div style={{ 
         padding: '1rem', 
@@ -85,7 +86,10 @@ function App() {
           {loading ? 'Generating...' : 'Generate Mindmap'}
         </button>
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ 
+        flex: 1,
+        overflow: 'hidden'
+      }}>
         <MindMap data={mindMapData} />
       </div>
     </div>

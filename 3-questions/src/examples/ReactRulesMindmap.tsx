@@ -239,6 +239,8 @@ export default function ReactRulesMindmap({ data, width, height }: ReactRulesMin
       <svg 
         ref={svgRef}
         style={{
+          width: '100%',
+          height: '100%',
           border: '1px solid #ccc',
           borderRadius: '4px',
           backgroundColor: '#fff'
@@ -248,8 +250,10 @@ export default function ReactRulesMindmap({ data, width, height }: ReactRulesMin
         .mindmap-container {
           display: flex;
           justify-content: center;
-          padding: 20px;
+          width: 100%;
+          height: 100%;
           background-color: #f5f5f5;
+          overflow: hidden;
         }
         .node:hover circle {
           fill-opacity: 0.8;
