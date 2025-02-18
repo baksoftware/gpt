@@ -72,10 +72,17 @@ const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
       .selectAll("g")
       .data(nodes)
       .join("g")
-      .call(d3.drag<SVGGElement, MindMapNode>()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
+      .attr("transform", d => `translate(${d.x},${d.y})`)
+      .call((selection) => {
+        const dragBehavior = d3.drag<SVGGElement, MindMapNode>()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+        
+        // Explicitly type the selection for the drag behavior
+        (selection as d3.Selection<SVGGElement, MindMapNode, SVGGElement, unknown>)
+          .call(dragBehavior);
+      });
 
     // Add circles to nodes
     node.append("circle")
