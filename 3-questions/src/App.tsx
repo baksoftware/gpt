@@ -5,7 +5,7 @@ import { LLMService } from './services/llmService'
 import MindMap from './components/MindMap'
 
 function App() {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState('Rational thinking');
   const { mindMapData, setMindMapData, loading, setLoading } = useMindMapData();
 
   const handleSubmit = async () => {
