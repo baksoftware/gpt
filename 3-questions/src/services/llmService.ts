@@ -20,6 +20,7 @@ export class LLMService {
       }
 
       const data = await response.json();
+      console.log(JSON.stringify(data, null, 4));
       return data;
     } catch (error) {
       console.error('Error generating subnodes:', error);

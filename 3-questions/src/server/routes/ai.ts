@@ -22,16 +22,19 @@ router.post('/generate-subnodes', async (req, res) => {
       return;
     }
 
-    const prompt = `Given the topic or question "${nodeName}", generate 2-3 relevant follow-up questions or subtopics. 
-    Return them as a concise list without numbering or bullets.
-    Each response should be a natural follow-up question or subtopic that helps explore the main topic further.`;
+    const prompt = `Given the topic or question "${nodeName}", generate the answer and 2-3 relevant follow-up questions or subtopics.
+    
+    Return the answer as one paragraph and less than 100 words, prefixed with "Answer:". Ensure it is only one line.
+    
+    Return each follow up question as one paragraph, prefixed with "Follow up:". Make sure it is only one line. Ensure the follow up questions are natural and relevant to the answer.
+    `;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that generates relevant follow-up questions and subtopics. Keep responses concise and natural."
+          content: "You are a helpful assistant that generates relevant answers and follow-up questions and subtopics. Keep responses concise and natural."
         },
         {
           role: "user",

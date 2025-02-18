@@ -130,9 +130,48 @@ export default function ReactRulesMindmap({ data, width, height }: ReactRulesMin
 
     // Add labels to nodes
     node.append("text")
-      .attr("x", 12)
-      .attr("dy", ".35em")
-      .text(d => d.name)
+      .each(function(d) {
+        const text = d3.select(this);
+        const words = d.name.split(/\s+/);
+        const maxLineLength = 50;
+        
+        // First calculate lines
+        const lines: string[] = [];
+        let currentLine: string[] = [];
+        
+        words.forEach(word => {
+          const testLine = [...currentLine, word];
+          if (testLine.join(" ").length <= maxLineLength) {
+            currentLine.push(word);
+          } else {
+            if (currentLine.length > 0) {
+              lines.push(currentLine.join(" "));
+            }
+            currentLine = [word];
+          }
+        });
+        
+        // Push remaining line if any
+        if (currentLine.length > 0) {
+          lines.push(currentLine.join(" "));
+        }
+
+        // Now draw the lines
+        const lineHeight = 1.1; // ems
+        lines.forEach((line, i) => {
+          text.append("tspan")
+            .attr("x", 12)
+            .attr("dy",`${lineHeight}em`)
+            .attr("y", `${i}em`)
+            .text(line);
+        });
+
+        // Center the text block vertically based on number of lines
+        //const totalLines = lines.length;
+        //text.selectAll("tspan")
+        //  .attr("y", -((totalLines - 1) * lineHeight * 0.5) + "em");
+
+      })
       .style("font-size", "12px")
       .style("font-family", "Arial");
 
