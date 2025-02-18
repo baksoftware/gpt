@@ -11,7 +11,7 @@ export class LLMService {
     // generate 1-3 random subnodes with the text nodeName + random text
     const subnodes = Array.from(
       { length: Math.floor(Math.random() * 3) + 2 }, 
-      () => `${nodeName} ${Math.random().toString(36).substring(2, 3)}`);
+      () => `${nodeName} ${Math.random().toString(36).substring(2, 8)}`);
 
     return {
       subnodes
