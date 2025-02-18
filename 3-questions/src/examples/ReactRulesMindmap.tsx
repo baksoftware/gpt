@@ -1,67 +1,27 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { MindMapNode, MindMapLink } from '../types/mindmap';
+import { useMindMapData } from '../hooks/useMindMapData';
 
-interface MindMapNode extends d3.SimulationNodeDatum {
-  id: string;
-  name: string;
-  children?: MindMapNode[];
-  group?: number;
+interface ReactRulesMindmapProps {
+  dataUrl: string;
+  width?: number;
+  height?: number;
 }
 
-interface MindMapLink extends d3.SimulationLinkDatum<MindMapNode> {
-  source: MindMapNode;
-  target: MindMapNode;
-}
-
-const mindMapData: MindMapNode = {
-  id: "root",
-  name: "TypeScript React",
-  group: 0,
-  children: [
-    {
-      id: "type-safety",
-      name: "Type Safety",
-      group: 1,
-      children: [
-        { id: "ts1", name: "Proper Interfaces", group: 1 },
-        { id: "ts2", name: "Avoid any", group: 1 },
-        { id: "ts3", name: "Strict Config", group: 1 }
-      ]
-    },
-    {
-      id: "components",
-      name: "Components",
-      group: 2,
-      children: [
-        { id: "comp1", name: "One per File", group: 2 },
-        { id: "comp2", name: "Functional", group: 2 },
-        { id: "comp3", name: "Small & Focused", group: 2 }
-      ]
-    },
-    {
-      id: "hooks",
-      name: "Hooks",
-      group: 3,
-      children: [
-        { id: "hook1", name: "Top Level", group: 3 },
-        { id: "hook2", name: "Custom Hooks", group: 3 },
-        { id: "hook3", name: "Dependencies", group: 3 }
-      ]
-    }
-  ]
-};
-
-const ReactRulesMindmap: React.FC = () => {
+const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
+  dataUrl,
+  width = 800,
+  height = 600
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const { data, loading, error } = useMindMapData(dataUrl);
 
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || !data) return;
 
     // Clear any existing content
     d3.select(svgRef.current).selectAll("*").remove();
-
-    const width = 800;
-    const height = 600;
 
     // Create the SVG container
     const svg = d3.select(svgRef.current)
@@ -83,7 +43,7 @@ const ReactRulesMindmap: React.FC = () => {
       }
     }
 
-    flattenNodes(mindMapData);
+    flattenNodes(data);
 
     // Create a force simulation
     const simulation = d3.forceSimulation<MindMapNode>(nodes)
@@ -166,7 +126,19 @@ const ReactRulesMindmap: React.FC = () => {
     return () => {
       simulation.stop();
     };
-  }, []);
+  }, [data, width, height]);
+
+  if (loading) {
+    return <div>Loading mindmap data...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading mindmap: {error.message}</div>;
+  }
+
+  if (!data) {
+    return <div>No data available</div>;
+  }
 
   return (
     <div className="mindmap-container">
