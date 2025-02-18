@@ -89,7 +89,7 @@ export default function ReactRulesMindmap({ data, width, height }: ReactRulesMin
       .force("y", d3.forceY());
 
     // Color scale for groups
-    const color = (node: MindMapNode) => {
+    const getNodeColor = (node: MindMapNode) => {
       if (node.id === 'root') return '#808080'; // gray for root node
       if (node.isNew) return '#FFA500';  // orange for newly added nodes
       return '#4169E1';  // royal blue for other nodes
@@ -126,7 +126,19 @@ export default function ReactRulesMindmap({ data, width, height }: ReactRulesMin
     // Add circles to nodes
     node.append("circle")
       .attr("r", d => d.children ? 8 : 6)
-      .attr("fill", d => color(d));
+      .attr("fill", d => {
+        // If this is a root node or has no parent reference, use default color
+        if (d.id === 'root') {
+          return getNodeColor(d);
+        }
+        // Otherwise use the first/other child coloring logic
+        const parentNode = nodes.find(n => n.children?.includes(d));
+        if (parentNode) {
+          const siblings = parentNode.children || [];
+          return siblings.indexOf(d) === 0 ? '#ff6b6b' : '#ffd93d';
+        }
+        return getNodeColor(d);
+      });
 
     // Add labels to nodes
     node.append("text")

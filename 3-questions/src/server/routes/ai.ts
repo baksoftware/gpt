@@ -24,9 +24,9 @@ router.post('/generate-subnodes', async (req, res) => {
 
     const prompt = `Given the topic or question "${nodeName}", generate the answer and 2-3 relevant follow-up questions or subtopics.
     
-    Return the answer as one paragraph and less than 100 words, prefixed with "Answer:". Ensure it is only one line.
+    Return the answer as one paragraph and less than 100 words. Ensure it is only one line.
     
-    Return each follow up question as one paragraph, prefixed with "Follow up:". Make sure it is only one line. Ensure the follow up questions are natural and relevant to the answer.
+    Return each follow up question as one paragraph. Make sure it is only one line. Ensure the follow up questions are natural and relevant to the answer.
     `;
 
     const response = await openai.chat.completions.create({
