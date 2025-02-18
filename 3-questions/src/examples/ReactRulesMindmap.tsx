@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { MindMapNode, MindMapLink } from '../types/mindmap';
 import { useMindMapData } from '../hooks/useMindMapData';
+import { llmService } from '../services/llmService';
 
 interface ReactRulesMindmapProps {
   dataUrl: string;
@@ -9,13 +10,13 @@ interface ReactRulesMindmapProps {
   height?: number;
 }
 
-const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
+export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
   dataUrl,
   width = 800,
   height = 600
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const { data, loading, error } = useMindMapData(dataUrl);
+  const { data, loading, error, setMindMapData } = useMindMapData(dataUrl);
 
   useEffect(() => {
     if (!svgRef.current || !data) return;
@@ -79,9 +80,11 @@ const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
           .on("drag", dragged)
           .on("end", dragended);
         
-        // Explicitly type the selection for the drag behavior
         (selection as d3.Selection<SVGGElement, MindMapNode, SVGGElement, unknown>)
           .call(dragBehavior);
+      })
+      .on('click', (_event: MouseEvent, d: MindMapNode) => {
+        handleNodeClick(d);
       });
 
     // Add circles to nodes
@@ -134,6 +137,49 @@ const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
       simulation.stop();
     };
   }, [data, width, height]);
+
+  const handleNodeClick = async (node: MindMapNode) => {
+    try {
+      // Only generate subnodes if the node doesn't already have children
+      if (!node.children || node.children.length === 0) {
+        const response = await llmService.generateSubnodes(node.name);
+        
+        // Create new nodes from the response
+        const newChildren = response.subnodes.map((name, index) => ({
+          id: `${node.id}-${index}`,
+          name,
+          children: []
+        }));
+
+        // Update the mindmap data with proper typing
+        setMindMapData((prev: MindMapNode | null) => {
+          if (!prev) return prev;
+
+          const updateNodeChildren = (nodes: MindMapNode[]): MindMapNode[] => {
+            return nodes.map(n => {
+              if (n.id === node.id) {
+                return {
+                  ...n,
+                  children: newChildren
+                };
+              }
+              if (n.children) {
+                return {
+                  ...n,
+                  children: updateNodeChildren(n.children)
+                };
+              }
+              return n;
+            });
+          };
+
+          return updateNodeChildren([prev])[0];
+        });
+      }
+    } catch (error) {
+      console.error('Error generating subnodes:', error);
+    }
+  };
 
   if (loading) {
     return <div>Loading mindmap data...</div>;
