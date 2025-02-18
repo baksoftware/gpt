@@ -63,7 +63,7 @@ function App() {
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Enter root node text..."
+          placeholder="Enter the topic you want to explore"
           style={{
             padding: '0.5rem',
             flex: 1,
@@ -83,7 +83,7 @@ function App() {
             cursor: loading ? 'not-allowed' : 'pointer'
           }}
         >
-          {loading ? 'Generating...' : 'Generate Mindmap'}
+          {loading ? 'Generating...' : 'Explore'}
         </button>
       </div>
       <div style={{ 
