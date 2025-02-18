@@ -1,41 +1,51 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-interface MindMapNode {
+interface MindMapNode extends d3.SimulationNodeDatum {
   id: string;
   name: string;
   children?: MindMapNode[];
+  group?: number;
+}
+
+interface MindMapLink extends d3.SimulationLinkDatum<MindMapNode> {
+  source: MindMapNode;
+  target: MindMapNode;
 }
 
 const mindMapData: MindMapNode = {
   id: "root",
   name: "TypeScript React",
+  group: 0,
   children: [
     {
       id: "type-safety",
       name: "Type Safety",
+      group: 1,
       children: [
-        { id: "ts1", name: "Proper Interfaces" },
-        { id: "ts2", name: "Avoid any" },
-        { id: "ts3", name: "Strict Config" }
+        { id: "ts1", name: "Proper Interfaces", group: 1 },
+        { id: "ts2", name: "Avoid any", group: 1 },
+        { id: "ts3", name: "Strict Config", group: 1 }
       ]
     },
     {
       id: "components",
       name: "Components",
+      group: 2,
       children: [
-        { id: "comp1", name: "One per File" },
-        { id: "comp2", name: "Functional" },
-        { id: "comp3", name: "Small & Focused" }
+        { id: "comp1", name: "One per File", group: 2 },
+        { id: "comp2", name: "Functional", group: 2 },
+        { id: "comp3", name: "Small & Focused", group: 2 }
       ]
     },
     {
       id: "hooks",
       name: "Hooks",
+      group: 3,
       children: [
-        { id: "hook1", name: "Top Level" },
-        { id: "hook2", name: "Custom Hooks" },
-        { id: "hook3", name: "Dependencies" }
+        { id: "hook1", name: "Top Level", group: 3 },
+        { id: "hook2", name: "Custom Hooks", group: 3 },
+        { id: "hook3", name: "Dependencies", group: 3 }
       ]
     }
   ]
@@ -52,61 +62,110 @@ const ReactRulesMindmap: React.FC = () => {
 
     const width = 800;
     const height = 600;
-    const margin = { top: 20, right: 120, bottom: 20, left: 120 };
 
     // Create the SVG container
     const svg = d3.select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
-    // Create the tree layout
-    const tree = d3.tree<MindMapNode>()
-      .size([height - margin.top - margin.bottom, width - margin.left - margin.right]);
+    // Convert hierarchical data to nodes and links
+    const nodes: MindMapNode[] = [];
+    const links: MindMapLink[] = [];
 
-    // Create the hierarchy
-    const root = d3.hierarchy(mindMapData);
-    
-    // Assign positions to nodes
-    const nodes = tree(root);
+    function flattenNodes(node: MindMapNode) {
+      nodes.push(node);
+      if (node.children) {
+        node.children.forEach(child => {
+          links.push({ source: node, target: child });
+          flattenNodes(child);
+        });
+      }
+    }
+
+    flattenNodes(mindMapData);
+
+    // Create a force simulation
+    const simulation = d3.forceSimulation<MindMapNode>(nodes)
+      .force("link", d3.forceLink<MindMapNode, MindMapLink>(links)
+        .id(d => d.id)
+        .distance(100)
+        .strength(1))
+      .force("charge", d3.forceManyBody().strength(-1000))
+      .force("x", d3.forceX())
+      .force("y", d3.forceY());
+
+    // Color scale for groups
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Create links
-    svg.selectAll(".link")
-      .data(nodes.links())
-      .join("path")
-      .attr("class", "link")
-      .attr("fill", "none")
+    const link = svg.append("g")
+      .selectAll("line")
+      .data(links)
+      .join("line")
       .attr("stroke", "#999")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.linkHorizontal<any, any>()
-        .x((d: any) => d.y)
-        .y((d: any) => d.x)
-        .source((d: any) => d.source)
-        .target((d: any) => d.target)
-      );
+      .attr("stroke-opacity", 0.6)
+      .attr("stroke-width", 2);
 
     // Create nodes
-    const node = svg.selectAll(".node")
-      .data(nodes.descendants())
+    const node = svg.append("g")
+      .selectAll("g")
+      .data(nodes)
       .join("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
+      .call(d3.drag<SVGGElement, MindMapNode>()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
 
     // Add circles to nodes
     node.append("circle")
-      .attr("r", 6)
-      .style("fill", d => d.children ? "#555" : "#999");
+      .attr("r", d => d.children ? 8 : 6)
+      .attr("fill", d => color(d.group?.toString() || "0"));
 
     // Add labels to nodes
     node.append("text")
-      .attr("dy", ".31em")
-      .attr("x", d => d.children ? -10 : 10)
-      .style("text-anchor", d => d.children ? "end" : "start")
-      .text(d => d.data.name)
+      .attr("x", 12)
+      .attr("dy", ".35em")
+      .text(d => d.name)
       .style("font-size", "12px")
       .style("font-family", "Arial");
 
+    // Add title on hover
+    node.append("title")
+      .text(d => d.name);
+
+    // Update positions on each tick
+    simulation.on("tick", () => {
+      link
+        .attr("x1", d => (d.source as MindMapNode).x!)
+        .attr("y1", d => (d.source as MindMapNode).y!)
+        .attr("x2", d => (d.target as MindMapNode).x!)
+        .attr("y2", d => (d.target as MindMapNode).y!);
+
+      node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    // Drag functions
+    function dragstarted(event: d3.D3DragEvent<SVGGElement, MindMapNode, MindMapNode>, d: MindMapNode) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event: d3.D3DragEvent<SVGGElement, MindMapNode, MindMapNode>, d: MindMapNode) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event: d3.D3DragEvent<SVGGElement, MindMapNode, MindMapNode>, d: MindMapNode) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    return () => {
+      simulation.stop();
+    };
   }, []);
 
   return (
@@ -126,14 +185,8 @@ const ReactRulesMindmap: React.FC = () => {
           padding: 20px;
           background-color: #f5f5f5;
         }
-        .link {
-          transition: stroke 0.3s;
-        }
-        .node circle {
-          transition: fill 0.3s;
-        }
         .node:hover circle {
-          fill: #007bff !important;
+          fill-opacity: 0.8;
         }
         .node text {
           transition: font-weight 0.3s;
