@@ -1,26 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { MindMapNode, MindMapLink } from '../types/mindmap';
-import { useMindMapData } from '../hooks/useMindMapData';
 import { llmService } from '../services/llmService';
 
 interface ReactRulesMindmapProps {
-  dataUrl: string;
-  width?: number;
-  height?: number;
+  dataUrl?: string;
+  width: number;
+  height: number;
+  data?: MindMapNode;
 }
 
-export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
-  dataUrl,
-  width = 800,
-  height = 600
-}) => {
+export default function ReactRulesMindmap({ data, width, height }: ReactRulesMindmapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const { data, loading, error, setMindMapData } = useMindMapData(dataUrl);
+  const [mindMapData, setMindMapData] = useState<MindMapNode | null>(null);
+  const [loading ] = useState(false);
   const [lastClickedNodeId, setLastClickedNodeId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!svgRef.current || !data) return;
+    if (data) {
+      setMindMapData(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!svgRef.current || !mindMapData) return;
 
     // Clear any existing content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -45,7 +48,7 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
       }
     }
 
-    flattenNodes(data);
+    flattenNodes(mindMapData);
 
     // Create a force simulation
     const simulation = d3.forceSimulation<MindMapNode>(nodes)
@@ -169,7 +172,7 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
     return () => {
       simulation.stop();
     };
-  }, [data, width, height, lastClickedNodeId]);
+  }, [mindMapData, width, height, lastClickedNodeId]);
 
   const handleNodeClick = async (node: MindMapNode) => {
     try {
@@ -178,51 +181,44 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
         const response = await llmService.generateSubnodes(node.name);
         
         // Create new nodes from the response with isNew flag
-        const newChildren = response.subnodes.map((name, index) => ({
+        const newChildren = response.subnodes.map((text, index) => ({
           id: `${node.id}-${index}`,
-          name,
+          name: text,
+          text: text,
           children: [],
           isNew: true
         }));
 
-        // Update the mindmap data with proper typing
-        setMindMapData((prev: MindMapNode | null) => {
+        // Update the mindmap data
+        setMindMapData((prev) => {
           if (!prev) return prev;
 
           // Helper function to reset isNew flag on all nodes
-          const resetIsNewFlag = (node: MindMapNode): MindMapNode => {
-            return {
-              ...node,
-              isNew: false,
-              children: node.children?.map(resetIsNewFlag)
-            };
-          };
+          const resetIsNewFlag = (node: MindMapNode): MindMapNode => ({
+            ...node,
+            isNew: false,
+            children: node.children?.map(resetIsNewFlag)
+          });
 
-          const updateNodeChildren = (nodes: MindMapNode[]): MindMapNode[] => {
-            return nodes.map(n => {
-              if (n.id === node.id) {
-                return {
-                  ...n,
-                  children: newChildren
-                };
-              }
-              if (n.children) {
-                return {
-                  ...n,
-                  isNew: false,
-                  children: updateNodeChildren(n.children)
-                };
-              }
+          const updateNodeChildren = (n: MindMapNode): MindMapNode => {
+            if (n.id === node.id) {
               return {
                 ...n,
-                isNew: false
+                children: newChildren
               };
-            });
+            }
+            if (n.children) {
+              return {
+                ...n,
+                children: n.children.map(updateNodeChildren)
+              };
+            }
+            return n;
           };
 
           // First reset all isNew flags, then update with new children
-          const resetNodes = resetIsNewFlag(prev);
-          return updateNodeChildren([resetNodes])[0];
+          const resetData = resetIsNewFlag(prev);
+          return updateNodeChildren(resetData);
         });
       }
     } catch (error) {
@@ -234,11 +230,7 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
     return <div>Loading mindmap data...</div>;
   }
 
-  if (error) {
-    return <div>Error loading mindmap: {error.message}</div>;
-  }
-
-  if (!data) {
+  if (!mindMapData) {
     return <div>No data available</div>;
   }
 
@@ -271,6 +263,4 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
       `}</style>
     </div>
   );
-};
-
-export default ReactRulesMindmap; 
+} 
