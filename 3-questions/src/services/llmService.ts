@@ -6,32 +6,15 @@ export class LLMService {
   // Mock API call that simulates calling an LLM
   async generateSubnodes(nodeName: string): Promise<LLMResponse> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock responses based on node names
-    const mockResponses: Record<string, string[]> = {
-      "Components": [
-        "Functional Components",
-        "Class Components",
-        "Higher Order Components",
-        "Pure Components"
-      ],
-      "State": [
-        "useState",
-        "useReducer",
-        "State Management Libraries",
-        "Immutable State"
-      ],
-      // Add more mock responses as needed
-      "default": [
-        "Concept 1",
-        "Concept 2",
-        "Concept 3"
-      ]
-    };
+    // await new Promise(resolve => setTimeout(resolve, 100));
+
+    // generate 1-3 random subnodes with the text nodeName + random text
+    const subnodes = Array.from(
+      { length: Math.floor(Math.random() * 3) + 2 }, 
+      () => `${nodeName} ${Math.random().toString(36).substring(2, 3)}`);
 
     return {
-      subnodes: mockResponses[nodeName] || mockResponses.default
+      subnodes
     };
   }
 }

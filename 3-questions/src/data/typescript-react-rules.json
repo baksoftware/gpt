@@ -4,34 +4,9 @@
   "group": 0,
   "children": [
     {
-      "id": "type-safety",
-      "name": "Type Safety",
-      "group": 1,
-      "children": [
-        { "id": "ts1", "name": "Proper Interfaces", "group": 1 },
-        { "id": "ts2", "name": "Avoid any", "group": 1 },
-        { "id": "ts3", "name": "Strict Config", "group": 1 }
-      ]
-    },
-    {
-      "id": "components",
-      "name": "Components",
-      "group": 2,
-      "children": [
-        { "id": "comp1", "name": "One per File", "group": 2 },
-        { "id": "comp2", "name": "Functional", "group": 2 },
-        { "id": "comp3", "name": "Small & Focused", "group": 2 }
-      ]
-    },
-    {
-      "id": "hooks",
-      "name": "Hooks",
-      "group": 3,
-      "children": [
-        { "id": "hook1", "name": "Top Level", "group": 3 },
-        { "id": "hook2", "name": "Custom Hooks", "group": 3 },
-        { "id": "hook3", "name": "Dependencies", "group": 3 }
-      ]
-    }
+      "id": "first",
+      "name": "first text",
+      "group": 1
+    }    
   ]
 } 

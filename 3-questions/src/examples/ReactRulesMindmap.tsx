@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { MindMapNode, MindMapLink } from '../types/mindmap';
 import { useMindMapData } from '../hooks/useMindMapData';
@@ -17,6 +17,7 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { data, loading, error, setMindMapData } = useMindMapData(dataUrl);
+  const [lastClickedNodeId, setLastClickedNodeId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!svgRef.current || !data) return;
@@ -50,14 +51,46 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
     const simulation = d3.forceSimulation<MindMapNode>(nodes)
       .force("link", d3.forceLink<MindMapNode, MindMapLink>(links)
         .id(d => d.id)
-        .distance(100)
+        .distance(link => {
+          if (!lastClickedNodeId) return 100;
+          
+          // Calculate distance from last clicked node
+          const getDistanceFromNode = (nodeId: string, targetId: string, depth = 0): number | null => {
+            const node = nodes.find(n => n.id === nodeId);
+            if (!node) return null;
+            if (node.id === targetId) return depth;
+            
+            if (node.children) {
+              for (const child of node.children) {
+                const childDistance = getDistanceFromNode(child.id, targetId, depth + 1);
+                if (childDistance !== null) return childDistance;
+              }
+            }
+            return null;
+          };
+
+          const source = link.source as MindMapNode;
+          const target = link.target as MindMapNode;
+          
+          // Get minimum distance from last clicked node to either source or target
+          const sourceDistance = getDistanceFromNode(lastClickedNodeId, source.id) ?? Infinity;
+          const targetDistance = getDistanceFromNode(lastClickedNodeId, target.id) ?? Infinity;
+          const minDistance = Math.min(sourceDistance, targetDistance);
+          
+          // Scale link distance based on distance from last clicked node
+          return Math.max(40, 100 - (minDistance * 15));
+        })
         .strength(1))
       .force("charge", d3.forceManyBody().strength(-1000))
       .force("x", d3.forceX())
       .force("y", d3.forceY());
 
     // Color scale for groups
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const color = (node: MindMapNode) => {
+      if (node.id === 'root') return '#808080'; // gray for root node
+      if (node.isNew) return '#FFA500';  // orange for newly added nodes
+      return '#4169E1';  // royal blue for other nodes
+    };
 
     // Create links
     const link = svg.append("g")
@@ -90,7 +123,7 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
     // Add circles to nodes
     node.append("circle")
       .attr("r", d => d.children ? 8 : 6)
-      .attr("fill", d => color(d.group?.toString() || "0"));
+      .attr("fill", d => color(d));
 
     // Add labels to nodes
     node.append("text")
@@ -136,24 +169,34 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
     return () => {
       simulation.stop();
     };
-  }, [data, width, height]);
+  }, [data, width, height, lastClickedNodeId]);
 
   const handleNodeClick = async (node: MindMapNode) => {
     try {
-      // Only generate subnodes if the node doesn't already have children
+      setLastClickedNodeId(node.id);
       if (!node.children || node.children.length === 0) {
         const response = await llmService.generateSubnodes(node.name);
         
-        // Create new nodes from the response
+        // Create new nodes from the response with isNew flag
         const newChildren = response.subnodes.map((name, index) => ({
           id: `${node.id}-${index}`,
           name,
-          children: []
+          children: [],
+          isNew: true
         }));
 
         // Update the mindmap data with proper typing
         setMindMapData((prev: MindMapNode | null) => {
           if (!prev) return prev;
+
+          // Helper function to reset isNew flag on all nodes
+          const resetIsNewFlag = (node: MindMapNode): MindMapNode => {
+            return {
+              ...node,
+              isNew: false,
+              children: node.children?.map(resetIsNewFlag)
+            };
+          };
 
           const updateNodeChildren = (nodes: MindMapNode[]): MindMapNode[] => {
             return nodes.map(n => {
@@ -166,14 +209,20 @@ export const ReactRulesMindmap: React.FC<ReactRulesMindmapProps> = ({
               if (n.children) {
                 return {
                   ...n,
+                  isNew: false,
                   children: updateNodeChildren(n.children)
                 };
               }
-              return n;
+              return {
+                ...n,
+                isNew: false
+              };
             });
           };
 
-          return updateNodeChildren([prev])[0];
+          // First reset all isNew flags, then update with new children
+          const resetNodes = resetIsNewFlag(prev);
+          return updateNodeChildren([resetNodes])[0];
         });
       }
     } catch (error) {

@@ -3,6 +3,7 @@ export interface MindMapNode extends d3.SimulationNodeDatum {
   name: string;
   children?: MindMapNode[];
   group?: number;
+  isNew?: boolean;
 }
 
 export interface MindMapLink extends d3.SimulationLinkDatum<MindMapNode> {
