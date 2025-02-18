@@ -6,7 +6,7 @@ function App() {
     <div className="App">
       <h1>TypeScript React Rules Mindmap</h1>
       <ReactRulesMindmap 
-        dataUrl="/src/data/typescript-react-rules.json"
+        dataUrl="/src/data/data.json"
         width={800}
         height={600}
       />
