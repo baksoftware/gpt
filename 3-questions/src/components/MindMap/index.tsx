@@ -8,18 +8,29 @@ import ReactFlow, {
   useEdgesState
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useMindMapData } from '../../contexts/MindMapContext';
 import { MindMapNode } from '../../types/mindmap';
+import { LLMService } from '../../services/llmService';
 
-const nodeWidth = 172;
+//const nodeWidth = 172;
 const nodeHeight = 36;
+
+// Function to calculate text width
+const getTextWidth = (text: string) => {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  if (!context) return 172; // fallback width
+  context.font = '14px Inter, system-ui, Avenir, Helvetica, Arial, sans-serif';
+  return Math.max(172, context.measureText(text).width + 40); // min width 172px, padding 20px each side
+};
 
 const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   
-  // Create root node
+  // Create root node with dynamic width
+  const nodeWidth = getTextWidth(data.name);
   const rootNode: Node = {
     id: data.id,
     position: parentPos,
@@ -43,8 +54,9 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
     let currentY = parentPos.y - totalHeight / 2;
 
     data.children.forEach((child, index) => {
-      const childX = parentPos.x + 250;
+      const childX = parentPos.x + 300; // Increased spacing
       const childY = currentY + (index * childSpacing);
+     // const childWidth = getTextWidth(child.name);
 
       const childNodes = createNodesAndEdges(child, { x: childX, y: childY });
       nodes.push(...childNodes.nodes);
@@ -54,7 +66,7 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
         id: `${data.id}-${child.id}`,
         source: data.id,
         target: child.id,
-        type: 'smoothstep',
+        type: 'default', // Changed to default for straight lines
         style: { stroke: '#777' },
       });
 
@@ -68,7 +80,38 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
 export function MindMap() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { mindMapData } = useMindMapData();
+  const { mindMapData, setMindMapData } = useMindMapData();
+  const llmService = new LLMService();
+
+  const handleNodeClick = useCallback(async (_event: React.MouseEvent, node: Node) => {
+    try {
+      const response = await llmService.generateSubnodes(node.data.label);
+      
+      // Update the mindmap data with new children for the clicked node
+      const updateNodeWithChildren = (currentNode: MindMapNode): MindMapNode => {
+        if (currentNode.id === node.id) {
+          const newChildren = response.subnodes.map((text, index) => ({
+            id: `${node.id}-${index}`,
+            name: text,
+            text: text,
+            children: []
+          }));
+          return { ...currentNode, children: newChildren };
+        }
+        if (currentNode.children) {
+          return {
+            ...currentNode,
+            children: currentNode.children.map(child => updateNodeWithChildren(child))
+          };
+        }
+        return currentNode;
+      };
+
+      setMindMapData(updateNodeWithChildren(mindMapData));
+    } catch (error) {
+      console.error('Error generating subnodes:', error);
+    }
+  }, [mindMapData, setMindMapData, llmService]);
 
   useEffect(() => {
     const { nodes: newNodes, edges: newEdges } = createNodesAndEdges(mindMapData);
@@ -83,6 +126,7 @@ export function MindMap() {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
         fitView
         attributionPosition="bottom-left"
       >
