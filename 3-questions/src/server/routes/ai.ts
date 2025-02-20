@@ -22,7 +22,7 @@ router.post('/generate-subnodes', async (req, res) => {
       return;
     }
 
-    const prompt = `Given the topic or question "${nodeName}", generate the answer and 2-3 relevant follow-up questions or subtopics.
+    const prompt = `Given the topic or question "${nodeName}", generate the answer and 2-4 relevant follow-up questions or subtopics.
     
     Return the answer as one paragraph and less than 100 words. Ensure it is only one line.
     
@@ -30,6 +30,7 @@ router.post('/generate-subnodes', async (req, res) => {
     `;
 
     const response = await openai.chat.completions.create({
+      // model: "o3-mini", 
       model: "gpt-4o-mini",
       messages: [
         {
@@ -40,9 +41,7 @@ router.post('/generate-subnodes', async (req, res) => {
           role: "user",
           content: prompt
         }
-      ],
-      temperature: 0.7,
-      max_tokens: 150
+      ]
     });
 
     const generatedText = response.choices[0]?.message?.content || '';
@@ -50,7 +49,6 @@ router.post('/generate-subnodes', async (req, res) => {
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.length > 0)
-      .slice(0, 3);
 
     res.json({ subnodes });
   } catch (error) {

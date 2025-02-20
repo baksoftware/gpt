@@ -19,7 +19,7 @@ const getTextWidth = (text: string) => {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) return 72; // fallback width
-  context.font = '10px Arial  ';
+  context.font = '12px Arial  ';
   return Math.max(172, context.measureText(text).width + 40); // min width 172px, padding 20px each side
 };
 
@@ -47,12 +47,13 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
 
   // Create child nodes and edges
   if (data.children) {
-    const childSpacing = 100;
+    const childSpacing = 0;
     const totalHeight = data.children.length * childSpacing;
     let currentY = parentPos.y - totalHeight / 2;
 
     data.children.forEach((child, index) => {
-      const childX = parentPos.x + 300; // Increased spacing
+      let childX = parentPos.x + 10; // Increased spacing
+      childX = 0;
       const childY = currentY + (index * childSpacing);
      // const childWidth = getTextWidth(child.name);
 
@@ -135,7 +136,7 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
     setEdges(newEdges);
   }, [mindMapData, setNodes, setEdges]);
 
-  const nodeWidth = 300;  // Increased from whatever it was before
+  const nodeWidth = 340;  // Increased from whatever it was before
   
   const renderRectSvgNode = ({ nodeDatum, toggleNode }: RenderCustomNodeElementFnParams) => {
     const isLastQuestion = nodeDatum.attributes?.isLastQuestion;
@@ -178,8 +179,8 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
           fill={bgColor}
           rx={5}
           ry={5}
-          stroke="#000"
-          strokeWidth={1}  // Ensure consistent stroke width
+          stroke="#aaf"
+          strokeWidth={2}  // Ensure consistent stroke width
           onClick={() => {
             toggleNode();
             handleNodeClick(nodeDatum);
@@ -193,6 +194,8 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
             y={-rectHeight / 2 + 20 + (i * lineHeight)}
             textAnchor="middle"
             style={{
+              stroke: '#000',
+              strokeWidth: 1,
               fontSize: '14px',
               fontFamily: 'Arial',
               cursor: 'pointer',

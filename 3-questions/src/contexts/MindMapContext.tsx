@@ -13,7 +13,7 @@ const MindMapContext = createContext<MindMapContextType | undefined>(undefined);
 export const MindMapProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mindMapData, setMindMapData] = useState<MindMapNode>({
     id: 'root',
-    name: 'Start here',
+    name: 'Enter something you want to explore and click explore',
     children: []
   });
   const [loading, setLoading] = useState(false);
