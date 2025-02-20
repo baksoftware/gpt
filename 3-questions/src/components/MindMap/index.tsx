@@ -231,7 +231,7 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
         data={convertToRawNodeDatum(data)}
         orientation="vertical"
         renderCustomNodeElement={renderRectSvgNode}
-        separation={{ siblings: 1.5, nonSiblings: 1 }}
+        separation={{ siblings: 1.5, nonSiblings: 1.5 }}
         translate={{ x: window.innerWidth / 2, y: 100 }}
         nodeSize={{ x: 250, y: 150 }}
       />

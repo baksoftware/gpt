@@ -30,8 +30,8 @@ router.post('/generate-subnodes', async (req, res) => {
     `;
 
     const response = await openai.chat.completions.create({
-      // model: "o3-mini", 
-      model: "gpt-4o-mini",
+      model: "o3-mini", 
+      //model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
