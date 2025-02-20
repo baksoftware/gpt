@@ -1,6 +1,5 @@
-import * as d3 from 'd3';
 
-export interface MindMapNode extends d3.SimulationNodeDatum {
+export interface MindMapNode {
   id: string;
   name: string;  // Required field
   text: string;  // Adding this since we're using it
@@ -13,8 +12,3 @@ export interface MindMapNode extends d3.SimulationNodeDatum {
   fx?: number | null;
   fy?: number | null;
 }
-
-export interface MindMapLink extends d3.SimulationLinkDatum<MindMapNode> {
-  source: MindMapNode;
-  target: MindMapNode;
-} 

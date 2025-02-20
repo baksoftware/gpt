@@ -121,18 +121,3 @@ Principle of Least Astonishment states that a component of a system should behav
 
 Code should do what the name and comments suggest. Conventions should be followed. Surprising side effects should be avoided as much as possible.
 
-# Project specific rules
-
-I'm using pixijs for game graphics
-Documentation for pixijs is here: https://pixijs.download/dev/docs/index.html
-Github is here: https://github.com/pixijs/pixijs
-
-@Docs{
-  "library_name": "pixijs",
-  "documentation": "https://pixijs.download/dev/docs/index.html"
-}
-
-@Docs{
-  "library_name": "pixijs github",
-  "documentation": "https://github.com/pixijs/pixijs"
-}

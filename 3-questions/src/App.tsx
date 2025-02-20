@@ -1,12 +1,12 @@
 import './App.css'
 import { useState } from 'react'
-import { useMindMapData } from './contexts/MindMapContext'
 import { LLMService } from './services/llmService'
-import MindMap from './components/MindMap'
+import { MindMap } from './components/MindMap'
+import { useMindMapData } from './contexts/MindMapContext'
 
 function App() {
   const [inputText, setInputText] = useState('Rational thinking');
-  const { mindMapData, setMindMapData, loading, setLoading } = useMindMapData();
+  const { setMindMapData, loading, setLoading } = useMindMapData();
 
   const handleSubmit = async () => {
     if (!inputText.trim()) return;
@@ -90,7 +90,7 @@ function App() {
         flex: 1,
         overflow: 'hidden'
       }}>
-        <MindMap data={mindMapData} />
+        <MindMap />
       </div>
     </div>
   );
