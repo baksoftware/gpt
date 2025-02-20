@@ -12,14 +12,14 @@ import { LLMService } from '../../services/llmService';
 import { Tree, RawNodeDatum } from 'react-d3-tree';
 
 //const nodeWidth = 172;
-const nodeHeight = 36;
+const nodeHeight = 100;
 
 // Function to calculate text width
 const getTextWidth = (text: string) => {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  if (!context) return 172; // fallback width
-  context.font = '14px Inter, system-ui, Avenir, Helvetica, Arial, sans-serif';
+  if (!context) return 72; // fallback width
+  context.font = '10px Arial  ';
   return Math.max(172, context.measureText(text).width + 40); // min width 172px, padding 20px each side
 };
 
@@ -38,7 +38,7 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
       background: '#fff',
       border: '1px solid #777',
       borderRadius: '4px',
-      padding: '10px',
+      padding: '0px',
       width: nodeWidth,
       height: nodeHeight,
     },
@@ -135,7 +135,7 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
     setEdges(newEdges);
   }, [mindMapData, setNodes, setEdges]);
 
-  const nodeWidth = 200; // Fixed width for nodes
+  const nodeWidth = 300;  // Increased from whatever it was before
   
   const renderRectSvgNode = ({ nodeDatum, toggleNode }: RenderCustomNodeElementFnParams) => {
     const isLastQuestion = nodeDatum.attributes?.isLastQuestion;
@@ -177,6 +177,9 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
           y={-rectHeight / 2}
           fill={bgColor}
           rx={5}
+          ry={5}
+          stroke="#000"
+          strokeWidth={1}  // Ensure consistent stroke width
           onClick={() => {
             toggleNode();
             handleNodeClick(nodeDatum);
@@ -192,7 +195,8 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
             style={{
               fontSize: '14px',
               fontFamily: 'Arial',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontWeight: 'normal',  // Ensure consistent font weight
             }}
             onClick={() => {
               toggleNode();
@@ -219,7 +223,7 @@ const MindMap: React.FC<MindMapProps> = ({ data }) => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh' }}>
+    <div style={{ width: '100%', height: '100%' }}>
       <Tree
         data={convertToRawNodeDatum(data)}
         orientation="vertical"

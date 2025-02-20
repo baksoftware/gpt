@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { MindMapNode } from '../types/mindmap';
 
 interface MindMapContextType {
@@ -10,11 +10,10 @@ interface MindMapContextType {
 
 const MindMapContext = createContext<MindMapContextType | undefined>(undefined);
 
-export function MindMapProvider({ children }: { children: React.ReactNode }) {
+export const MindMapProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mindMapData, setMindMapData] = useState<MindMapNode>({
     id: 'root',
     name: 'Start here',
-    text: 'Enter text and click Generate',
     children: []
   });
   const [loading, setLoading] = useState(false);
@@ -22,8 +21,7 @@ export function MindMapProvider({ children }: { children: React.ReactNode }) {
   const processNode = (node: MindMapNode, isLastQuestion = false, isAnswer = false): MindMapNode => {
     return {
       id: node.id,
-      name: node.text || node.name,
-      text: node.text || node.name,
+      name: node.name,
       attributes: {
         isLastQuestion,
         isAnswer,
@@ -38,12 +36,21 @@ export function MindMapProvider({ children }: { children: React.ReactNode }) {
     };
   };
 
+  useCallback((nodeId: string, newData: Partial<MindMapNode>) => {
+    setMindMapData(prev => ({
+      ...prev,
+      children: prev.children?.map(node => 
+        node.id === nodeId ? { ...node, ...newData } : node
+      )
+    }));
+  }, []);
+
   return (
     <MindMapContext.Provider value={{ mindMapData, setMindMapData, loading, setLoading }}>
       {children}
     </MindMapContext.Provider>
   );
-}
+};
 
 export function useMindMapData() {
   const context = useContext(MindMapContext);

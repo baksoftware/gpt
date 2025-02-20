@@ -18,7 +18,6 @@ function App() {
       setMindMapData({
         id: 'root',
         name: inputText,
-        text: inputText,
         children: []
       });
 
@@ -35,7 +34,6 @@ function App() {
       setMindMapData({
         id: 'root',
         name: inputText,
-        text: inputText,
         children: newChildren
       });
     } catch (error) {
