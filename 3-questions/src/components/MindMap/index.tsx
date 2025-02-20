@@ -1,17 +1,15 @@
-import ReactFlow, { 
+import { 
   Node, 
   Edge,
-  Background,
-  Controls,
-  MiniMap,
   useNodesState,
-  useEdgesState
+  useEdgesState,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useEffect, useCallback } from 'react';
 import { useMindMapData } from '../../contexts/MindMapContext';
 import { MindMapNode } from '../../types/mindmap';
 import { LLMService } from '../../services/llmService';
+import { Tree, RawNodeDatum } from 'react-d3-tree';
 
 //const nodeWidth = 172;
 const nodeHeight = 36;
@@ -77,21 +75,39 @@ const createNodesAndEdges = (data: MindMapNode, parentPos = { x: 0, y: 0 }) => {
   return { nodes, edges };
 };
 
-export function MindMap() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+interface MindMapProps {
+  data: MindMapNode;
+}
+
+interface CustomNodeDatum {
+  name: string;
+  attributes?: {
+    isLastQuestion?: boolean;
+    isAnswer?: boolean;
+  };
+  children?: CustomNodeDatum[];
+}
+
+interface RenderCustomNodeElementFnParams {
+  nodeDatum: CustomNodeDatum;
+  toggleNode: () => void;
+}
+
+const MindMap: React.FC<MindMapProps> = ({ data }) => {
+  const [_nodes, setNodes, _onNodesChange] = useNodesState([]);
+  const [_edges, setEdges, _onEdgesChange] = useEdgesState([]);
   const { mindMapData, setMindMapData } = useMindMapData();
   const llmService = new LLMService();
 
-  const handleNodeClick = useCallback(async (_event: React.MouseEvent, node: Node) => {
+  const handleNodeClick = useCallback(async (nodeDatum: CustomNodeDatum) => {
     try {
-      const response = await llmService.generateSubnodes(node.data.label);
+      const response = await llmService.generateSubnodes(nodeDatum.name);
       
       // Update the mindmap data with new children for the clicked node
       const updateNodeWithChildren = (currentNode: MindMapNode): MindMapNode => {
-        if (currentNode.id === node.id) {
+        if (currentNode.name === nodeDatum.name) {
           const newChildren = response.subnodes.map((text, index) => ({
-            id: `${node.id}-${index}`,
+            id: `${currentNode.id}-${index}`,
             name: text,
             text: text,
             children: []
@@ -119,21 +135,101 @@ export function MindMap() {
     setEdges(newEdges);
   }, [mindMapData, setNodes, setEdges]);
 
+  const nodeWidth = 200; // Fixed width for nodes
+  
+  const renderRectSvgNode = ({ nodeDatum, toggleNode }: RenderCustomNodeElementFnParams) => {
+    const isLastQuestion = nodeDatum.attributes?.isLastQuestion;
+    const isAnswer = nodeDatum.attributes?.isAnswer;
+    
+    // Determine background color based on node type
+    let bgColor = '#e6f3ff'; // Default light blue
+    if (isLastQuestion) {
+      if (isAnswer) {
+        bgColor = '#ffe6e6'; // Light red for answer
+      } else {
+        bgColor = '#ffe6cc'; // Light orange for follow-up questions
+      }
+    }
+
+    // Split text into multiple lines if longer than 50 characters
+    const words = nodeDatum.name.split(' ');
+    let lines: string[] = [''];
+    let currentLine = 0;
+
+    words.forEach((word: string) => {
+      if ((lines[currentLine] + ' ' + word).length <= 50) {
+        lines[currentLine] = lines[currentLine] ? lines[currentLine] + ' ' + word : word;
+      } else {
+        currentLine++;
+        lines[currentLine] = word;
+      }
+    });
+
+    const lineHeight = 20;
+    const rectHeight = (lines.length * lineHeight) + 20; // 20px padding
+
+    return (
+      <g>
+        <rect
+          width={nodeWidth}
+          height={rectHeight}
+          x={-nodeWidth / 2}
+          y={-rectHeight / 2}
+          fill={bgColor}
+          rx={5}
+          onClick={() => {
+            toggleNode();
+            handleNodeClick(nodeDatum);
+          }}
+          style={{ cursor: 'pointer' }}
+        />
+        {lines.map((line, i) => (
+          <text
+            key={i}
+            x="0"
+            y={-rectHeight / 2 + 20 + (i * lineHeight)}
+            textAnchor="middle"
+            style={{
+              fontSize: '14px',
+              fontFamily: 'Arial',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              toggleNode();
+              handleNodeClick(nodeDatum);
+            }}
+          >
+            {line}
+          </text>
+        ))}
+      </g>
+    );
+  };
+
+  // Convert MindMapNode to RawNodeDatum
+  const convertToRawNodeDatum = (node: MindMapNode): RawNodeDatum => {
+    return {
+      name: node.name,
+      attributes: {
+        isLastQuestion: node.attributes?.isLastQuestion || false,
+        isAnswer: node.attributes?.isAnswer || false
+      },
+      children: node.children?.map(convertToRawNodeDatum) || []
+    };
+  };
+
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        fitView
-        attributionPosition="bottom-left"
-      >
-        <Controls />
-        <MiniMap />
-        <Background />
-      </ReactFlow>
+    <div style={{ width: '100%', height: '100vh' }}>
+      <Tree
+        data={convertToRawNodeDatum(data)}
+        orientation="vertical"
+        renderCustomNodeElement={renderRectSvgNode}
+        separation={{ siblings: 2, nonSiblings: 2 }}
+        translate={{ x: window.innerWidth / 2, y: 100 }}
+        nodeSize={{ x: 250, y: 150 }}
+      />
     </div>
   );
-} 
+};
+
+export default MindMap; 

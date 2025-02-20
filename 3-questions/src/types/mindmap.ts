@@ -1,3 +1,8 @@
+export interface MindMapNodeAttributes {
+  isLastQuestion?: boolean;
+  isAnswer?: boolean;
+  // ... keep any existing attributes
+}
 
 export interface MindMapNode {
   id: string;
@@ -11,4 +16,5 @@ export interface MindMapNode {
   y?: number;
   fx?: number | null;
   fy?: number | null;
+  attributes?: MindMapNodeAttributes;
 }

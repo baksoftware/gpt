@@ -19,6 +19,25 @@ export function MindMapProvider({ children }: { children: React.ReactNode }) {
   });
   const [loading, setLoading] = useState(false);
 
+  const processNode = (node: MindMapNode, isLastQuestion = false, isAnswer = false): MindMapNode => {
+    return {
+      id: node.id,
+      name: node.text || node.name,
+      text: node.text || node.name,
+      attributes: {
+        isLastQuestion,
+        isAnswer,
+      },
+      children: node.children?.map((child, index) => 
+        processNode(
+          child,
+          isLastQuestion || (node.children && index === node.children.length - 1),
+          isLastQuestion && index === 0
+        )
+      ) || []
+    };
+  };
+
   return (
     <MindMapContext.Provider value={{ mindMapData, setMindMapData, loading, setLoading }}>
       {children}
