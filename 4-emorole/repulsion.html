@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sphere Repulsion Simulation</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.173.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+      
+      // ----- Global Variables and Scene Setup -----
+      let scene, camera, renderer, controls;
+      let pointsMesh, pointsGeometry, pointsMaterial;
+      let linesMesh;
+      const numPoints = 200;
+      const positions = new Float32Array(numPoints * 3); // for BufferGeometry
+      const simulationPoints = []; // array of THREE.Vector3 for simulation
+
+      // ----- Simulation Parameters -----
+      const repulsion = 0.001; // strength of repulsive force
+      const dt = 0.01; // time step for each simulation update
+      const epsilon = 1e-5; // small term to avoid singularities
+      let frameCount = 0; // to control how often we log
+      // Calculate approximate minimum distance for optimal distribution
+      const minDist = 2 * Math.sin(Math.sqrt(2 * Math.PI / numPoints) / 2);
+      const connectionThreshold = minDist * 2.0; // Distance threshold for drawing lines
+
+      init();
+      animate();
+
+      function init() {
+        // Create the scene and set the background color.
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // Set up a Perspective Camera.
+        camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          100
+        );
+        camera.position.set(0, 0, 3);
+
+        // Create the WebGL renderer.
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add OrbitControls so you can move the camera.
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // ----- Create a solid sphere for visual reference -----
+        const sphereGeom = new THREE.SphereGeometry(0.99, 32, 32); // slightly smaller radius to avoid z-fighting
+        const sphereMaterial = new THREE.MeshBasicMaterial({
+          color: 0x000000, // black background
+          side: THREE.BackSide, // render the back side only
+        });
+        const sphere = new THREE.Mesh(sphereGeom, sphereMaterial);
+        scene.add(sphere);
+
+        // ----- Initialize the 200 points randomly on the sphere -----
+        for (let i = 0; i < numPoints; i++) {
+          // Use uniform sampling on the sphere:
+          //   u in [-1, 1] and theta in [0, 2π]
+          const u = Math.random() * 2 - 1; // cos(phi)
+          const theta = Math.random() * Math.PI * 2;
+          const r = Math.sqrt(1 - u * u);
+          const x = r * Math.cos(theta);
+          const y = r * Math.sin(theta);
+          const z = u;
+          simulationPoints.push(new THREE.Vector3(x, y, z));
+
+          // Set the vertex positions in the buffer array.
+          positions[3 * i] = x;
+          positions[3 * i + 1] = y;
+          positions[3 * i + 2] = z;
+        }
+
+        // ----- Create a BufferGeometry for the points -----
+        pointsGeometry = new THREE.BufferGeometry();
+        pointsGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+
+        // ----- Create a particle texture for a beautiful look -----
+        const sprite = generateSprite();
+
+        // ----- Create a PointsMaterial -----
+        pointsMaterial = new THREE.PointsMaterial({
+          size: 0.05,
+          map: sprite,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthTest: true,
+        });
+
+        // Create the THREE.Points mesh and add it to the scene.
+        pointsMesh = new THREE.Points(pointsGeometry, pointsMaterial);
+        scene.add(pointsMesh);
+
+        // Add lines mesh after the points mesh
+        const linesGeometry = new THREE.BufferGeometry();
+        const linesMaterial = new THREE.LineBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.2
+        });
+        linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
+        scene.add(linesMesh);
+
+        // Handle browser resize.
+        window.addEventListener("resize", onWindowResize, false);
+      }
+
+      // Helper function to generate a radial gradient sprite.
+      function generateSprite() {
+        const size = 64;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const context = canvas.getContext("2d");
+
+        // Create a radial gradient (white center, fading out to black)
+        const gradient = context.createRadialGradient(
+          size / 2,
+          size / 2,
+          0,
+          size / 2,
+          size / 2,
+          size / 2
+        );
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(0.2, "rgba(0,255,255,1)");
+        gradient.addColorStop(0.4, "rgba(0,0,64,1)");
+        gradient.addColorStop(1, "rgba(0,0,0,1)");
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, size, size);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        return texture;
+      }
+
+      // ----- The simulation step -----
+      function simulate() {
+        // Create an array of force vectors (one per point)
+        const forces = [];
+        for (let i = 0; i < numPoints; i++) {
+          forces.push(new THREE.Vector3(0, 0, 0));
+        }
+
+        // Compute pairwise repulsive forces.
+        // (Each pair is computed once and applied with opposite signs.)
+        for (let i = 0; i < numPoints; i++) {
+          for (let j = i + 1; j < numPoints; j++) {
+            const diff = new THREE.Vector3().subVectors(
+              simulationPoints[i],
+              simulationPoints[j]
+            );
+            const dist = diff.length();
+            // Force ~ repulsion / (distance^3) so that f ~ 1/(d^2)
+            const f = repulsion / (Math.pow(dist, 3) + epsilon);
+            // The force vector acting on i (and opposite on j)
+            diff.multiplyScalar(f);
+            forces[i].add(diff);
+            forces[j].sub(diff);
+          }
+        }
+
+        // Update the positions.
+        for (let i = 0; i < numPoints; i++) {
+          // Project the force onto the tangent plane of the sphere.
+          // For a point on the unit sphere, its position is also its normal.
+          const normal = simulationPoints[i].clone(); // already unit length
+          const dot = forces[i].dot(normal);
+          const tangentForce = forces[i].clone().sub(normal.multiplyScalar(dot));
+
+          // Update the position with a small step along the tangent.
+          simulationPoints[i].add(tangentForce.multiplyScalar(dt));
+
+          // Renormalize so the point stays on the sphere.
+          simulationPoints[i].normalize();
+
+          // Update the buffer geometry.
+          positions[3 * i] = simulationPoints[i].x;
+          positions[3 * i + 1] = simulationPoints[i].y;
+          positions[3 * i + 2] = simulationPoints[i].z;
+        }
+        // Let Three.js know the positions have changed.
+        pointsGeometry.attributes.position.needsUpdate = true;
+
+        // After updating positions, update the lines
+        updateLines();
+      }
+
+      // Add this new function to update the lines
+      function updateLines() {
+        const linePositions = [];
+        
+        // Check all pairs of points
+        for (let i = 0; i < numPoints; i++) {
+            for (let j = i + 1; j < numPoints; j++) {
+                const dist = simulationPoints[i].distanceTo(simulationPoints[j]);
+                if (dist < connectionThreshold) {
+                    // Add both points to create a line segment
+                    linePositions.push(simulationPoints[i].x, simulationPoints[i].y, simulationPoints[i].z);
+                    linePositions.push(simulationPoints[j].x, simulationPoints[j].y, simulationPoints[j].z);
+                }
+            }
+        }
+
+        // Update the lines geometry
+        linesMesh.geometry.dispose();
+        linesMesh.geometry = new THREE.BufferGeometry();
+        linesMesh.geometry.setAttribute('position', 
+            new THREE.Float32BufferAttribute(linePositions, 3));
+      }
+
+      // ----- Calculate total energy of the system -----
+      function calculateTotalEnergy() {
+        let energy = 0;
+        for (let i = 0; i < numPoints; i++) {
+          for (let j = i + 1; j < numPoints; j++) {
+            const diff = new THREE.Vector3().subVectors(
+              simulationPoints[i],
+              simulationPoints[j]
+            );
+            const dist = diff.length();
+            // Energy ~ repulsion / distance
+            energy += repulsion / (dist + epsilon);
+          }
+        }
+        return energy;
+      }
+
+      // ----- Animation Loop -----
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // For a smoother (faster) convergence, run several simulation steps per frame.
+        for (let i = 0; i < 10; i++) {
+          simulate();
+        }
+
+        // Log energy every 60 frames (approximately once per second)
+        frameCount++;
+        if (frameCount % 60 === 0) {
+          console.log(`Total Energy: ${calculateTotalEnergy().toFixed(6)}`);
+        }
+
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      // ----- Handle Browser Resize -----
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    </script>
+  </body>
+</html>
