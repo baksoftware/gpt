@@ -5,6 +5,85 @@
   text-align: center;
 }
 
+.App {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.App-header {
+  margin-bottom: 2rem;
+}
+
+.App-header h1 {
+  color: #1696d2;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.fertility-map {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.map-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background-color: #f9f9f9;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.legend-scale {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.data-source {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  font-size: 0.9rem;
+  color: #666;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
