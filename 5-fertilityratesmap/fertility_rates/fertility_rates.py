@@ -38,7 +38,7 @@ def fetch_fertility_rates():
             
             country_data[country_code] = {
                 'name': country_name,
-                'fertility_rate': fertility_rate,
+                'value': round(fertility_rate, 2),
                 'year': year
             }
     

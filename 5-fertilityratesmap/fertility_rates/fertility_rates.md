@@ -1,4 +1,11 @@
-# Fertility Rates Data Fetcher
+# Fertility rates map
+
+
+
+```
+curl --output fertrates.json "https://api.worldbank.org/v2/country/all/indicator/SP.DYN.TFRT.IN?format=json&mrnev=1"
+```
+
 
 This script fetches the latest available fertility rate data for all countries from the World Bank API and saves it to a JSON file.
 
