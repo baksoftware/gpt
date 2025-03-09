@@ -28,6 +28,7 @@
     "@types/react-dom": "^19.x"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
     "d3-scale": "^4.0.2",
     "react": "^19.x",
     "react-dom": "^19.x",

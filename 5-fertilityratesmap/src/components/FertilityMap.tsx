@@ -37,6 +37,7 @@ const FertilityMap: React.FC = () => {
       .then(data => {
         setData(data);
         setLoading(false);
+        console.log("loading data")
       })
       .catch(error => {
         console.error('Error loading fertility data:', error);
@@ -98,7 +99,7 @@ const FertilityMap: React.FC = () => {
                         if (hasData) {
                           setTooltipContent(`${countryData.name}: ${countryData.value} (${countryData.year})`);
                         } else {
-                          setTooltipContent(`${geo.properties.name}: No data`);
+                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2}: No data`);
                         }
                       }}
                       onMouseLeave={() => {
