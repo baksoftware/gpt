@@ -150,3 +150,63 @@ footer {
 .read-the-docs {
   color: #888;
 }
+
+.resolution-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.resolution-toggle button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #1696d2;
+  color: #1696d2;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resolution-toggle button:hover {
+  background-color: #1696d2;
+  color: white;
+}
+
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.map-loading-spinner {
+  background-color: rgba(22, 150, 210, 0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.resolution-toggle button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resolution-indicator {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 4px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 5px;
+  border-radius: 2px;
+}

@@ -36,6 +36,10 @@ const FertilityMap: React.FC = () => {
   const [loading, setLoading] = useState(true);
   // Create a mapping from alpha2 codes to numeric codes for lookup
   const [_alpha2ToNumeric, setAlpha2ToNumeric] = useState<Record<string, string>>({});
+  // Add state for map resolution
+  const [mapResolution, setMapResolution] = useState<'50m' | '110m'>('50m');
+  // Add state for map loading
+  const [mapLoading, setMapLoading] = useState(false);
 
   useEffect(() => {
     fetch('/fertility_rates.json')
@@ -59,6 +63,16 @@ const FertilityMap: React.FC = () => {
       });
   }, []);
 
+  // Toggle map resolution
+  const toggleMapResolution = () => {
+    setMapLoading(true);
+    // Short timeout to allow the loading state to be shown
+    setTimeout(() => {
+      setMapResolution(prev => prev === '50m' ? '110m' : '50m');
+      setMapLoading(false);
+    }, 300);
+  };
+
   // Color scale for the map
   const colorScale = scaleQuantize<string>()
     .domain([1, 8])
@@ -79,11 +93,25 @@ const FertilityMap: React.FC = () => {
 
   return (
     <div className="fertility-map">
+      <h2>World Fertility Rates</h2>
+      <div className="resolution-toggle">
+        <button onClick={toggleMapResolution} disabled={mapLoading}>
+          {mapLoading ? 'Loading...' : mapResolution === '50m' ? 'Switch to Low Resolution' : 'Switch to High Resolution'}
+        </button>
+        <div className="resolution-indicator">
+          Current: {mapResolution === '50m' ? 'High Resolution (50m)' : 'Low Resolution (110m)'}
+        </div>
+      </div>
       <div className="map-container">
+        {mapLoading && (
+          <div className="map-loading-overlay">
+            <div className="map-loading-spinner">Loading map...</div>
+          </div>
+        )}
         <ComposableMap
           projectionConfig={{
             rotate: [-10, 0, 0],
-            scale: 200
+            scale: 147
           }}
           width={1000}
           height={600}
@@ -93,10 +121,10 @@ const FertilityMap: React.FC = () => {
           }}
         >
           <ZoomableGroup>
-            <Geographies geography="/world_map.json">
+            <Geographies geography={`/world_map_${mapResolution}.json`}>
               {({ geographies }) =>
                 geographies.map(geo => {
-                  const numericCode = parseInt(geo.id);
+                  const numericCode = geo.id;
                   const countryData = data?.data[numericCode];
                   const hasData = countryData !== undefined;
                   return (
@@ -105,7 +133,7 @@ const FertilityMap: React.FC = () => {
                       geography={geo}
                       fill={hasData ? colorScale(countryData.value) : "#F5F4F6"}
                       stroke="#D6D6DA"
-                      strokeWidth={0.5}
+                      strokeWidth={0.1}
                       style={{
                         default: { outline: "none" },
                         hover: { outline: "none", fill: hasData ? "#F53" : "#F5F4F6" },
@@ -136,7 +164,7 @@ const FertilityMap: React.FC = () => {
           content={tooltipContent}
           place="top"
         />
-        
+         
         <div className="legend">
           <div className="legend-title">Fertility Rate (births per woman)</div>
           <div className="legend-scale">
@@ -159,7 +187,7 @@ const FertilityMap: React.FC = () => {
             <span style={{ marginLeft: 'auto' }}>8</span>
           </div>
         </div>
-        
+         
         <div className="data-source">
           Source: {data?.metadata.source}, {data?.metadata.date_retrieved}
         </div>
