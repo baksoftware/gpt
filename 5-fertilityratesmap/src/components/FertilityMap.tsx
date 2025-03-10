@@ -35,7 +35,7 @@ const FertilityMap: React.FC = () => {
   const [tooltipContent, setTooltipContent] = useState("");
   const [loading, setLoading] = useState(true);
   // Create a mapping from alpha2 codes to numeric codes for lookup
-  const [alpha2ToNumeric, setAlpha2ToNumeric] = useState<Record<string, string>>({});
+  const [_alpha2ToNumeric, setAlpha2ToNumeric] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch('/fertility_rates.json')
