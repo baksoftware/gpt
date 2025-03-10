@@ -210,3 +210,26 @@ footer {
   padding: 2px 5px;
   border-radius: 2px;
 }
+
+.country-names-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.country-names-toggle button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #1696d2;
+  color: #1696d2;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.country-names-toggle button:hover {
+  background-color: #1696d2;
+  color: white;
+}

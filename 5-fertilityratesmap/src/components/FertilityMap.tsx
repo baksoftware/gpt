@@ -3,10 +3,12 @@ import {
   ComposableMap, 
   Geographies, 
   Geography,
-  ZoomableGroup
+  ZoomableGroup,
+  Marker
 } from 'react-simple-maps';
 import { scaleQuantize } from 'd3-scale';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { geoCentroid } from 'd3-geo';
 
 // Updated interface to match the new data structure
 interface FertilityData {
@@ -40,6 +42,8 @@ const FertilityMap: React.FC = () => {
   const [mapResolution, setMapResolution] = useState<'50m' | '110m'>('50m');
   // Add state for map loading
   const [mapLoading, setMapLoading] = useState(false);
+  // Add state for showing country names
+  const [showCountryNames, setShowCountryNames] = useState(true);
 
   useEffect(() => {
     fetch('/fertility_rates.json')
@@ -73,6 +77,11 @@ const FertilityMap: React.FC = () => {
     }, 300);
   };
 
+  // Toggle country names visibility
+  const toggleCountryNames = () => {
+    setShowCountryNames(prev => !prev);
+  };
+
   // Color scale for the map
   const colorScale = scaleQuantize<string>()
     .domain([1, 8])
@@ -102,6 +111,11 @@ const FertilityMap: React.FC = () => {
           Current: {mapResolution === '50m' ? 'High Resolution (50m)' : 'Low Resolution (110m)'}
         </div>
       </div>
+      <div className="country-names-toggle">
+        <button onClick={toggleCountryNames}>
+          {showCountryNames ? 'Hide Country Names' : 'Show Country Names'}
+        </button>
+      </div>
       <div className="map-container">
         {mapLoading && (
           <div className="map-loading-overlay">
@@ -127,32 +141,54 @@ const FertilityMap: React.FC = () => {
                   const numericCode = geo.id;
                   const countryData = data?.data[numericCode];
                   const hasData = countryData !== undefined;
+                  const centroid = geoCentroid(geo);
+                  // Remove any text in parentheses from the country name
+                  const rawCountryName = hasData ? countryData.english_name : geo.properties.name;
+                  const countryName = rawCountryName.replace(/\s*\([^)]*\)\s*/g, '');
+                  
                   return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill={hasData ? colorScale(countryData.value) : "#F5F4F6"}
-                      stroke="#D6D6DA"
-                      strokeWidth={0.1}
-                      style={{
-                        default: { outline: "none" },
-                        hover: { outline: "none", fill: hasData ? "#F53" : "#F5F4F6" },
-                        pressed: { outline: "none" }
-                      }}
-                      onMouseEnter={() => {
-                        if (hasData) {
-                          setTooltipContent(
-                            `${countryData.english_name} (${countryData.alpha2_code})\n${countryData.value} (${countryData.year})`
-                          );
-                        } else {
-                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2 || ''}\nNo data`);
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        setTooltipContent("");
-                      }}
-                      data-tooltip-id="geo-tooltip"
-                    />
+                    <React.Fragment key={geo.rsmKey}>
+                      <Geography
+                        geography={geo}
+                        fill={hasData ? colorScale(countryData.value) : "#F5F4F6"}
+                        stroke="#D6D6DA"
+                        strokeWidth={0.1}
+                        style={{
+                          default: { outline: "none" },
+                          hover: { outline: "none", fill: hasData ? "#F53" : "#F5F4F6" },
+                          pressed: { outline: "none" }
+                        }}
+                        onMouseEnter={() => {
+                          if (hasData) {
+                            setTooltipContent(
+                              `${countryData.english_name} (${countryData.alpha2_code})\n${countryData.value} (${countryData.year})`
+                            );
+                          } else {
+                            setTooltipContent(`${geo.properties.name} ${geo.properties.iso2 || ''}\nNo data`);
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          setTooltipContent("");
+                        }}
+                        data-tooltip-id="geo-tooltip"
+                      />
+                      {showCountryNames && centroid[0] && centroid[1] && (
+                        <Marker coordinates={centroid}>
+                          <text
+                            textAnchor="middle"
+                            style={{
+                              fontFamily: "Arial",
+                              fontSize: mapResolution === '50m' ? "4px" : "6px",
+                              fontWeight: "bold",
+                              fill: "#000",
+                              pointerEvents: "none"
+                            }}
+                          >
+                            {countryName}
+                          </text>
+                        </Marker>
+                      )}
+                    </React.Fragment>
                   );
                 })
               }
