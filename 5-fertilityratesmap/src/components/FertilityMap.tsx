@@ -142,10 +142,10 @@ const FertilityMap: React.FC = () => {
                       onMouseEnter={() => {
                         if (hasData) {
                           setTooltipContent(
-                            `${countryData.english_name} (${countryData.alpha2_code}): ${countryData.value} (${countryData.year})`
+                            `${countryData.english_name} (${countryData.alpha2_code})\n${countryData.value} (${countryData.year})`
                           );
                         } else {
-                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2 || ''}: No data`);
+                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2 || ''}\nNo data`);
                         }
                       }}
                       onMouseLeave={() => {
@@ -163,6 +163,11 @@ const FertilityMap: React.FC = () => {
           id="geo-tooltip" 
           content={tooltipContent}
           place="top"
+          style={{
+            whiteSpace: 'pre-line',
+            lineHeight: '1.5',
+            padding: '8px 12px'
+          }}
         />
          
         <div className="legend">
