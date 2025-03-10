@@ -8,10 +8,14 @@ import {
 import { scaleQuantize } from 'd3-scale';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
+// Updated interface to match the new data structure
 interface FertilityData {
   name: string;
+  english_name: string;
+  alpha2_code: string;
   value: number;
   year: string;
+  id?: string;
 }
 
 interface FertilityRatesData {
@@ -22,7 +26,7 @@ interface FertilityRatesData {
     description: string;
   };
   data: {
-    [key: string]: FertilityData;
+    [key: string]: FertilityData; // Now key is numeric code
   };
 }
 
@@ -30,14 +34,24 @@ const FertilityMap: React.FC = () => {
   const [data, setData] = useState<FertilityRatesData | null>(null);
   const [tooltipContent, setTooltipContent] = useState("");
   const [loading, setLoading] = useState(true);
+  // Create a mapping from alpha2 codes to numeric codes for lookup
+  const [alpha2ToNumeric, setAlpha2ToNumeric] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch('/fertility_rates.json')
       .then(response => response.json())
-      .then(data => {
-        setData(data);
+      .then((fetchedData: FertilityRatesData) => {
+        setData(fetchedData);
+        
+        // Create a mapping from alpha2 codes to numeric codes
+        const mapping: Record<string, string> = {};
+        Object.entries(fetchedData.data).forEach(([numericCode, countryData]) => {
+          mapping[countryData.alpha2_code] = numericCode;
+        });
+        setAlpha2ToNumeric(mapping);
+        
         setLoading(false);
-        console.log("loading data")
+        console.log("Data loaded successfully");
       })
       .catch(error => {
         console.error('Error loading fertility data:', error);
@@ -79,10 +93,11 @@ const FertilityMap: React.FC = () => {
             <Geographies geography="/world_map.json">
               {({ geographies }) =>
                 geographies.map(geo => {
-                  const countryCode = geo.id;
-                  const countryData = data?.data[countryCode];
-                  const hasData = countryData && countryData.value;
-                  
+                  console.log(geo)
+
+                  const numericCode = geo.id;
+                  const countryData = data?.data[numericCode];
+                  const hasData = countryData !== undefined;
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -97,9 +112,11 @@ const FertilityMap: React.FC = () => {
                       }}
                       onMouseEnter={() => {
                         if (hasData) {
-                          setTooltipContent(`${countryData.name}: ${countryData.value} (${countryData.year})`);
+                          setTooltipContent(
+                            `${countryData.english_name} (${countryData.alpha2_code}): ${countryData.value} (${countryData.year})`
+                          );
                         } else {
-                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2}: No data`);
+                          setTooltipContent(`${geo.properties.name} ${geo.properties.iso2 || ''}: No data`);
                         }
                       }}
                       onMouseLeave={() => {
