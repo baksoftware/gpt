@@ -6,1480 +6,1308 @@
     "description": "Total fertility rate represents the number of children that would be born to a woman if she were to live to the end of her childbearing years and bear children in accordance with age-specific fertility rates of the specified year."
   },
   "data": {
-    "4": {
-      "name": "Afghanistan",
-      "english_name": "Afghanistan",
-      "alpha2_code": "AF",
-      "value": 4.52,
+    "ZH": {
+      "name": "Africa Eastern and Southern",
+      "value": 4.28,
       "year": "2022"
     },
-    "8": {
-      "name": "Albania",
-      "english_name": "Albania",
-      "alpha2_code": "AL",
-      "value": 1.38,
+    "ZI": {
+      "name": "Africa Western and Central",
+      "value": 4.9,
       "year": "2022"
     },
-    "12": {
-      "name": "Algeria",
-      "english_name": "Algeria",
-      "alpha2_code": "DZ",
-      "value": 2.83,
+    "1A": {
+      "name": "Arab World",
+      "value": 3.11,
       "year": "2022"
     },
-    "20": {
-      "name": "Andorra",
-      "english_name": "Andorra",
-      "alpha2_code": "AD",
-      "value": 1.27,
-      "year": "2010"
-    },
-    "24": {
-      "name": "Angola",
-      "english_name": "Angola",
-      "alpha2_code": "AO",
-      "value": 5.21,
+    "S3": {
+      "name": "Caribbean small states",
+      "value": 1.98,
       "year": "2022"
     },
-    "28": {
-      "name": "Antigua and Barbuda",
-      "english_name": "Antigua and Barbuda",
-      "alpha2_code": "AG",
-      "value": 1.58,
-      "year": "2022"
-    },
-    "32": {
-      "name": "Argentina",
-      "english_name": "Argentina",
-      "alpha2_code": "AR",
-      "value": 1.88,
-      "year": "2022"
-    },
-    "51": {
-      "name": "Armenia",
-      "english_name": "Armenia",
-      "alpha2_code": "AM",
-      "value": 1.57,
-      "year": "2022"
-    },
-    "533": {
-      "name": "Aruba",
-      "english_name": "Aruba",
-      "alpha2_code": "AW",
-      "value": 1.18,
-      "year": "2022"
-    },
-    "36": {
-      "name": "Australia",
-      "english_name": "Australia",
-      "alpha2_code": "AU",
-      "value": 1.63,
-      "year": "2022"
-    },
-    "40": {
-      "name": "Austria",
-      "english_name": "Austria",
-      "alpha2_code": "AT",
-      "value": 1.41,
-      "year": "2022"
-    },
-    "31": {
-      "name": "Azerbaijan",
-      "english_name": "Azerbaijan",
-      "alpha2_code": "AZ",
-      "value": 1.67,
-      "year": "2022"
-    },
-    "44": {
-      "name": "Bahamas, The",
-      "english_name": "Bahamas (the)",
-      "alpha2_code": "BS",
-      "value": 1.38,
-      "year": "2022"
-    },
-    "48": {
-      "name": "Bahrain",
-      "english_name": "Bahrain",
-      "alpha2_code": "BH",
-      "value": 1.8,
-      "year": "2022"
-    },
-    "50": {
-      "name": "Bangladesh",
-      "english_name": "Bangladesh",
-      "alpha2_code": "BD",
-      "value": 1.95,
-      "year": "2022"
-    },
-    "52": {
-      "name": "Barbados",
-      "english_name": "Barbados",
-      "alpha2_code": "BB",
-      "value": 1.63,
-      "year": "2022"
-    },
-    "112": {
-      "name": "Belarus",
-      "english_name": "Belarus",
-      "alpha2_code": "BY",
+    "B8": {
+      "name": "Central Europe and the Baltics",
       "value": 1.5,
       "year": "2022"
     },
-    "56": {
-      "name": "Belgium",
-      "english_name": "Belgium",
-      "alpha2_code": "BE",
-      "value": 1.53,
+    "V2": {
+      "name": "Early-demographic dividend",
+      "value": 2.33,
       "year": "2022"
     },
-    "84": {
-      "name": "Belize",
-      "english_name": "Belize",
-      "alpha2_code": "BZ",
-      "value": 1.99,
-      "year": "2022"
-    },
-    "204": {
-      "name": "Benin",
-      "english_name": "Benin",
-      "alpha2_code": "BJ",
-      "value": 4.89,
-      "year": "2022"
-    },
-    "60": {
-      "name": "Bermuda",
-      "english_name": "Bermuda",
-      "alpha2_code": "BM",
-      "value": 1.3,
-      "year": "2022"
-    },
-    "64": {
-      "name": "Bhutan",
-      "english_name": "Bhutan",
-      "alpha2_code": "BT",
-      "value": 1.4,
-      "year": "2022"
-    },
-    "68": {
-      "name": "Bolivia",
-      "english_name": "Bolivia (Plurinational State of)",
-      "alpha2_code": "BO",
-      "value": 2.58,
-      "year": "2022"
-    },
-    "70": {
-      "name": "Bosnia and Herzegovina",
-      "english_name": "Bosnia and Herzegovina",
-      "alpha2_code": "BA",
-      "value": 1.35,
-      "year": "2022"
-    },
-    "72": {
-      "name": "Botswana",
-      "english_name": "Botswana",
-      "alpha2_code": "BW",
-      "value": 2.75,
-      "year": "2022"
-    },
-    "76": {
-      "name": "Brazil",
-      "english_name": "Brazil",
-      "alpha2_code": "BR",
-      "value": 1.63,
-      "year": "2022"
-    },
-    "92": {
-      "name": "British Virgin Islands",
-      "english_name": "Virgin Islands (British)",
-      "alpha2_code": "VG",
-      "value": 1.01,
-      "year": "2022"
-    },
-    "96": {
-      "name": "Brunei Darussalam",
-      "english_name": "Brunei Darussalam",
-      "alpha2_code": "BN",
-      "value": 1.76,
-      "year": "2022"
-    },
-    "100": {
-      "name": "Bulgaria",
-      "english_name": "Bulgaria",
-      "alpha2_code": "BG",
-      "value": 1.78,
-      "year": "2022"
-    },
-    "854": {
-      "name": "Burkina Faso",
-      "english_name": "Burkina Faso",
-      "alpha2_code": "BF",
-      "value": 4.67,
-      "year": "2022"
-    },
-    "108": {
-      "name": "Burundi",
-      "english_name": "Burundi",
-      "alpha2_code": "BI",
-      "value": 4.98,
-      "year": "2022"
-    },
-    "132": {
-      "name": "Cabo Verde",
-      "english_name": "Cabo Verde",
-      "alpha2_code": "CV",
-      "value": 1.88,
-      "year": "2022"
-    },
-    "116": {
-      "name": "Cambodia",
-      "english_name": "Cambodia",
-      "alpha2_code": "KH",
-      "value": 2.32,
-      "year": "2022"
-    },
-    "120": {
-      "name": "Cameroon",
-      "english_name": "Cameroon",
-      "alpha2_code": "CM",
-      "value": 4.38,
-      "year": "2022"
-    },
-    "124": {
-      "name": "Canada",
-      "english_name": "Canada",
-      "alpha2_code": "CA",
-      "value": 1.33,
-      "year": "2022"
-    },
-    "140": {
-      "name": "Central African Republic",
-      "english_name": "Central African Republic (the)",
-      "alpha2_code": "CF",
-      "value": 5.92,
-      "year": "2022"
-    },
-    "148": {
-      "name": "Chad",
-      "english_name": "Chad",
-      "alpha2_code": "TD",
-      "value": 6.21,
-      "year": "2022"
-    },
-    "152": {
-      "name": "Chile",
-      "english_name": "Chile",
-      "alpha2_code": "CL",
-      "value": 1.54,
-      "year": "2022"
-    },
-    "156": {
-      "name": "China",
-      "english_name": "China",
-      "alpha2_code": "CN",
-      "value": 1.18,
-      "year": "2022"
-    },
-    "170": {
-      "name": "Colombia",
-      "english_name": "Colombia",
-      "alpha2_code": "CO",
-      "value": 1.69,
-      "year": "2022"
-    },
-    "174": {
-      "name": "Comoros",
-      "english_name": "Comoros (the)",
-      "alpha2_code": "KM",
-      "value": 3.91,
-      "year": "2022"
-    },
-    "180": {
-      "name": "Congo, Dem. Rep.",
-      "english_name": "Congo (the Democratic Republic of the)",
-      "alpha2_code": "CD",
-      "value": 6.11,
-      "year": "2022"
-    },
-    "178": {
-      "name": "Congo, Rep.",
-      "english_name": "Congo (the)",
-      "alpha2_code": "CG",
-      "value": 4.09,
-      "year": "2022"
-    },
-    "188": {
-      "name": "Costa Rica",
-      "english_name": "Costa Rica",
-      "alpha2_code": "CR",
-      "value": 1.52,
-      "year": "2022"
-    },
-    "384": {
-      "name": "Cote d'Ivoire",
-      "english_name": "Côte d'Ivoire",
-      "alpha2_code": "CI",
-      "value": 4.34,
-      "year": "2022"
-    },
-    "191": {
-      "name": "Croatia",
-      "english_name": "Croatia",
-      "alpha2_code": "HR",
-      "value": 1.53,
-      "year": "2022"
-    },
-    "192": {
-      "name": "Cuba",
-      "english_name": "Cuba",
-      "alpha2_code": "CU",
-      "value": 1.45,
-      "year": "2022"
-    },
-    "531": {
-      "name": "Curacao",
-      "english_name": "Curaçao",
-      "alpha2_code": "CW",
-      "value": 1.3,
-      "year": "2022"
-    },
-    "196": {
-      "name": "Cyprus",
-      "english_name": "Cyprus",
-      "alpha2_code": "CY",
-      "value": 1.31,
-      "year": "2022"
-    },
-    "203": {
-      "name": "Czechia",
-      "english_name": "Czechia",
-      "alpha2_code": "CZ",
-      "value": 1.62,
-      "year": "2022"
-    },
-    "208": {
-      "name": "Denmark",
-      "english_name": "Denmark",
-      "alpha2_code": "DK",
-      "value": 1.55,
-      "year": "2022"
-    },
-    "262": {
-      "name": "Djibouti",
-      "english_name": "Djibouti",
-      "alpha2_code": "DJ",
-      "value": 2.76,
-      "year": "2022"
-    },
-    "212": {
-      "name": "Dominica",
-      "english_name": "Dominica",
-      "alpha2_code": "DM",
-      "value": 1.59,
-      "year": "2022"
-    },
-    "214": {
-      "name": "Dominican Republic",
-      "english_name": "Dominican Republic (the)",
-      "alpha2_code": "DO",
-      "value": 2.25,
-      "year": "2022"
-    },
-    "218": {
-      "name": "Ecuador",
-      "english_name": "Ecuador",
-      "alpha2_code": "EC",
-      "value": 2.0,
-      "year": "2022"
-    },
-    "818": {
-      "name": "Egypt, Arab Rep.",
-      "english_name": "Egypt",
-      "alpha2_code": "EG",
-      "value": 2.88,
-      "year": "2022"
-    },
-    "222": {
-      "name": "El Salvador",
-      "english_name": "El Salvador",
-      "alpha2_code": "SV",
-      "value": 1.78,
-      "year": "2022"
-    },
-    "226": {
-      "name": "Equatorial Guinea",
-      "english_name": "Equatorial Guinea",
-      "alpha2_code": "GQ",
-      "value": 4.17,
-      "year": "2022"
-    },
-    "232": {
-      "name": "Eritrea",
-      "english_name": "Eritrea",
-      "alpha2_code": "ER",
-      "value": 3.79,
-      "year": "2022"
-    },
-    "233": {
-      "name": "Estonia",
-      "english_name": "Estonia",
-      "alpha2_code": "EE",
-      "value": 1.41,
-      "year": "2022"
-    },
-    "748": {
-      "name": "Eswatini",
-      "english_name": "Eswatini",
-      "alpha2_code": "SZ",
-      "value": 2.79,
-      "year": "2022"
-    },
-    "231": {
-      "name": "Ethiopia",
-      "english_name": "Ethiopia",
-      "alpha2_code": "ET",
-      "value": 4.06,
-      "year": "2022"
-    },
-    "234": {
-      "name": "Faroe Islands",
-      "english_name": "Faroe Islands (the)",
-      "alpha2_code": "FO",
-      "value": 2.05,
-      "year": "2022"
-    },
-    "242": {
-      "name": "Fiji",
-      "english_name": "Fiji",
-      "alpha2_code": "FJ",
-      "value": 2.46,
-      "year": "2022"
-    },
-    "246": {
-      "name": "Finland",
-      "english_name": "Finland",
-      "alpha2_code": "FI",
-      "value": 1.32,
-      "year": "2022"
-    },
-    "250": {
-      "name": "France",
-      "english_name": "France",
-      "alpha2_code": "FR",
-      "value": 1.79,
-      "year": "2022"
-    },
-    "258": {
-      "name": "French Polynesia",
-      "english_name": "French Polynesia",
-      "alpha2_code": "PF",
-      "value": 1.69,
-      "year": "2022"
-    },
-    "266": {
-      "name": "Gabon",
-      "english_name": "Gabon",
-      "alpha2_code": "GA",
-      "value": 3.46,
-      "year": "2022"
-    },
-    "270": {
-      "name": "Gambia, The",
-      "english_name": "Gambia (the)",
-      "alpha2_code": "GM",
-      "value": 4.59,
-      "year": "2022"
-    },
-    "268": {
-      "name": "Georgia",
-      "english_name": "Georgia",
-      "alpha2_code": "GE",
-      "value": 2.06,
-      "year": "2022"
-    },
-    "276": {
-      "name": "Germany",
-      "english_name": "Germany",
-      "alpha2_code": "DE",
-      "value": 1.46,
-      "year": "2022"
-    },
-    "288": {
-      "name": "Ghana",
-      "english_name": "Ghana",
-      "alpha2_code": "GH",
-      "value": 3.51,
-      "year": "2022"
-    },
-    "292": {
-      "name": "Gibraltar",
-      "english_name": "Gibraltar",
-      "alpha2_code": "GI",
-      "value": 1.84,
-      "year": "2022"
-    },
-    "300": {
-      "name": "Greece",
-      "english_name": "Greece",
-      "alpha2_code": "GR",
-      "value": 1.43,
-      "year": "2022"
-    },
-    "304": {
-      "name": "Greenland",
-      "english_name": "Greenland",
-      "alpha2_code": "GL",
-      "value": 1.84,
-      "year": "2022"
-    },
-    "308": {
-      "name": "Grenada",
-      "english_name": "Grenada",
-      "alpha2_code": "GD",
-      "value": 1.99,
-      "year": "2022"
-    },
-    "316": {
-      "name": "Guam",
-      "english_name": "Guam",
-      "alpha2_code": "GU",
-      "value": 2.55,
-      "year": "2022"
-    },
-    "320": {
-      "name": "Guatemala",
-      "english_name": "Guatemala",
-      "alpha2_code": "GT",
-      "value": 2.35,
-      "year": "2022"
-    },
-    "324": {
-      "name": "Guinea",
-      "english_name": "Guinea",
-      "alpha2_code": "GN",
-      "value": 4.3,
-      "year": "2022"
-    },
-    "624": {
-      "name": "Guinea-Bissau",
-      "english_name": "Guinea-Bissau",
-      "alpha2_code": "GW",
-      "value": 3.92,
-      "year": "2022"
-    },
-    "328": {
-      "name": "Guyana",
-      "english_name": "Guyana",
-      "alpha2_code": "GY",
-      "value": 2.37,
-      "year": "2022"
-    },
-    "332": {
-      "name": "Haiti",
-      "english_name": "Haiti",
-      "alpha2_code": "HT",
-      "value": 2.77,
-      "year": "2022"
-    },
-    "340": {
-      "name": "Honduras",
-      "english_name": "Honduras",
-      "alpha2_code": "HN",
-      "value": 2.34,
-      "year": "2022"
-    },
-    "344": {
-      "name": "Hong Kong SAR, China",
-      "english_name": "Hong Kong",
-      "alpha2_code": "HK",
-      "value": 0.7,
-      "year": "2022"
-    },
-    "348": {
-      "name": "Hungary",
-      "english_name": "Hungary",
-      "alpha2_code": "HU",
-      "value": 1.52,
-      "year": "2022"
-    },
-    "352": {
-      "name": "Iceland",
-      "english_name": "Iceland",
-      "alpha2_code": "IS",
-      "value": 1.59,
-      "year": "2022"
-    },
-    "356": {
-      "name": "India",
-      "english_name": "India",
-      "alpha2_code": "IN",
-      "value": 2.01,
-      "year": "2022"
-    },
-    "360": {
-      "name": "Indonesia",
-      "english_name": "Indonesia",
-      "alpha2_code": "ID",
-      "value": 2.15,
-      "year": "2022"
-    },
-    "364": {
-      "name": "Iran, Islamic Rep.",
-      "english_name": "Iran (Islamic Republic of)",
-      "alpha2_code": "IR",
-      "value": 1.68,
-      "year": "2022"
-    },
-    "368": {
-      "name": "Iraq",
-      "english_name": "Iraq",
-      "alpha2_code": "IQ",
-      "value": 3.44,
-      "year": "2022"
-    },
-    "372": {
-      "name": "Ireland",
-      "english_name": "Ireland",
-      "alpha2_code": "IE",
-      "value": 1.7,
-      "year": "2022"
-    },
-    "833": {
-      "name": "Isle of Man",
-      "english_name": "Isle of Man",
-      "alpha2_code": "IM",
-      "value": 1.57,
-      "year": "2022"
-    },
-    "376": {
-      "name": "Israel",
-      "english_name": "Israel",
-      "alpha2_code": "IL",
-      "value": 2.89,
-      "year": "2022"
-    },
-    "380": {
-      "name": "Italy",
-      "english_name": "Italy",
-      "alpha2_code": "IT",
-      "value": 1.24,
-      "year": "2022"
-    },
-    "388": {
-      "name": "Jamaica",
-      "english_name": "Jamaica",
-      "alpha2_code": "JM",
-      "value": 1.34,
-      "year": "2022"
-    },
-    "392": {
-      "name": "Japan",
-      "english_name": "Japan",
-      "alpha2_code": "JP",
-      "value": 1.26,
-      "year": "2022"
-    },
-    "400": {
-      "name": "Jordan",
-      "english_name": "Jordan",
-      "alpha2_code": "JO",
-      "value": 2.79,
-      "year": "2022"
-    },
-    "398": {
-      "name": "Kazakhstan",
-      "english_name": "Kazakhstan",
-      "alpha2_code": "KZ",
-      "value": 3.05,
-      "year": "2022"
-    },
-    "404": {
-      "name": "Kenya",
-      "english_name": "Kenya",
-      "alpha2_code": "KE",
-      "value": 3.3,
-      "year": "2022"
-    },
-    "296": {
-      "name": "Kiribati",
-      "english_name": "Kiribati",
-      "alpha2_code": "KI",
-      "value": 3.27,
-      "year": "2022"
-    },
-    "408": {
-      "name": "Korea, Dem. People's Rep.",
-      "english_name": "Korea (the Democratic People's Republic of)",
-      "alpha2_code": "KP",
-      "value": 1.79,
-      "year": "2022"
-    },
-    "410": {
-      "name": "Korea, Rep.",
-      "english_name": "Korea (the Republic of)",
-      "alpha2_code": "KR",
-      "value": 0.78,
-      "year": "2022"
-    },
-    "414": {
-      "name": "Kuwait",
-      "english_name": "Kuwait",
-      "alpha2_code": "KW",
-      "value": 2.09,
-      "year": "2022"
-    },
-    "417": {
-      "name": "Kyrgyz Republic",
-      "english_name": "Kyrgyzstan",
-      "alpha2_code": "KG",
-      "value": 2.8,
-      "year": "2022"
-    },
-    "418": {
-      "name": "Lao PDR",
-      "english_name": "Lao People's Democratic Republic (the)",
-      "alpha2_code": "LA",
-      "value": 2.45,
-      "year": "2022"
-    },
-    "428": {
-      "name": "Latvia",
-      "english_name": "Latvia",
-      "alpha2_code": "LV",
-      "value": 1.47,
-      "year": "2022"
-    },
-    "422": {
-      "name": "Lebanon",
-      "english_name": "Lebanon",
-      "alpha2_code": "LB",
-      "value": 2.08,
-      "year": "2022"
-    },
-    "426": {
-      "name": "Lesotho",
-      "english_name": "Lesotho",
-      "alpha2_code": "LS",
-      "value": 2.98,
-      "year": "2022"
-    },
-    "430": {
-      "name": "Liberia",
-      "english_name": "Liberia",
-      "alpha2_code": "LR",
-      "value": 4.02,
-      "year": "2022"
-    },
-    "434": {
-      "name": "Libya",
-      "english_name": "Libya",
-      "alpha2_code": "LY",
-      "value": 2.4,
-      "year": "2022"
-    },
-    "438": {
-      "name": "Liechtenstein",
-      "english_name": "Liechtenstein",
-      "alpha2_code": "LI",
-      "value": 1.47,
-      "year": "2022"
-    },
-    "440": {
-      "name": "Lithuania",
-      "english_name": "Lithuania",
-      "alpha2_code": "LT",
-      "value": 1.27,
-      "year": "2022"
-    },
-    "442": {
-      "name": "Luxembourg",
-      "english_name": "Luxembourg",
-      "alpha2_code": "LU",
-      "value": 1.31,
-      "year": "2022"
-    },
-    "446": {
-      "name": "Macao SAR, China",
-      "english_name": "Macao",
-      "alpha2_code": "MO",
-      "value": 1.11,
-      "year": "2022"
-    },
-    "450": {
-      "name": "Madagascar",
-      "english_name": "Madagascar",
-      "alpha2_code": "MG",
-      "value": 3.79,
-      "year": "2022"
-    },
-    "454": {
-      "name": "Malawi",
-      "english_name": "Malawi",
-      "alpha2_code": "MW",
-      "value": 3.85,
-      "year": "2022"
-    },
-    "458": {
-      "name": "Malaysia",
-      "english_name": "Malaysia",
-      "alpha2_code": "MY",
-      "value": 1.79,
-      "year": "2022"
-    },
-    "462": {
-      "name": "Maldives",
-      "english_name": "Maldives",
-      "alpha2_code": "MV",
-      "value": 1.68,
-      "year": "2022"
-    },
-    "466": {
-      "name": "Mali",
-      "english_name": "Mali",
-      "alpha2_code": "ML",
-      "value": 5.87,
-      "year": "2022"
-    },
-    "470": {
-      "name": "Malta",
-      "english_name": "Malta",
-      "alpha2_code": "MT",
-      "value": 1.15,
-      "year": "2022"
-    },
-    "584": {
-      "name": "Marshall Islands",
-      "english_name": "Marshall Islands (the)",
-      "alpha2_code": "MH",
-      "value": 2.67,
-      "year": "2022"
-    },
-    "478": {
-      "name": "Mauritania",
-      "english_name": "Mauritania",
-      "alpha2_code": "MR",
-      "value": 4.34,
-      "year": "2022"
-    },
-    "480": {
-      "name": "Mauritius",
-      "english_name": "Mauritius",
-      "alpha2_code": "MU",
-      "value": 1.32,
-      "year": "2022"
-    },
-    "484": {
-      "name": "Mexico",
-      "english_name": "Mexico",
-      "alpha2_code": "MX",
-      "value": 1.8,
-      "year": "2022"
-    },
-    "583": {
-      "name": "Micronesia, Fed. Sts.",
-      "english_name": "Micronesia (Federated States of)",
-      "alpha2_code": "FM",
-      "value": 2.67,
-      "year": "2022"
-    },
-    "498": {
-      "name": "Moldova",
-      "english_name": "Moldova (the Republic of)",
-      "alpha2_code": "MD",
-      "value": 1.8,
-      "year": "2022"
-    },
-    "496": {
-      "name": "Mongolia",
-      "english_name": "Mongolia",
-      "alpha2_code": "MN",
-      "value": 2.77,
-      "year": "2022"
-    },
-    "499": {
-      "name": "Montenegro",
-      "english_name": "Montenegro",
-      "alpha2_code": "ME",
-      "value": 1.8,
-      "year": "2022"
-    },
-    "504": {
-      "name": "Morocco",
-      "english_name": "Morocco",
-      "alpha2_code": "MA",
-      "value": 2.3,
-      "year": "2022"
-    },
-    "508": {
-      "name": "Mozambique",
-      "english_name": "Mozambique",
-      "alpha2_code": "MZ",
-      "value": 4.56,
-      "year": "2022"
-    },
-    "104": {
-      "name": "Myanmar",
-      "english_name": "Myanmar",
-      "alpha2_code": "MM",
-      "value": 2.13,
-      "year": "2022"
-    },
-    "516": {
-      "name": "Namibia",
-      "english_name": "Namibia",
-      "alpha2_code": "NA",
-      "value": 3.25,
-      "year": "2022"
-    },
-    "520": {
-      "name": "Nauru",
-      "english_name": "Nauru",
-      "alpha2_code": "NR",
-      "value": 3.46,
-      "year": "2022"
-    },
-    "524": {
-      "name": "Nepal",
-      "english_name": "Nepal",
-      "alpha2_code": "NP",
-      "value": 2.01,
-      "year": "2022"
-    },
-    "528": {
-      "name": "Netherlands",
-      "english_name": "Netherlands (Kingdom of the)",
-      "alpha2_code": "NL",
+    "Z4": {
+      "name": "East Asia & Pacific",
       "value": 1.49,
       "year": "2022"
     },
-    "540": {
-      "name": "New Caledonia",
-      "english_name": "New Caledonia",
-      "alpha2_code": "NC",
-      "value": 2.02,
+    "4E": {
+      "name": "East Asia & Pacific (excluding high income)",
+      "value": 1.53,
       "year": "2022"
     },
-    "554": {
-      "name": "New Zealand",
-      "english_name": "New Zealand",
-      "alpha2_code": "NZ",
+    "T4": {
+      "name": "East Asia & Pacific (IDA & IBRD countries)",
+      "value": 1.53,
+      "year": "2022"
+    },
+    "XC": {
+      "name": "Euro area",
+      "value": 1.45,
+      "year": "2022"
+    },
+    "Z7": {
+      "name": "Europe & Central Asia",
       "value": 1.66,
       "year": "2022"
     },
-    "558": {
-      "name": "Nicaragua",
-      "english_name": "Nicaragua",
-      "alpha2_code": "NI",
-      "value": 2.28,
+    "7E": {
+      "name": "Europe & Central Asia (excluding high income)",
+      "value": 2.14,
       "year": "2022"
     },
-    "562": {
-      "name": "Niger",
-      "english_name": "Niger (the)",
-      "alpha2_code": "NE",
-      "value": 6.75,
+    "T7": {
+      "name": "Europe & Central Asia (IDA & IBRD countries)",
+      "value": 1.83,
       "year": "2022"
     },
-    "566": {
-      "name": "Nigeria",
-      "english_name": "Nigeria",
-      "alpha2_code": "NG",
-      "value": 5.14,
+    "EU": {
+      "name": "European Union",
+      "value": 1.46,
       "year": "2022"
     },
-    "807": {
-      "name": "North Macedonia",
-      "english_name": "North Macedonia",
-      "alpha2_code": "MK",
-      "value": 1.6,
+    "F1": {
+      "name": "Fragile and conflict affected situations",
+      "value": 4.32,
       "year": "2022"
     },
-    "578": {
-      "name": "Norway",
-      "english_name": "Norway",
-      "alpha2_code": "NO",
-      "value": 1.41,
+    "XE": {
+      "name": "Heavily indebted poor countries (HIPC)",
+      "value": 4.55,
       "year": "2022"
     },
-    "512": {
-      "name": "Oman",
-      "english_name": "Oman",
-      "alpha2_code": "OM",
-      "value": 2.57,
+    "XD": {
+      "name": "High income",
+      "value": 1.5,
       "year": "2022"
     },
-    "586": {
-      "name": "Pakistan",
-      "english_name": "Pakistan",
-      "alpha2_code": "PK",
-      "value": 3.41,
+    "XF": {
+      "name": "IBRD only",
+      "value": 1.82,
       "year": "2022"
     },
-    "585": {
-      "name": "Palau",
-      "english_name": "Palau",
-      "alpha2_code": "PW",
-      "value": 0.85,
-      "year": "2020"
-    },
-    "591": {
-      "name": "Panama",
-      "english_name": "Panama",
-      "alpha2_code": "PA",
-      "value": 2.3,
-      "year": "2022"
-    },
-    "598": {
-      "name": "Papua New Guinea",
-      "english_name": "Papua New Guinea",
-      "alpha2_code": "PG",
-      "value": 3.17,
-      "year": "2022"
-    },
-    "600": {
-      "name": "Paraguay",
-      "english_name": "Paraguay",
-      "alpha2_code": "PY",
-      "value": 2.44,
-      "year": "2022"
-    },
-    "604": {
-      "name": "Peru",
-      "english_name": "Peru",
-      "alpha2_code": "PE",
-      "value": 2.16,
-      "year": "2022"
-    },
-    "608": {
-      "name": "Philippines",
-      "english_name": "Philippines (the)",
-      "alpha2_code": "PH",
-      "value": 2.73,
-      "year": "2022"
-    },
-    "616": {
-      "name": "Poland",
-      "english_name": "Poland",
-      "alpha2_code": "PL",
-      "value": 1.26,
-      "year": "2022"
-    },
-    "620": {
-      "name": "Portugal",
-      "english_name": "Portugal",
-      "alpha2_code": "PT",
-      "value": 1.43,
-      "year": "2022"
-    },
-    "630": {
-      "name": "Puerto Rico",
-      "english_name": "Puerto Rico",
-      "alpha2_code": "PR",
-      "value": 0.9,
-      "year": "2022"
-    },
-    "634": {
-      "name": "Qatar",
-      "english_name": "Qatar",
-      "alpha2_code": "QA",
-      "value": 1.78,
-      "year": "2022"
-    },
-    "642": {
-      "name": "Romania",
-      "english_name": "Romania",
-      "alpha2_code": "RO",
-      "value": 1.81,
-      "year": "2022"
-    },
-    "643": {
-      "name": "Russian Federation",
-      "english_name": "Russian Federation (the)",
-      "alpha2_code": "RU",
-      "value": 1.42,
-      "year": "2022"
-    },
-    "646": {
-      "name": "Rwanda",
-      "english_name": "Rwanda",
-      "alpha2_code": "RW",
-      "value": 3.75,
-      "year": "2022"
-    },
-    "882": {
-      "name": "Samoa",
-      "english_name": "Samoa",
-      "alpha2_code": "WS",
-      "value": 3.88,
-      "year": "2022"
-    },
-    "674": {
-      "name": "San Marino",
-      "english_name": "San Marino",
-      "alpha2_code": "SM",
-      "value": 1.26,
-      "year": "2012"
-    },
-    "678": {
-      "name": "Sao Tome and Principe",
-      "english_name": "Sao Tome and Principe",
-      "alpha2_code": "ST",
-      "value": 3.75,
-      "year": "2022"
-    },
-    "682": {
-      "name": "Saudi Arabia",
-      "english_name": "Saudi Arabia",
-      "alpha2_code": "SA",
-      "value": 2.39,
-      "year": "2022"
-    },
-    "686": {
-      "name": "Senegal",
-      "english_name": "Senegal",
-      "alpha2_code": "SN",
-      "value": 4.31,
-      "year": "2022"
-    },
-    "688": {
-      "name": "Serbia",
-      "english_name": "Serbia",
-      "alpha2_code": "RS",
-      "value": 1.63,
-      "year": "2022"
-    },
-    "690": {
-      "name": "Seychelles",
-      "english_name": "Seychelles",
-      "alpha2_code": "SC",
-      "value": 2.32,
-      "year": "2022"
-    },
-    "694": {
-      "name": "Sierra Leone",
-      "english_name": "Sierra Leone",
-      "alpha2_code": "SL",
-      "value": 3.88,
-      "year": "2022"
-    },
-    "702": {
-      "name": "Singapore",
-      "english_name": "Singapore",
-      "alpha2_code": "SG",
-      "value": 1.04,
-      "year": "2022"
-    },
-    "534": {
-      "name": "Sint Maarten (Dutch part)",
-      "english_name": "Sint Maarten (Dutch part)",
-      "alpha2_code": "SX",
-      "value": 1.57,
-      "year": "2022"
-    },
-    "703": {
-      "name": "Slovak Republic",
-      "english_name": "Slovakia",
-      "alpha2_code": "SK",
-      "value": 1.57,
-      "year": "2022"
-    },
-    "705": {
-      "name": "Slovenia",
-      "english_name": "Slovenia",
-      "alpha2_code": "SI",
-      "value": 1.55,
-      "year": "2022"
-    },
-    "90": {
-      "name": "Solomon Islands",
-      "english_name": "Solomon Islands",
-      "alpha2_code": "SB",
-      "value": 3.92,
-      "year": "2022"
-    },
-    "706": {
-      "name": "Somalia",
-      "english_name": "Somalia",
-      "alpha2_code": "SO",
-      "value": 6.2,
-      "year": "2022"
-    },
-    "710": {
-      "name": "South Africa",
-      "english_name": "South Africa",
-      "alpha2_code": "ZA",
-      "value": 2.34,
-      "year": "2022"
-    },
-    "728": {
-      "name": "South Sudan",
-      "english_name": "South Sudan",
-      "alpha2_code": "SS",
-      "value": 4.34,
-      "year": "2022"
-    },
-    "724": {
-      "name": "Spain",
-      "english_name": "Spain",
-      "alpha2_code": "ES",
-      "value": 1.16,
-      "year": "2022"
-    },
-    "144": {
-      "name": "Sri Lanka",
-      "english_name": "Sri Lanka",
-      "alpha2_code": "LK",
-      "value": 1.97,
-      "year": "2022"
-    },
-    "659": {
-      "name": "St. Kitts and Nevis",
-      "english_name": "Saint Kitts and Nevis",
-      "alpha2_code": "KN",
-      "value": 1.51,
-      "year": "2022"
-    },
-    "662": {
-      "name": "St. Lucia",
-      "english_name": "Saint Lucia",
-      "alpha2_code": "LC",
-      "value": 1.39,
-      "year": "2022"
-    },
-    "663": {
-      "name": "St. Martin (French part)",
-      "english_name": "Saint Martin (French part)",
-      "alpha2_code": "MF",
+    "ZT": {
+      "name": "IDA & IBRD total",
       "value": 2.38,
       "year": "2022"
     },
-    "670": {
-      "name": "St. Vincent and the Grenadines",
-      "english_name": "Saint Vincent and the Grenadines",
-      "alpha2_code": "VC",
-      "value": 1.78,
+    "XH": {
+      "name": "IDA blend",
+      "value": 4.03,
       "year": "2022"
     },
-    "729": {
-      "name": "Sudan",
-      "english_name": "Sudan (the)",
-      "alpha2_code": "SD",
-      "value": 4.38,
+    "XI": {
+      "name": "IDA only",
+      "value": 3.81,
       "year": "2022"
     },
-    "740": {
-      "name": "Suriname",
-      "english_name": "Suriname",
-      "alpha2_code": "SR",
-      "value": 2.32,
+    "XG": {
+      "name": "IDA total",
+      "value": 3.88,
       "year": "2022"
     },
-    "752": {
-      "name": "Sweden",
-      "english_name": "Sweden",
-      "alpha2_code": "SE",
-      "value": 1.52,
-      "year": "2022"
-    },
-    "756": {
-      "name": "Switzerland",
-      "english_name": "Switzerland",
-      "alpha2_code": "CH",
+    "V3": {
+      "name": "Late-demographic dividend",
       "value": 1.39,
       "year": "2022"
     },
-    "760": {
-      "name": "Syrian Arab Republic",
-      "english_name": "Syrian Arab Republic (the)",
-      "alpha2_code": "SY",
-      "value": 2.7,
+    "ZJ": {
+      "name": "Latin America & Caribbean",
+      "value": 1.84,
       "year": "2022"
     },
-    "762": {
-      "name": "Tajikistan",
-      "english_name": "Tajikistan",
-      "alpha2_code": "TJ",
-      "value": 3.14,
+    "XJ": {
+      "name": "Latin America & Caribbean (excluding high income)",
+      "value": 1.84,
       "year": "2022"
     },
-    "834": {
-      "name": "Tanzania",
-      "english_name": "Tanzania, the United Republic of",
-      "alpha2_code": "TZ",
-      "value": 4.66,
+    "T2": {
+      "name": "Latin America & the Caribbean (IDA & IBRD countries)",
+      "value": 1.85,
       "year": "2022"
     },
-    "764": {
-      "name": "Thailand",
-      "english_name": "Thailand",
-      "alpha2_code": "TH",
-      "value": 1.32,
+    "XL": {
+      "name": "Least developed countries: UN classification",
+      "value": 3.95,
       "year": "2022"
     },
-    "626": {
-      "name": "Timor-Leste",
-      "english_name": "Timor-Leste",
-      "alpha2_code": "TL",
-      "value": 3.05,
+    "XO": {
+      "name": "Low & middle income",
+      "value": 2.41,
       "year": "2022"
     },
-    "768": {
-      "name": "Togo",
-      "english_name": "Togo",
-      "alpha2_code": "TG",
-      "value": 4.2,
+    "XM": {
+      "name": "Low income",
+      "value": 4.55,
       "year": "2022"
     },
-    "776": {
-      "name": "Tonga",
-      "english_name": "Tonga",
-      "alpha2_code": "TO",
-      "value": 3.19,
+    "XN": {
+      "name": "Lower middle income",
+      "value": 2.66,
       "year": "2022"
     },
-    "780": {
-      "name": "Trinidad and Tobago",
-      "english_name": "Trinidad and Tobago",
-      "alpha2_code": "TT",
-      "value": 1.61,
+    "ZQ": {
+      "name": "Middle East & North Africa",
+      "value": 2.6,
       "year": "2022"
     },
-    "788": {
-      "name": "Tunisia",
-      "english_name": "Tunisia",
-      "alpha2_code": "TN",
-      "value": 2.06,
+    "XQ": {
+      "name": "Middle East & North Africa (excluding high income)",
+      "value": 2.64,
       "year": "2022"
     },
-    "792": {
-      "name": "Turkiye",
-      "english_name": "Türkiye",
-      "alpha2_code": "TR",
+    "T3": {
+      "name": "Middle East & North Africa (IDA & IBRD countries)",
+      "value": 2.63,
+      "year": "2022"
+    },
+    "XP": {
+      "name": "Middle income",
+      "value": 2.16,
+      "year": "2022"
+    },
+    "XU": {
+      "name": "North America",
+      "value": 1.63,
+      "year": "2022"
+    },
+    "OE": {
+      "name": "OECD members",
+      "value": 1.56,
+      "year": "2022"
+    },
+    "S4": {
+      "name": "Other small states",
+      "value": 2.08,
+      "year": "2022"
+    },
+    "S2": {
+      "name": "Pacific island small states",
+      "value": 3.22,
+      "year": "2022"
+    },
+    "V4": {
+      "name": "Post-demographic dividend",
+      "value": 1.46,
+      "year": "2022"
+    },
+    "V1": {
+      "name": "Pre-demographic dividend",
+      "value": 4.77,
+      "year": "2022"
+    },
+    "S1": {
+      "name": "Small states",
+      "value": 2.22,
+      "year": "2022"
+    },
+    "8S": {
+      "name": "South Asia",
+      "value": 2.22,
+      "year": "2022"
+    },
+    "T5": {
+      "name": "South Asia (IDA & IBRD)",
+      "value": 2.22,
+      "year": "2022"
+    },
+    "ZG": {
+      "name": "Sub-Saharan Africa",
+      "value": 4.53,
+      "year": "2022"
+    },
+    "ZF": {
+      "name": "Sub-Saharan Africa (excluding high income)",
+      "value": 4.53,
+      "year": "2022"
+    },
+    "T6": {
+      "name": "Sub-Saharan Africa (IDA & IBRD countries)",
+      "value": 4.53,
+      "year": "2022"
+    },
+    "XT": {
+      "name": "Upper middle income",
+      "value": 1.59,
+      "year": "2022"
+    },
+    "1W": {
+      "name": "World",
+      "value": 2.27,
+      "year": "2022"
+    },
+    "AF": {
+      "name": "Afghanistan",
+      "value": 4.52,
+      "year": "2022"
+    },
+    "AL": {
+      "name": "Albania",
+      "value": 1.38,
+      "year": "2022"
+    },
+    "DZ": {
+      "name": "Algeria",
+      "value": 2.83,
+      "year": "2022"
+    },
+    "AD": {
+      "name": "Andorra",
+      "value": 1.27,
+      "year": "2010"
+    },
+    "AO": {
+      "name": "Angola",
+      "value": 5.21,
+      "year": "2022"
+    },
+    "AG": {
+      "name": "Antigua and Barbuda",
+      "value": 1.58,
+      "year": "2022"
+    },
+    "AR": {
+      "name": "Argentina",
       "value": 1.88,
       "year": "2022"
     },
-    "795": {
-      "name": "Turkmenistan",
-      "english_name": "Turkmenistan",
-      "alpha2_code": "TM",
-      "value": 2.62,
-      "year": "2022"
-    },
-    "796": {
-      "name": "Turks and Caicos Islands",
-      "english_name": "Turks and Caicos Islands (the)",
-      "alpha2_code": "TC",
-      "value": 1.66,
-      "year": "2022"
-    },
-    "798": {
-      "name": "Tuvalu",
-      "english_name": "Tuvalu",
-      "alpha2_code": "TV",
-      "value": 3.14,
-      "year": "2022"
-    },
-    "800": {
-      "name": "Uganda",
-      "english_name": "Uganda",
-      "alpha2_code": "UG",
-      "value": 4.47,
-      "year": "2022"
-    },
-    "804": {
-      "name": "Ukraine",
-      "english_name": "Ukraine",
-      "alpha2_code": "UA",
-      "value": 1.26,
-      "year": "2022"
-    },
-    "784": {
-      "name": "United Arab Emirates",
-      "english_name": "United Arab Emirates (the)",
-      "alpha2_code": "AE",
-      "value": 1.44,
-      "year": "2022"
-    },
-    "826": {
-      "name": "United Kingdom",
-      "english_name": "United Kingdom of Great Britain and Northern Ireland (the)",
-      "alpha2_code": "GB",
+    "AM": {
+      "name": "Armenia",
       "value": 1.57,
       "year": "2022"
     },
-    "840": {
-      "name": "United States",
-      "english_name": "United States of America (the)",
-      "alpha2_code": "US",
+    "AW": {
+      "name": "Aruba",
+      "value": 1.18,
+      "year": "2022"
+    },
+    "AU": {
+      "name": "Australia",
+      "value": 1.63,
+      "year": "2022"
+    },
+    "AT": {
+      "name": "Austria",
+      "value": 1.41,
+      "year": "2022"
+    },
+    "AZ": {
+      "name": "Azerbaijan",
       "value": 1.67,
       "year": "2022"
     },
-    "858": {
-      "name": "Uruguay",
-      "english_name": "Uruguay",
-      "alpha2_code": "UY",
-      "value": 1.48,
+    "BS": {
+      "name": "Bahamas, The",
+      "value": 1.38,
       "year": "2022"
     },
-    "860": {
-      "name": "Uzbekistan",
-      "english_name": "Uzbekistan",
-      "alpha2_code": "UZ",
-      "value": 3.31,
+    "BH": {
+      "name": "Bahrain",
+      "value": 1.8,
       "year": "2022"
     },
-    "548": {
-      "name": "Vanuatu",
-      "english_name": "Vanuatu",
-      "alpha2_code": "VU",
-      "value": 3.7,
+    "BD": {
+      "name": "Bangladesh",
+      "value": 1.95,
       "year": "2022"
     },
-    "862": {
-      "name": "Venezuela, RB",
-      "english_name": "Venezuela (Bolivarian Republic of)",
-      "alpha2_code": "VE",
-      "value": 2.19,
+    "BB": {
+      "name": "Barbados",
+      "value": 1.63,
       "year": "2022"
     },
-    "704": {
-      "name": "Viet Nam",
-      "english_name": "Viet Nam",
-      "alpha2_code": "VN",
-      "value": 1.94,
+    "BY": {
+      "name": "Belarus",
+      "value": 1.5,
       "year": "2022"
     },
-    "850": {
-      "name": "Virgin Islands (U.S.)",
-      "english_name": "Virgin Islands (U.S.)",
-      "alpha2_code": "VI",
-      "value": 2,
+    "BE": {
+      "name": "Belgium",
+      "value": 1.53,
       "year": "2022"
     },
-    "275": {
-      "name": "West Bank and Gaza",
-      "english_name": "Palestine, State of",
-      "alpha2_code": "PS",
+    "BZ": {
+      "name": "Belize",
+      "value": 1.99,
+      "year": "2022"
+    },
+    "BJ": {
+      "name": "Benin",
+      "value": 4.89,
+      "year": "2022"
+    },
+    "BM": {
+      "name": "Bermuda",
+      "value": 1.3,
+      "year": "2022"
+    },
+    "BT": {
+      "name": "Bhutan",
+      "value": 1.4,
+      "year": "2022"
+    },
+    "BO": {
+      "name": "Bolivia",
+      "value": 2.58,
+      "year": "2022"
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "value": 1.35,
+      "year": "2022"
+    },
+    "BW": {
+      "name": "Botswana",
+      "value": 2.75,
+      "year": "2022"
+    },
+    "BR": {
+      "name": "Brazil",
+      "value": 1.63,
+      "year": "2022"
+    },
+    "VG": {
+      "name": "British Virgin Islands",
+      "value": 1.01,
+      "year": "2022"
+    },
+    "BN": {
+      "name": "Brunei Darussalam",
+      "value": 1.76,
+      "year": "2022"
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "value": 1.78,
+      "year": "2022"
+    },
+    "BF": {
+      "name": "Burkina Faso",
+      "value": 4.67,
+      "year": "2022"
+    },
+    "BI": {
+      "name": "Burundi",
+      "value": 4.98,
+      "year": "2022"
+    },
+    "CV": {
+      "name": "Cabo Verde",
+      "value": 1.88,
+      "year": "2022"
+    },
+    "KH": {
+      "name": "Cambodia",
+      "value": 2.32,
+      "year": "2022"
+    },
+    "CM": {
+      "name": "Cameroon",
+      "value": 4.38,
+      "year": "2022"
+    },
+    "CA": {
+      "name": "Canada",
+      "value": 1.33,
+      "year": "2022"
+    },
+    "CF": {
+      "name": "Central African Republic",
+      "value": 5.92,
+      "year": "2022"
+    },
+    "TD": {
+      "name": "Chad",
+      "value": 6.21,
+      "year": "2022"
+    },
+    "JG": {
+      "name": "Channel Islands",
+      "value": 1.47,
+      "year": "2022"
+    },
+    "CL": {
+      "name": "Chile",
+      "value": 1.54,
+      "year": "2022"
+    },
+    "CN": {
+      "name": "China",
+      "value": 1.18,
+      "year": "2022"
+    },
+    "CO": {
+      "name": "Colombia",
+      "value": 1.69,
+      "year": "2022"
+    },
+    "KM": {
+      "name": "Comoros",
+      "value": 3.91,
+      "year": "2022"
+    },
+    "CD": {
+      "name": "Congo, Dem. Rep.",
+      "value": 6.11,
+      "year": "2022"
+    },
+    "CG": {
+      "name": "Congo, Rep.",
+      "value": 4.09,
+      "year": "2022"
+    },
+    "CR": {
+      "name": "Costa Rica",
+      "value": 1.52,
+      "year": "2022"
+    },
+    "CI": {
+      "name": "Cote d'Ivoire",
+      "value": 4.34,
+      "year": "2022"
+    },
+    "HR": {
+      "name": "Croatia",
+      "value": 1.53,
+      "year": "2022"
+    },
+    "CU": {
+      "name": "Cuba",
+      "value": 1.45,
+      "year": "2022"
+    },
+    "CW": {
+      "name": "Curacao",
+      "value": 1.3,
+      "year": "2022"
+    },
+    "CY": {
+      "name": "Cyprus",
+      "value": 1.31,
+      "year": "2022"
+    },
+    "CZ": {
+      "name": "Czechia",
+      "value": 1.62,
+      "year": "2022"
+    },
+    "DK": {
+      "name": "Denmark",
+      "value": 1.55,
+      "year": "2022"
+    },
+    "DJ": {
+      "name": "Djibouti",
+      "value": 2.76,
+      "year": "2022"
+    },
+    "DM": {
+      "name": "Dominica",
+      "value": 1.59,
+      "year": "2022"
+    },
+    "DO": {
+      "name": "Dominican Republic",
+      "value": 2.25,
+      "year": "2022"
+    },
+    "EC": {
+      "name": "Ecuador",
+      "value": 2.0,
+      "year": "2022"
+    },
+    "EG": {
+      "name": "Egypt, Arab Rep.",
+      "value": 2.88,
+      "year": "2022"
+    },
+    "SV": {
+      "name": "El Salvador",
+      "value": 1.78,
+      "year": "2022"
+    },
+    "GQ": {
+      "name": "Equatorial Guinea",
+      "value": 4.17,
+      "year": "2022"
+    },
+    "ER": {
+      "name": "Eritrea",
+      "value": 3.79,
+      "year": "2022"
+    },
+    "EE": {
+      "name": "Estonia",
+      "value": 1.41,
+      "year": "2022"
+    },
+    "SZ": {
+      "name": "Eswatini",
+      "value": 2.79,
+      "year": "2022"
+    },
+    "ET": {
+      "name": "Ethiopia",
+      "value": 4.06,
+      "year": "2022"
+    },
+    "FO": {
+      "name": "Faroe Islands",
+      "value": 2.05,
+      "year": "2022"
+    },
+    "FJ": {
+      "name": "Fiji",
+      "value": 2.46,
+      "year": "2022"
+    },
+    "FI": {
+      "name": "Finland",
+      "value": 1.32,
+      "year": "2022"
+    },
+    "FR": {
+      "name": "France",
+      "value": 1.79,
+      "year": "2022"
+    },
+    "PF": {
+      "name": "French Polynesia",
+      "value": 1.69,
+      "year": "2022"
+    },
+    "GA": {
+      "name": "Gabon",
+      "value": 3.46,
+      "year": "2022"
+    },
+    "GM": {
+      "name": "Gambia, The",
+      "value": 4.59,
+      "year": "2022"
+    },
+    "GE": {
+      "name": "Georgia",
+      "value": 2.06,
+      "year": "2022"
+    },
+    "DE": {
+      "name": "Germany",
+      "value": 1.46,
+      "year": "2022"
+    },
+    "GH": {
+      "name": "Ghana",
+      "value": 3.51,
+      "year": "2022"
+    },
+    "GI": {
+      "name": "Gibraltar",
+      "value": 1.84,
+      "year": "2022"
+    },
+    "GR": {
+      "name": "Greece",
+      "value": 1.43,
+      "year": "2022"
+    },
+    "GL": {
+      "name": "Greenland",
+      "value": 1.84,
+      "year": "2022"
+    },
+    "GD": {
+      "name": "Grenada",
+      "value": 1.99,
+      "year": "2022"
+    },
+    "GU": {
+      "name": "Guam",
+      "value": 2.55,
+      "year": "2022"
+    },
+    "GT": {
+      "name": "Guatemala",
+      "value": 2.35,
+      "year": "2022"
+    },
+    "GN": {
+      "name": "Guinea",
+      "value": 4.3,
+      "year": "2022"
+    },
+    "GW": {
+      "name": "Guinea-Bissau",
+      "value": 3.92,
+      "year": "2022"
+    },
+    "GY": {
+      "name": "Guyana",
+      "value": 2.37,
+      "year": "2022"
+    },
+    "HT": {
+      "name": "Haiti",
+      "value": 2.77,
+      "year": "2022"
+    },
+    "HN": {
+      "name": "Honduras",
+      "value": 2.34,
+      "year": "2022"
+    },
+    "HK": {
+      "name": "Hong Kong SAR, China",
+      "value": 0.7,
+      "year": "2022"
+    },
+    "HU": {
+      "name": "Hungary",
+      "value": 1.52,
+      "year": "2022"
+    },
+    "IS": {
+      "name": "Iceland",
+      "value": 1.59,
+      "year": "2022"
+    },
+    "IN": {
+      "name": "India",
+      "value": 2.01,
+      "year": "2022"
+    },
+    "ID": {
+      "name": "Indonesia",
+      "value": 2.15,
+      "year": "2022"
+    },
+    "IR": {
+      "name": "Iran, Islamic Rep.",
+      "value": 1.68,
+      "year": "2022"
+    },
+    "IQ": {
+      "name": "Iraq",
       "value": 3.44,
       "year": "2022"
     },
-    "887": {
+    "IE": {
+      "name": "Ireland",
+      "value": 1.7,
+      "year": "2022"
+    },
+    "IM": {
+      "name": "Isle of Man",
+      "value": 1.57,
+      "year": "2022"
+    },
+    "IL": {
+      "name": "Israel",
+      "value": 2.89,
+      "year": "2022"
+    },
+    "IT": {
+      "name": "Italy",
+      "value": 1.24,
+      "year": "2022"
+    },
+    "JM": {
+      "name": "Jamaica",
+      "value": 1.34,
+      "year": "2022"
+    },
+    "JP": {
+      "name": "Japan",
+      "value": 1.26,
+      "year": "2022"
+    },
+    "JO": {
+      "name": "Jordan",
+      "value": 2.79,
+      "year": "2022"
+    },
+    "KZ": {
+      "name": "Kazakhstan",
+      "value": 3.05,
+      "year": "2022"
+    },
+    "KE": {
+      "name": "Kenya",
+      "value": 3.3,
+      "year": "2022"
+    },
+    "KI": {
+      "name": "Kiribati",
+      "value": 3.27,
+      "year": "2022"
+    },
+    "KP": {
+      "name": "Korea, Dem. People's Rep.",
+      "value": 1.79,
+      "year": "2022"
+    },
+    "KR": {
+      "name": "Korea, Rep.",
+      "value": 0.78,
+      "year": "2022"
+    },
+    "XK": {
+      "name": "Kosovo",
+      "value": 1.51,
+      "year": "2022"
+    },
+    "KW": {
+      "name": "Kuwait",
+      "value": 2.09,
+      "year": "2022"
+    },
+    "KG": {
+      "name": "Kyrgyz Republic",
+      "value": 2.8,
+      "year": "2022"
+    },
+    "LA": {
+      "name": "Lao PDR",
+      "value": 2.45,
+      "year": "2022"
+    },
+    "LV": {
+      "name": "Latvia",
+      "value": 1.47,
+      "year": "2022"
+    },
+    "LB": {
+      "name": "Lebanon",
+      "value": 2.08,
+      "year": "2022"
+    },
+    "LS": {
+      "name": "Lesotho",
+      "value": 2.98,
+      "year": "2022"
+    },
+    "LR": {
+      "name": "Liberia",
+      "value": 4.02,
+      "year": "2022"
+    },
+    "LY": {
+      "name": "Libya",
+      "value": 2.4,
+      "year": "2022"
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "value": 1.47,
+      "year": "2022"
+    },
+    "LT": {
+      "name": "Lithuania",
+      "value": 1.27,
+      "year": "2022"
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "value": 1.31,
+      "year": "2022"
+    },
+    "MO": {
+      "name": "Macao SAR, China",
+      "value": 1.11,
+      "year": "2022"
+    },
+    "MG": {
+      "name": "Madagascar",
+      "value": 3.79,
+      "year": "2022"
+    },
+    "MW": {
+      "name": "Malawi",
+      "value": 3.85,
+      "year": "2022"
+    },
+    "MY": {
+      "name": "Malaysia",
+      "value": 1.79,
+      "year": "2022"
+    },
+    "MV": {
+      "name": "Maldives",
+      "value": 1.68,
+      "year": "2022"
+    },
+    "ML": {
+      "name": "Mali",
+      "value": 5.87,
+      "year": "2022"
+    },
+    "MT": {
+      "name": "Malta",
+      "value": 1.15,
+      "year": "2022"
+    },
+    "MH": {
+      "name": "Marshall Islands",
+      "value": 2.67,
+      "year": "2022"
+    },
+    "MR": {
+      "name": "Mauritania",
+      "value": 4.34,
+      "year": "2022"
+    },
+    "MU": {
+      "name": "Mauritius",
+      "value": 1.32,
+      "year": "2022"
+    },
+    "MX": {
+      "name": "Mexico",
+      "value": 1.8,
+      "year": "2022"
+    },
+    "FM": {
+      "name": "Micronesia, Fed. Sts.",
+      "value": 2.67,
+      "year": "2022"
+    },
+    "MD": {
+      "name": "Moldova",
+      "value": 1.8,
+      "year": "2022"
+    },
+    "MN": {
+      "name": "Mongolia",
+      "value": 2.77,
+      "year": "2022"
+    },
+    "ME": {
+      "name": "Montenegro",
+      "value": 1.8,
+      "year": "2022"
+    },
+    "MA": {
+      "name": "Morocco",
+      "value": 2.3,
+      "year": "2022"
+    },
+    "MZ": {
+      "name": "Mozambique",
+      "value": 4.56,
+      "year": "2022"
+    },
+    "MM": {
+      "name": "Myanmar",
+      "value": 2.13,
+      "year": "2022"
+    },
+    "NA": {
+      "name": "Namibia",
+      "value": 3.25,
+      "year": "2022"
+    },
+    "NR": {
+      "name": "Nauru",
+      "value": 3.46,
+      "year": "2022"
+    },
+    "NP": {
+      "name": "Nepal",
+      "value": 2.01,
+      "year": "2022"
+    },
+    "NL": {
+      "name": "Netherlands",
+      "value": 1.49,
+      "year": "2022"
+    },
+    "NC": {
+      "name": "New Caledonia",
+      "value": 2.02,
+      "year": "2022"
+    },
+    "NZ": {
+      "name": "New Zealand",
+      "value": 1.66,
+      "year": "2022"
+    },
+    "NI": {
+      "name": "Nicaragua",
+      "value": 2.28,
+      "year": "2022"
+    },
+    "NE": {
+      "name": "Niger",
+      "value": 6.75,
+      "year": "2022"
+    },
+    "NG": {
+      "name": "Nigeria",
+      "value": 5.14,
+      "year": "2022"
+    },
+    "MK": {
+      "name": "North Macedonia",
+      "value": 1.6,
+      "year": "2022"
+    },
+    "NO": {
+      "name": "Norway",
+      "value": 1.41,
+      "year": "2022"
+    },
+    "OM": {
+      "name": "Oman",
+      "value": 2.57,
+      "year": "2022"
+    },
+    "PK": {
+      "name": "Pakistan",
+      "value": 3.41,
+      "year": "2022"
+    },
+    "PW": {
+      "name": "Palau",
+      "value": 0.85,
+      "year": "2020"
+    },
+    "PA": {
+      "name": "Panama",
+      "value": 2.3,
+      "year": "2022"
+    },
+    "PG": {
+      "name": "Papua New Guinea",
+      "value": 3.17,
+      "year": "2022"
+    },
+    "PY": {
+      "name": "Paraguay",
+      "value": 2.44,
+      "year": "2022"
+    },
+    "PE": {
+      "name": "Peru",
+      "value": 2.16,
+      "year": "2022"
+    },
+    "PH": {
+      "name": "Philippines",
+      "value": 2.73,
+      "year": "2022"
+    },
+    "PL": {
+      "name": "Poland",
+      "value": 1.26,
+      "year": "2022"
+    },
+    "PT": {
+      "name": "Portugal",
+      "value": 1.43,
+      "year": "2022"
+    },
+    "PR": {
+      "name": "Puerto Rico",
+      "value": 0.9,
+      "year": "2022"
+    },
+    "QA": {
+      "name": "Qatar",
+      "value": 1.78,
+      "year": "2022"
+    },
+    "RO": {
+      "name": "Romania",
+      "value": 1.81,
+      "year": "2022"
+    },
+    "RU": {
+      "name": "Russian Federation",
+      "value": 1.42,
+      "year": "2022"
+    },
+    "RW": {
+      "name": "Rwanda",
+      "value": 3.75,
+      "year": "2022"
+    },
+    "WS": {
+      "name": "Samoa",
+      "value": 3.88,
+      "year": "2022"
+    },
+    "SM": {
+      "name": "San Marino",
+      "value": 1.26,
+      "year": "2012"
+    },
+    "ST": {
+      "name": "Sao Tome and Principe",
+      "value": 3.75,
+      "year": "2022"
+    },
+    "SA": {
+      "name": "Saudi Arabia",
+      "value": 2.39,
+      "year": "2022"
+    },
+    "SN": {
+      "name": "Senegal",
+      "value": 4.31,
+      "year": "2022"
+    },
+    "RS": {
+      "name": "Serbia",
+      "value": 1.63,
+      "year": "2022"
+    },
+    "SC": {
+      "name": "Seychelles",
+      "value": 2.32,
+      "year": "2022"
+    },
+    "SL": {
+      "name": "Sierra Leone",
+      "value": 3.88,
+      "year": "2022"
+    },
+    "SG": {
+      "name": "Singapore",
+      "value": 1.04,
+      "year": "2022"
+    },
+    "SX": {
+      "name": "Sint Maarten (Dutch part)",
+      "value": 1.57,
+      "year": "2022"
+    },
+    "SK": {
+      "name": "Slovak Republic",
+      "value": 1.57,
+      "year": "2022"
+    },
+    "SI": {
+      "name": "Slovenia",
+      "value": 1.55,
+      "year": "2022"
+    },
+    "SB": {
+      "name": "Solomon Islands",
+      "value": 3.92,
+      "year": "2022"
+    },
+    "SO": {
+      "name": "Somalia",
+      "value": 6.2,
+      "year": "2022"
+    },
+    "ZA": {
+      "name": "South Africa",
+      "value": 2.34,
+      "year": "2022"
+    },
+    "SS": {
+      "name": "South Sudan",
+      "value": 4.34,
+      "year": "2022"
+    },
+    "ES": {
+      "name": "Spain",
+      "value": 1.16,
+      "year": "2022"
+    },
+    "LK": {
+      "name": "Sri Lanka",
+      "value": 1.97,
+      "year": "2022"
+    },
+    "KN": {
+      "name": "St. Kitts and Nevis",
+      "value": 1.51,
+      "year": "2022"
+    },
+    "LC": {
+      "name": "St. Lucia",
+      "value": 1.39,
+      "year": "2022"
+    },
+    "MF": {
+      "name": "St. Martin (French part)",
+      "value": 2.38,
+      "year": "2022"
+    },
+    "VC": {
+      "name": "St. Vincent and the Grenadines",
+      "value": 1.78,
+      "year": "2022"
+    },
+    "SD": {
+      "name": "Sudan",
+      "value": 4.38,
+      "year": "2022"
+    },
+    "SR": {
+      "name": "Suriname",
+      "value": 2.32,
+      "year": "2022"
+    },
+    "SE": {
+      "name": "Sweden",
+      "value": 1.52,
+      "year": "2022"
+    },
+    "CH": {
+      "name": "Switzerland",
+      "value": 1.39,
+      "year": "2022"
+    },
+    "SY": {
+      "name": "Syrian Arab Republic",
+      "value": 2.7,
+      "year": "2022"
+    },
+    "TJ": {
+      "name": "Tajikistan",
+      "value": 3.14,
+      "year": "2022"
+    },
+    "TZ": {
+      "name": "Tanzania",
+      "value": 4.66,
+      "year": "2022"
+    },
+    "TH": {
+      "name": "Thailand",
+      "value": 1.32,
+      "year": "2022"
+    },
+    "TL": {
+      "name": "Timor-Leste",
+      "value": 3.05,
+      "year": "2022"
+    },
+    "TG": {
+      "name": "Togo",
+      "value": 4.2,
+      "year": "2022"
+    },
+    "TO": {
+      "name": "Tonga",
+      "value": 3.19,
+      "year": "2022"
+    },
+    "TT": {
+      "name": "Trinidad and Tobago",
+      "value": 1.61,
+      "year": "2022"
+    },
+    "TN": {
+      "name": "Tunisia",
+      "value": 2.06,
+      "year": "2022"
+    },
+    "TR": {
+      "name": "Turkiye",
+      "value": 1.88,
+      "year": "2022"
+    },
+    "TM": {
+      "name": "Turkmenistan",
+      "value": 2.62,
+      "year": "2022"
+    },
+    "TC": {
+      "name": "Turks and Caicos Islands",
+      "value": 1.66,
+      "year": "2022"
+    },
+    "TV": {
+      "name": "Tuvalu",
+      "value": 3.14,
+      "year": "2022"
+    },
+    "UG": {
+      "name": "Uganda",
+      "value": 4.47,
+      "year": "2022"
+    },
+    "UA": {
+      "name": "Ukraine",
+      "value": 1.26,
+      "year": "2022"
+    },
+    "AE": {
+      "name": "United Arab Emirates",
+      "value": 1.44,
+      "year": "2022"
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "value": 1.57,
+      "year": "2022"
+    },
+    "US": {
+      "name": "United States",
+      "value": 1.67,
+      "year": "2022"
+    },
+    "UY": {
+      "name": "Uruguay",
+      "value": 1.48,
+      "year": "2022"
+    },
+    "UZ": {
+      "name": "Uzbekistan",
+      "value": 3.31,
+      "year": "2022"
+    },
+    "VU": {
+      "name": "Vanuatu",
+      "value": 3.7,
+      "year": "2022"
+    },
+    "VE": {
+      "name": "Venezuela, RB",
+      "value": 2.19,
+      "year": "2022"
+    },
+    "VN": {
+      "name": "Viet Nam",
+      "value": 1.94,
+      "year": "2022"
+    },
+    "VI": {
+      "name": "Virgin Islands (U.S.)",
+      "value": 2,
+      "year": "2022"
+    },
+    "PS": {
+      "name": "West Bank and Gaza",
+      "value": 3.44,
+      "year": "2022"
+    },
+    "YE": {
       "name": "Yemen, Rep.",
-      "english_name": "Yemen",
-      "alpha2_code": "YE",
       "value": 3.72,
       "year": "2022"
     },
-    "894": {
+    "ZM": {
       "name": "Zambia",
-      "english_name": "Zambia",
-      "alpha2_code": "ZM",
       "value": 4.24,
       "year": "2022"
     },
-    "716": {
+    "ZW": {
       "name": "Zimbabwe",
-      "english_name": "Zimbabwe",
-      "alpha2_code": "ZW",
       "value": 3.44,
       "year": "2022"
     }
