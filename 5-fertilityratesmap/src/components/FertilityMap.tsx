@@ -79,23 +79,24 @@ const FertilityMap: React.FC = () => {
 
   return (
     <div className="fertility-map">
-      <h2>World Fertility Rates</h2>
       <div className="map-container">
         <ComposableMap
           projectionConfig={{
             rotate: [-10, 0, 0],
-            scale: 147
+            scale: 200
           }}
-          width={900}
-          height={500}
+          width={1000}
+          height={600}
+          style={{
+            width: "100%",
+            height: "100%"
+          }}
         >
           <ZoomableGroup>
             <Geographies geography="/world_map.json">
               {({ geographies }) =>
                 geographies.map(geo => {
-                  console.log(geo)
-
-                  const numericCode = geo.id;
+                  const numericCode = parseInt(geo.id);
                   const countryData = data?.data[numericCode];
                   const hasData = countryData !== undefined;
                   return (
@@ -135,31 +136,33 @@ const FertilityMap: React.FC = () => {
           content={tooltipContent}
           place="top"
         />
-      </div>
-      <div className="legend">
-        <div className="legend-title">Fertility Rate (births per woman)</div>
-        <div className="legend-scale">
-          {colorScale.range().map((color: string, i: number) => (
-            <div 
-              key={i} 
-              className="legend-item" 
-              style={{ 
-                backgroundColor: color,
-                width: '40px',
-                height: '20px',
-                display: 'inline-block',
-                margin: '0 2px'
-              }}
-            />
-          ))}
+        
+        <div className="legend">
+          <div className="legend-title">Fertility Rate (births per woman)</div>
+          <div className="legend-scale">
+            {colorScale.range().map((color: string, i: number) => (
+              <div 
+                key={i} 
+                className="legend-item" 
+                style={{ 
+                  backgroundColor: color,
+                  width: '20px',
+                  height: '15px',
+                  display: 'inline-block',
+                  margin: '0 1px'
+                }}
+              />
+            ))}
+          </div>
+          <div className="legend-labels">
+            <span>1</span>
+            <span style={{ marginLeft: 'auto' }}>8</span>
+          </div>
         </div>
-        <div className="legend-labels">
-          <span>1</span>
-          <span style={{ marginLeft: 'auto' }}>8</span>
+        
+        <div className="data-source">
+          Source: {data?.metadata.source}, {data?.metadata.date_retrieved}
         </div>
-      </div>
-      <div className="data-source">
-        Source: {data?.metadata.source}, {data?.metadata.date_retrieved}
       </div>
     </div>
   );
