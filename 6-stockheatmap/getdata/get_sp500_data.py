@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to scrape S&P 500 data from SlickCharts and save it to a CSV file.
+Script to scrape S&P 500 data from SlickCharts and save it to a JSON file.
 """
 
 import requests
@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 import os
 import time
 from datetime import datetime
+import json
 
 def get_sp500_data():
     """
@@ -80,20 +81,25 @@ def get_sp500_data():
         print(f"Error scraping S&P 500 data: {e}")
         return None
 
-def save_to_csv(df, output_dir='data'):
+def save_to_json(df, output_dir='../public'):
     """
-    Save DataFrame to a CSV file with a timestamp in the filename.
+    Save DataFrame to a JSON file.
     """
     # Create output directory if it doesn't exist
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
-    # Save the data to the one and only csv file
-    filename = f"sp500_data.csv"
+    # Save the data to the one and only json file
+    filename = f"sp500_data.json"
     filepath = os.path.join(output_dir, filename)
     
-    # Save to CSV
-    df.to_csv(filepath, index=False)
+    # Convert DataFrame to JSON
+    json_data = df.to_dict(orient='records')
+    
+    # Save to JSON file
+    with open(filepath, 'w') as f:
+        json.dump(json_data, f, indent=2)
+    
     print(f"S&P 500 data saved to {filepath}")
     
     return filepath
@@ -105,8 +111,8 @@ def main():
     if df is not None and not df.empty:
         print(f"Successfully retrieved data for {len(df)} S&P 500 companies")
         
-        # Save data to CSV
-        save_to_csv(df)
+        # Save data to JSON
+        save_to_json(df)
     else:
         print("Failed to retrieve S&P 500 data")
 
