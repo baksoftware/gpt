@@ -1,0 +1,15 @@
+---
+description: Heatmap of stock tickers
+globs: *.tsx
+alwaysApply: false
+---
+# Heatmap app
+
+## Heatmap
+
+each square in the heatmap must
+- show the stock ticker
+- have a size corresponding to the market cap of the company
+- have a color on a red-green gradient scale, corresponding to the loss/gain
+
+use react-apexcharts for the heatmap component
