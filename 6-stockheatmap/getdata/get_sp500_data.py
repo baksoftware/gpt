@@ -49,6 +49,10 @@ def get_sp500_data():
                 chg = cols[5].text.strip()
                 pct_chg = cols[6].text.strip()
                 
+                # Extract the percentage change value from the format like "(+1.23%)" or "(-1.23%)"
+                if pct_chg:
+                    pct_chg = pct_chg.strip('()')
+                
                 data.append({
                     'Rank': rank,
                     'Company': company,
@@ -63,9 +67,12 @@ def get_sp500_data():
         df = pd.DataFrame(data)
         
         # Convert numeric columns
-        numeric_cols = ['Rank', 'Weight', 'Price', 'Chg', 'Pct_Chg']
+        numeric_cols = ['Rank', 'Weight', 'Price', 'Chg']
         for col in numeric_cols:
             df[col] = pd.to_numeric(df[col].str.replace('%', '').str.replace(',', ''), errors='coerce')
+        
+        # Convert percentage change column separately
+        df['Pct_Chg'] = pd.to_numeric(df['Pct_Chg'].str.replace('%', ''), errors='coerce')
         
         return df
     
