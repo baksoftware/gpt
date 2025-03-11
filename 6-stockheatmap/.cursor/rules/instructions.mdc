@@ -1,3 +1,8 @@
+---
+description: Heatmap of stock tickers
+globs: 
+alwaysApply: false
+---
 # React TypeScript Project Best Practices
 
 ## Project Setup
