@@ -49,7 +49,7 @@ const StockHeatmap: React.FC = () => {
   };
 
   // Prepare data for the treemap
-  const treemapData: TreemapDataPoint[] = stockData.slice(0, 50).map(stock => {
+  const treemapData: TreemapDataPoint[] = stockData.slice(0, 100).map(stock => {
     return {
       x: `${stock.Ticker} (${stock.Pct_Chg.toFixed(2)}%)`,
       y: Math.abs(stock.Weight * 100), // Using weight for size (scaled for visibility)
@@ -62,11 +62,18 @@ const StockHeatmap: React.FC = () => {
       type: 'treemap',
       toolbar: {
         show: true
-      }
+      },
+      height: '100%',
+      width: '100%'
     },
     title: {
       text: 'S&P 500 Stock Performance',
-      align: 'center'
+      align: 'center',
+      style: {
+        fontSize: '16px',
+        fontWeight: 'normal'
+      },
+      margin: 5
     },
     tooltip: {
       custom: function({ seriesIndex, dataPointIndex, w }: any) {
@@ -84,7 +91,9 @@ const StockHeatmap: React.FC = () => {
     },
     legend: {
       show: true,
-      position: 'bottom',
+      position: 'top',
+      horizontalAlign: 'right',
+      fontSize: '12px',
       customLegendItems: [
         'Strong Loss (-3% or worse)', 
         'Loss (0% to -3%)', 
@@ -114,7 +123,8 @@ const StockHeatmap: React.FC = () => {
         options={options}
         series={series}
         type="treemap"
-        height={650}
+        height="100%"
+        width="100%"
       />
     </div>
   );
