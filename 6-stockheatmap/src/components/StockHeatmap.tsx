@@ -12,10 +12,10 @@ interface StockData {
   Pct_Chg: number;
 }
 
-interface HeatmapDataPoint {
+interface TreemapDataPoint {
   x: string;
   y: number;
-  value: number;
+  fillColor?: string;
 }
 
 const StockHeatmap: React.FC = () => {
@@ -39,64 +39,73 @@ const StockHeatmap: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  // Prepare data for the heatmap
-  const heatmapData: HeatmapDataPoint[] = stockData.slice(0, 30).map(stock => {
+  // Helper function to determine color based on percentage change
+  const getColorForPercentChange = (pctChange: number): string => {
+    if (pctChange <= -3) return '#FF4560';
+    if (pctChange < 0) return '#FF8B9A';
+    if (pctChange === 0) return '#B3B3B3';
+    if (pctChange < 3) return '#90EE90';
+    return '#00E396';
+  };
+
+  // Prepare data for the treemap
+  const treemapData: TreemapDataPoint[] = stockData.slice(0, 50).map(stock => {
     return {
-      x: stock.Ticker,
-      y: Math.abs(stock.Weight * 10), // Using weight for size (scaled for visibility)
-      value: stock.Pct_Chg // Using percentage change for color
+      x: `${stock.Ticker} (${stock.Pct_Chg.toFixed(2)}%)`,
+      y: Math.abs(stock.Weight * 100), // Using weight for size (scaled for visibility)
+      fillColor: getColorForPercentChange(stock.Pct_Chg)
     };
   });
 
   const options: ApexOptions = {
     chart: {
-      type: 'heatmap',
+      type: 'treemap',
       toolbar: {
-        show: false
+        show: true
+      }
+    },
+    title: {
+      text: 'S&P 500 Stock Performance',
+      align: 'center'
+    },
+    tooltip: {
+      custom: function({ seriesIndex, dataPointIndex, w }: any) {
+        const data = w.config.series[seriesIndex].data[dataPointIndex];
+        return `<div class="custom-tooltip">
+          <span>${data.x}</span>
+        </div>`;
+      }
+    },
+    plotOptions: {
+      treemap: {
+        distributed: true,
+        enableShades: false
+      }
+    },
+    legend: {
+      show: true,
+      position: 'bottom',
+      customLegendItems: [
+        'Strong Loss (-3% or worse)', 
+        'Loss (0% to -3%)', 
+        'Neutral (0%)', 
+        'Gain (0% to 3%)', 
+        'Strong Gain (3% or better)'
+      ],
+      markers: {
+        fillColors: ['#FF4560', '#FF8B9A', '#B3B3B3', '#90EE90', '#00E396']
       }
     },
     dataLabels: {
       enabled: true,
-      formatter: function(val: number) {
-        return val ? val.toFixed(2) + '%' : '';
-      }
-    },
-    colors: ["#008FFB"],
-    title: {
-      text: 'S&P 500 Stock Performance'
-    },
-    tooltip: {
-      y: {
-        formatter: function(val: number) {
-          return val + '%';
-        }
-      }
-    },
-    plotOptions: {
-      heatmap: {
-        colorScale: {
-          ranges: [
-            {
-              from: -10,
-              to: 0,
-              color: '#FF4560', // Red for negative
-              name: 'Loss',
-            },
-            {
-              from: 0,
-              to: 10,
-              color: '#00E396', // Green for positive
-              name: 'Gain',
-            }
-          ]
-        }
+      style: {
+        fontSize: '12px',
       }
     }
   };
 
   const series = [{
-    name: 'Percentage Change',
-    data: heatmapData
+    data: treemapData
   }];
 
   return (
@@ -104,11 +113,11 @@ const StockHeatmap: React.FC = () => {
       <Chart
         options={options}
         series={series}
-        type="heatmap"
-        height={550}
+        type="treemap"
+        height={650}
       />
     </div>
   );
 };
 
-export default StockHeatmap; 
+export default StockHeatmap;
