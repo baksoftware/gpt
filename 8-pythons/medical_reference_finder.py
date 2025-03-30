@@ -2,7 +2,7 @@
 """
 Medical Reference Finder
 
-This script calls OpenAI's GPT-4o model to find URL references related to a medical topic,
+This script uses OpenAI's web search API to find URL references related to a medical topic,
 and then validates that each URL actually exists.
 """
 
@@ -20,7 +20,7 @@ DEFAULT_NUM_REFERENCES = 5
 
 def setup_argparse() -> argparse.Namespace:
     """Set up and parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Find medical references using GPT-4o.")
+    parser = argparse.ArgumentParser(description="Find medical references using OpenAI's web search API.")
     parser.add_argument("topic", help="Medical topic to search for references")
     parser.add_argument(
         "--num-refs", 
@@ -47,7 +47,7 @@ def get_openai_client(api_key: str = None) -> openai.OpenAI:
 
 def get_references(client: openai.OpenAI, topic: str, num_refs: int) -> List[Dict[str, str]]:
     """
-    Call GPT-4o to get references about the medical topic.
+    Use OpenAI's web search API to get references about the medical topic.
     
     Returns a list of dictionaries with title and url keys.
     """
@@ -72,39 +72,88 @@ def get_references(client: openai.OpenAI, topic: str, num_refs: int) -> List[Dic
     user_prompt = f"Find {num_refs} reliable medical references (with exact URLs) about: {topic}"
     
     try:
-        response = client.chat.completions.create(
-            model="o3-mini",
-            response_format={"type": "json_object"},
+        # First, use the search API to get relevant URLs
+        search_response = client.chat.completions.create(
+            model="gpt-4o-mini-search-preview",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            # temperature=0.3,
+            tools=[{
+                "type": "function",
+                "function": {
+                    "name": "search_web",
+                    "description": "Search the web for medical information",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "The search query"
+                            },
+                            "num_results": {
+                                "type": "integer",
+                                "description": "Number of results to return"
+                            }
+                        },
+                        "required": ["query", "num_results"]
+                    }
+                }
+            }],
+            tool_choice={"type": "function", "function": {"name": "search_web"}},
+            response_format={"type": "json_object"}
         )
         
-        # Extract and parse the JSON response
-        content = response.choices[0].message.content
-        references = json.loads(content).get("references", [])
+        # Extract the search query from the response
+        search_query = json.loads(search_response.choices[0].message.tool_calls[0].function.arguments)["query"]
         
-        if not references:
-            # Try to parse the entire content as a JSON array
-            try:
-                data = json.loads(content)
-                if isinstance(data, list):
-                    references = data
-                elif isinstance(data, dict) and any(key in data for key in ["data", "results", "items"]):
-                    # Try common key names for lists
-                    for key in ["data", "results", "items", "references"]:
-                        if key in data and isinstance(data[key], list):
-                            references = data[key]
-                            break
-            except:
-                pass
+        # Now perform the actual web search
+        search_results = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that formats search results into a structured JSON format."},
+                {"role": "user", "content": f"Search for: {search_query}"}
+            ],
+            tools=[{
+                "type": "function",
+                "function": {
+                    "name": "search_web",
+                    "description": "Search the web for medical information",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "The search query"
+                            },
+                            "num_results": {
+                                "type": "integer",
+                                "description": "Number of results to return"
+                            }
+                        },
+                        "required": ["query", "num_results"]
+                    }
+                }
+            }],
+            tool_choice={"type": "function", "function": {"name": "search_web"}},
+            response_format={"type": "json_object"}
+        )
+        
+        # Parse the search results
+        results = json.loads(search_results.choices[0].message.tool_calls[0].function.arguments)
+        
+        # Format the results into our expected structure
+        references = []
+        for result in results.get("results", [])[:num_refs]:
+            references.append({
+                "title": result.get("title", "Untitled"),
+                "url": result.get("url", "")
+            })
             
         return references
     
     except Exception as e:
-        print(f"Error calling OpenAI API: {e}")
+        print(f"Error using OpenAI's web search API: {e}")
         sys.exit(1)
 
 def validate_urls(references: List[Dict[str, str]]) -> List[Dict[str, Any]]:
@@ -220,7 +269,7 @@ def main():
     # Initialize OpenAI client
     client = get_openai_client(args.api_key)
     
-    # Get references from GPT-4o
+    # Get references from OpenAI's web search API
     references = get_references(client, args.topic, args.num_refs)
     
     if not references:
