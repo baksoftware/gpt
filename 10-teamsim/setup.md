@@ -1,4 +1,6 @@
-# History
+# Setup
+
+# Origin
 
 Chatgpt prompt (o3):
 
@@ -17,4 +19,10 @@ please implement the basic parts of what is written in @prd.md.
 
 And then continue, continue, continue.
 
-i.e. this was one
+i.e. this was one shotted
+
+# Run
+
+Run with
+
+streamlit run streamlit_app.py 
