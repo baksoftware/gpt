@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+      "MarkItDown MCP Server": {
+        "command": "uv",
+        "args": [
+          "run",
+          "--with",
+          "mcp[cli]",
+          "mcp",
+          "run",
+          "/Users/madsbak/gpt/9-mcp/server.py"
+        ]
+      }
+    }
+  }

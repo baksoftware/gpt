@@ -1,2 +1,5 @@
 **/.cache/**
 3-questions/src/config/config.ts
+.DS_Store
+__pycaache__
+__pycache__
