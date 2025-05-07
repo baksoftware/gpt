@@ -1,0 +1,8 @@
+{
+    "openai_models":
+    {
+        "fast": "gpt-4.1-nano",
+        "medium": "gpt-4.1-mini",
+        "best": "gpt-4.1"
+    }
+}

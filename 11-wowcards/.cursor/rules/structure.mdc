@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Application entry point in [app.py](mdc:app.py)
+UI components in [app_ui.py](mdc:app_ui.py)
+API for calling the LLM in [llm.py](mdc:llm.py)
+LLM queries in [card_query.py](mdc:card_query.py)
+App state in [state.py](mdc:state.py) 
