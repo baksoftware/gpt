@@ -5,56 +5,139 @@ import streamlit as st
 from card_query import generate_cards # Updated import
 
 def display_search_box_and_cards(container):
-    """Displays the search box and 10 cards based on the search query."""
-    search_query = container.text_area(
-        label="Enter your topic:", # Changed label
-        label_visibility="collapsed",
-        key="search_input", # Changed key
-        placeholder="Enter a topic to explore...", # Changed placeholder
-        value=st.session_state.get('search_query', ""), # Use a new state variable for search query
-        height=150,
-        on_change=lambda: setattr(st.session_state, 'search_query', st.session_state.search_input)
-    )
+    """Displays the search box, cards, and navigation buttons."""
 
-    if container.button("Search", key="search_button"): # Changed button text and key
-        if st.session_state.search_query:
-            st.session_state.cards = [] # Clear previous cards
-            with st.spinner("Fetching cards..."):
-                card_list_data = generate_cards(st.session_state.search_query)
-                if card_list_data and card_list_data.cards:
-                    # Convert Pydantic models to dicts for storing in session state if necessary,
-                    # or access attributes directly if session state handles Pydantic objects well.
-                    # Streamlit generally works well with Pydantic objects directly in session state.
-                    st.session_state.cards = card_list_data.cards
-                else:
-                    st.session_state.cards = [] # Ensure it's an empty list on failure
-                    # Error is already shown by generate_cards
-            st.rerun()
+    # --- Handle programmatic updates to search_input for the current run ---
+    # This must happen before the text_area widget is instantiated.
+    if 'next_run_search_input_value' in st.session_state:
+        st.session_state.search_input = st.session_state.next_run_search_input_value
+        # Ensure search_query (used for fetching) is also aligned if this was a programmatic update.
+        # The calling functions (Next/Back) are responsible for setting search_query appropriately before rerun.
+        del st.session_state.next_run_search_input_value
+
+    # Initialize query_history if it doesn't exist
+    if 'query_history' not in st.session_state:
+        st.session_state.query_history = []
+    if 'cards' not in st.session_state: # Ensure cards list exists
+        st.session_state.cards = []
+
+
+    # --- Back Button ---
+    # Show back button if there's a history to go back to (more than just the current query if it's already added)
+    # or if there's at least one item if the current query isn't yet the last in history.
+    # Simplified: show if history has at least one item to potentially go back to.
+    # The actual logic inside handles if it's possible to go back.
+    if st.session_state.query_history: 
+        if container.button("Back", key="back_button"):
+            if len(st.session_state.query_history) > 1: # Need at least two items to go "back"
+                st.session_state.query_history.pop() # Remove current query from history
+                previous_query = st.session_state.query_history[-1] # Get the actual previous query
+                
+                st.session_state.search_query = previous_query
+                st.session_state.next_run_search_input_value = previous_query # For text area display on next run
+                
+                st.session_state.cards = [] # Clear current cards
+                with st.spinner("Fetching cards..."):
+                    card_list_data = generate_cards(st.session_state.search_query)
+                    if card_list_data and card_list_data.cards:
+                        st.session_state.cards = card_list_data.cards
+                    else:
+                        st.session_state.cards = []
+                st.rerun()
+            elif len(st.session_state.query_history) == 1 and st.session_state.get('search_query') != st.session_state.query_history[0]:
+                # This case handles if we are on a query not yet added to history's end, and want to go to history's only item.
+                # However, current history logic in update_history_and_search appends new queries.
+                # So, len > 1 is the primary condition.
+                # For robustness, if only one item in history, and current search is different, go to that one.
+                previous_query = st.session_state.query_history[0]
+                st.session_state.search_query = previous_query
+                st.session_state.next_run_search_input_value = previous_query
+                st.session_state.cards = []
+                with st.spinner("Fetching cards..."):
+                    card_list_data = generate_cards(st.session_state.search_query)
+                    if card_list_data and card_list_data.cards:
+                        st.session_state.cards = card_list_data.cards
+                    else:
+                        st.session_state.cards = []
+                st.rerun()
+            else:
+                # Cannot go back further or history is in an unexpected state
+                st.toast("No previous query to go back to.")
+
+
+    # Determine the value for the text_area.
+    # Priority: 1. User's direct input via `st.session_state.search_input` (if it exists from typing or programmatic set)
+    #           2. Current `st.session_state.search_query` (the active query for fetching cards)
+    #           3. Default empty string.
+    # `search_input` is set by `next_run_search_input_value` at the top for programmatic changes.
+    # User typing also updates `search_input` due to the key.
+    text_area_value = st.session_state.get('search_input', st.session_state.get('search_query', ""))
+
+    search_query_text_area = container.text_area(
+        label="Enter your topic:",
+        label_visibility="collapsed",
+        key="search_input", # This binds the widget's state to st.session_state.search_input
+        placeholder="Enter a topic to explore...",
+        value=text_area_value, 
+        height=68,
+        on_change=lambda: setattr(st.session_state, 'search_query_from_input', st.session_state.search_input)
+    )
+    
+    def update_history_and_search(new_query):
+        # Add current st.session_state.search_query to history if it's different from the last one 
+        # or if history is empty, and it's not an empty string.
+        # This is before st.session_state.search_query is updated to new_query.
+        current_active_query = st.session_state.get('search_query', "")
+        if current_active_query: # Only add non-empty queries
+            if not st.session_state.query_history or st.session_state.query_history[-1] != current_active_query:
+                st.session_state.query_history.append(current_active_query)
+
+        st.session_state.search_query = new_query # Update the active search query
+
+        # Add the new_query itself to history if it's different from the (now previous) last item.
+        # This makes new_query the latest in history.
+        if new_query: # Only add non-empty queries
+            if not st.session_state.query_history or st.session_state.query_history[-1] != new_query:
+                st.session_state.query_history.append(new_query)
+            # If new_query is same as last, query_history is already correct.
+
+        st.session_state.cards = [] # Clear previous cards
+        with st.spinner("Fetching cards..."):
+            card_list_data = generate_cards(st.session_state.search_query)
+            if card_list_data and card_list_data.cards:
+                st.session_state.cards = card_list_data.cards
+            else:
+                st.session_state.cards = []
+        st.rerun()
+
+    if container.button("Search", key="search_button"):
+        # Use the current value from the text_area (bound to st.session_state.search_input)
+        query_to_search = st.session_state.get('search_input', "").strip()
+        if query_to_search:
+            # For a manual search, the text area itself (search_input) is the source of truth.
+            # We want search_query to align with search_input.
+            st.session_state.search_query = query_to_search 
+            update_history_and_search(query_to_search)
         else:
             st.warning("Please enter a topic to search.")
-
+    
     # --- Card Display ---
     if st.session_state.get('cards', []):
-        container.write(f"Found {len(st.session_state.cards)} cards for: {st.session_state.search_query}")
-        # Display cards in a more structured way, e.g., 2 columns for better layout
         cols = container.columns(2)
         for i, card_data in enumerate(st.session_state.cards):
             col_index = i % 2
             with cols[col_index]:
                 with st.container(border=True):
-                    # card_data is now a Card Pydantic object, access attributes directly
                     st.markdown(f"### {card_data.title}")
                     st.markdown(card_data.content)
-                    # Placeholder for click functionality (retrieve nearby cards)
-                    button_label = card_data.title if len(card_data.title) <= 25 else card_data.title[:22] + "..."
-                    if st.button(f"Explore '{button_label}'", key=f"explore_card_{i}", help="Click to find related cards (not implemented yet)"):
-                        st.info(f"Exploring nearby cards for: {card_data.title} (not yet implemented)")
-                        # Future: st.session_state.selected_card_for_nearby_search = card_data
-                        # Future: Call a function to get nearby cards
-                        # Future: st.rerun()
+                    if st.button("Next", key=f"next_card_{i}"):
+                        new_search_query = f"{card_data.title}. {card_data.content}"
+                        # Set search_query for the actual search
+                        st.session_state.search_query = new_search_query
+                        # Set for text_area display on the *next* run
+                        st.session_state.next_run_search_input_value = new_search_query
+                        # update_history_and_search will use st.session_state.search_query, update history, fetch, rerun
+                        update_history_and_search(new_search_query)
         
     elif st.session_state.get('search_query') and not st.session_state.get('cards'):
-        # This case is when search was done, spinner finished, but no cards were found (error handled in generate_cards)
-        # Or if generate_cards returned None/empty list explicitly and an error was shown.
-        # We might not need a specific message here if generate_cards handles user feedback.
-        pass 
+        pass # Handled by spinner/generate_cards 
