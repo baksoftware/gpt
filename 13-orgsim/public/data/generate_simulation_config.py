@@ -8,7 +8,7 @@ PERSON_WORK_TICKS = {
     "PM": {"task": 3},
     "SwDev": {"code": 24},
     "Tester": {"release": 12},
-    "Customer": {"idea": 5, "need": 3, "done": 500}
+    "Customer": {"idea": 5, "need": 3, "done": 1}
 }
 
 WORK_FLOW = {
@@ -73,7 +73,7 @@ def generate_people(teams_list):
                 "initialTeamName": team["name"]
             })
             person_counter += 1
-        # team_people = sorted(team_people, key=lambda x: x["discipline"])
+        team_people = sorted(team_people, key=lambda x: x["discipline"])
         people.extend(team_people)
     return people
 
