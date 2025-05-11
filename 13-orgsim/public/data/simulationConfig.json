@@ -14,8 +14,8 @@
     { "id": "tester_2", "name": "Terry Tester", "discipline": "tester", "initialTeamName": "Team Beta" }
   ],
   "initialWorkUnits": [
-    { "id": "wu_1", "type": "need", "payload": { "description": "Implement feature X" } },
-    { "id": "wu_2", "type": "need", "payload": { "description": "Fix bug Y" } }
+    { "id": "wu_1", "type": "idea", "payload": { "description": "Implement feature X" } },
+    { "id": "wu_2", "type": "idea", "payload": { "description": "Fix bug Y" } }
   ],
   "personWorkTicks": {
     "designer": {
@@ -31,14 +31,16 @@
       "code": 2
     },
     "customer_representative": {
-        "release": 4 
+      "idea": 3,
+      "release": 4 
     }
   },
   "workFlow": {
+    "idea": { "nextType": "need", "targetDiscipline": "customer_representative" },
     "need": { "nextType": "design", "targetDiscipline": "designer" },
     "design": { "nextType": "task", "targetDiscipline": "product manager" },
     "task": { "nextType": "code", "targetDiscipline": "software developer" },
     "code": { "nextType": "release", "targetDiscipline": "tester" },
-    "release": { "nextType": "need", "targetDiscipline": "customer_representative" } 
+    "release": { "nextType": "done", "targetDiscipline": "customer_representative" } 
   }
 } 

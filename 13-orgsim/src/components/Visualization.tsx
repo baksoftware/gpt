@@ -83,8 +83,9 @@ const AnimatedPixiContainer: React.FC<AnimatedPixiContainerProps> = ({ x: target
     // However, for existing elements, we want to animate from their current spot.
   }, [targetX, targetY, idForAnimation, currentX, currentY]); // currentX/Y added to ensure animation starts from visual pos
 
-  useTick((delta: number, ticker: PIXI.Ticker) => {
-    if (!animationState.current.isAnimating) return;
+  useTick(() => {
+    if (!animationState.current.isAnimating)
+      return;
 
     const now = performance.now();
     const elapsed = now - animationState.current.startTime;
@@ -104,7 +105,7 @@ const AnimatedPixiContainer: React.FC<AnimatedPixiContainerProps> = ({ x: target
       setCurrentX(animationState.current.endX); // Ensure it lands exactly on target
       setCurrentY(animationState.current.endY);
     }
-  }, { isEnabled: animationState.current.isAnimating }); // Using options object for enabling/disabling tick
+  }); // Using options object for enabling/disabling tick
 
   return <pixiContainer x={currentX} y={currentY}>{children}</pixiContainer>;
 };
@@ -323,11 +324,10 @@ const Visualization: React.FC = () => {
                   <pixiGraphics
                     draw={(g: PIXI.Graphics) => {
                       g.clear();
+                      g.lineStyle(1, 0x333333);
                       g.beginFill(team.isCustomerTeam ? 0xdddddd : 0xcccccc);
                       g.drawCircle(0, 0, TEAM_RADIUS);
                       g.endFill();
-                      g.lineStyle(1, 0x333333);
-                      g.drawCircle(0,0, TEAM_RADIUS);
                     }}
                   />
                   <pixiText
