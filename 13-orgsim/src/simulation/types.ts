@@ -6,7 +6,6 @@ export interface Person {
   name: string;
   discipline: string;
   teamId: string;
-  currentWorkUnitId: string | null;
   workRemainingTicks: number;
 }
 
@@ -22,20 +21,14 @@ export interface WorkUnit {
   type: string;
   currentOwnerId: string | null; // Person currently working on it or team backlog if no specific person
   currentTeamOwnerId: string | null; // Team currently responsible, especially if it's in a backlog
-  backlog: {
-    personId: string | null; // Null if it was a team-level action or initial state
-    teamId: string;
-    completedAtTick: number;
-    action: string; // e.g., "completed_design", "assigned_to_developer"
-  }[];
 }
 
-export type PersonConfigItem = Omit<Person, 'currentWorkUnitId' | 'workRemainingTicks' | 'teamId'> & { initialTeamName: string };
+export type PersonConfigItem = Omit<Person, 'workRemainingTicks' | 'teamId'> & { initialTeamName: string };
 
 export interface SimulationConfig {
   teams: Omit<Team, 'members'>[]; // Initial team structure without people
   people: PersonConfigItem[];
-  initialWorkUnits: Omit<WorkUnit, 'backlog' | 'currentOwnerId' | 'currentTeamOwnerId'>[];
+  initialWorkUnits: Omit<WorkUnit, 'currentOwnerId' | 'currentTeamOwnerId'>[];
   personWorkTicks: {
     [key in string]?: { // Optional because customer_representative might not 'work' on items
       [key in string]?: number; // Ticks per work unit type for a discipline
