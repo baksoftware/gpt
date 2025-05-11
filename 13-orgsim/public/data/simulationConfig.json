@@ -53,405 +53,471 @@
   ],
   "people": [
     {
-      "id": "person_1",
-      "name": "Client Rep 1",
+      "id": "person_1-0",
+      "name": "Customer-0",
       "discipline": "Customer",
       "initialTeamName": "Customer"
     },
     {
-      "id": "person_2",
-      "name": "Swdev_2_Team_A",
-      "discipline": "SwDev",
-      "initialTeamName": "Team A"
+      "id": "person_1-1",
+      "name": "Customer-1",
+      "discipline": "Customer",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_1-2",
+      "name": "Customer-2",
+      "discipline": "Customer",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_1-3",
+      "name": "Customer-3",
+      "discipline": "Customer",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_1-4",
+      "name": "Customer-4",
+      "discipline": "Customer",
+      "initialTeamName": "Customer"
     },
     {
       "id": "person_3",
-      "name": "Designer_3_Team_A",
+      "name": "Designer_3",
       "discipline": "Designer",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_2",
+      "name": "PM_2",
+      "discipline": "PM",
       "initialTeamName": "Team A"
     },
     {
       "id": "person_4",
-      "name": "Designer_4_Team_A",
-      "discipline": "Designer",
-      "initialTeamName": "Team A"
-    },
-    {
-      "id": "person_5",
-      "name": "Swdev_5_Team_A",
+      "name": "SwDev_4",
       "discipline": "SwDev",
       "initialTeamName": "Team A"
     },
     {
       "id": "person_6",
-      "name": "Designer_6_Team_A",
-      "discipline": "Designer",
+      "name": "SwDev_6",
+      "discipline": "SwDev",
       "initialTeamName": "Team A"
     },
     {
       "id": "person_7",
-      "name": "Swdev_7_Team_A",
+      "name": "SwDev_7",
       "discipline": "SwDev",
       "initialTeamName": "Team A"
     },
     {
       "id": "person_8",
-      "name": "Pm_8_Team_B",
-      "discipline": "PM",
-      "initialTeamName": "Team B"
+      "name": "SwDev_8",
+      "discipline": "SwDev",
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_9",
-      "name": "Tester_9_Team_B",
+      "name": "SwDev_9",
+      "discipline": "SwDev",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_5",
+      "name": "Tester_5",
       "discipline": "Tester",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_11",
+      "name": "Designer_11",
+      "discipline": "Designer",
       "initialTeamName": "Team B"
     },
     {
       "id": "person_10",
-      "name": "Tester_10_Team_B",
-      "discipline": "Tester",
-      "initialTeamName": "Team B"
-    },
-    {
-      "id": "person_11",
-      "name": "Designer_11_Team_B",
-      "discipline": "Designer",
+      "name": "PM_10",
+      "discipline": "PM",
       "initialTeamName": "Team B"
     },
     {
       "id": "person_12",
-      "name": "Pm_12_Team_B",
-      "discipline": "PM",
-      "initialTeamName": "Team B"
-    },
-    {
-      "id": "person_13",
-      "name": "Tester_13_Team_B",
-      "discipline": "Tester",
+      "name": "SwDev_12",
+      "discipline": "SwDev",
       "initialTeamName": "Team B"
     },
     {
       "id": "person_14",
-      "name": "Swdev_14_Team_C",
+      "name": "SwDev_14",
       "discipline": "SwDev",
-      "initialTeamName": "Team C"
+      "initialTeamName": "Team B"
     },
     {
       "id": "person_15",
-      "name": "Designer_15_Team_C",
-      "discipline": "Designer",
-      "initialTeamName": "Team C"
+      "name": "SwDev_15",
+      "discipline": "SwDev",
+      "initialTeamName": "Team B"
     },
     {
       "id": "person_16",
-      "name": "Designer_16_Team_C",
-      "discipline": "Designer",
-      "initialTeamName": "Team C"
+      "name": "SwDev_16",
+      "discipline": "SwDev",
+      "initialTeamName": "Team B"
     },
     {
       "id": "person_17",
-      "name": "Designer_17_Team_C",
-      "discipline": "Designer",
-      "initialTeamName": "Team C"
+      "name": "SwDev_17",
+      "discipline": "SwDev",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_13",
+      "name": "Tester_13",
+      "discipline": "Tester",
+      "initialTeamName": "Team B"
     },
     {
       "id": "person_18",
-      "name": "Tester_18_Team_C",
+      "name": "Tester_18",
       "discipline": "Tester",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_20",
+      "name": "Designer_20",
+      "discipline": "Designer",
       "initialTeamName": "Team C"
     },
     {
       "id": "person_19",
-      "name": "Designer_19_Team_C",
-      "discipline": "Designer",
-      "initialTeamName": "Team C"
-    },
-    {
-      "id": "person_20",
-      "name": "Tester_20_Team_C",
-      "discipline": "Tester",
+      "name": "PM_19",
+      "discipline": "PM",
       "initialTeamName": "Team C"
     },
     {
       "id": "person_21",
-      "name": "Swdev_21_Team_D",
+      "name": "SwDev_21",
       "discipline": "SwDev",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_22",
-      "name": "Tester_22_Team_D",
-      "discipline": "Tester",
-      "initialTeamName": "Team D"
+      "initialTeamName": "Team C"
     },
     {
       "id": "person_23",
-      "name": "Tester_23_Team_D",
+      "name": "SwDev_23",
+      "discipline": "SwDev",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_22",
+      "name": "Tester_22",
       "discipline": "Tester",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_25",
+      "name": "Designer_25",
+      "discipline": "Designer",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_33",
+      "name": "Designer_33",
+      "discipline": "Designer",
       "initialTeamName": "Team D"
     },
     {
       "id": "person_24",
-      "name": "Designer_24_Team_D",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_25",
-      "name": "Tester_25_Team_D",
-      "discipline": "Tester",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_26",
-      "name": "Swdev_26_Team_D",
-      "discipline": "SwDev",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_27",
-      "name": "Designer_27_Team_D",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_28",
-      "name": "Pm_28_Team_D",
+      "name": "PM_24",
       "discipline": "PM",
       "initialTeamName": "Team D"
     },
     {
+      "id": "person_26",
+      "name": "SwDev_26",
+      "discipline": "SwDev",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_28",
+      "name": "SwDev_28",
+      "discipline": "SwDev",
+      "initialTeamName": "Team D"
+    },
+    {
       "id": "person_29",
-      "name": "Swdev_29_Team_D",
+      "name": "SwDev_29",
       "discipline": "SwDev",
       "initialTeamName": "Team D"
     },
     {
       "id": "person_30",
-      "name": "Swdev_30_Team_E",
+      "name": "SwDev_30",
       "discipline": "SwDev",
-      "initialTeamName": "Team E"
+      "initialTeamName": "Team D"
     },
     {
       "id": "person_31",
-      "name": "Swdev_31_Team_E",
+      "name": "SwDev_31",
       "discipline": "SwDev",
-      "initialTeamName": "Team E"
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_27",
+      "name": "Tester_27",
+      "discipline": "Tester",
+      "initialTeamName": "Team D"
     },
     {
       "id": "person_32",
-      "name": "Designer_32_Team_E",
+      "name": "Tester_32",
+      "discipline": "Tester",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_35",
+      "name": "Designer_35",
       "discipline": "Designer",
       "initialTeamName": "Team E"
     },
     {
-      "id": "person_33",
-      "name": "Tester_33_Team_E",
-      "discipline": "Tester",
-      "initialTeamName": "Team E"
-    },
-    {
       "id": "person_34",
-      "name": "Swdev_34_Team_E",
-      "discipline": "SwDev",
-      "initialTeamName": "Team E"
-    },
-    {
-      "id": "person_35",
-      "name": "Swdev_35_Team_E",
-      "discipline": "SwDev",
+      "name": "PM_34",
+      "discipline": "PM",
       "initialTeamName": "Team E"
     },
     {
       "id": "person_36",
-      "name": "Swdev_36_Team_E",
-      "discipline": "SwDev",
-      "initialTeamName": "Team E"
-    },
-    {
-      "id": "person_37",
-      "name": "Swdev_37_Team_E",
+      "name": "SwDev_36",
       "discipline": "SwDev",
       "initialTeamName": "Team E"
     },
     {
       "id": "person_38",
-      "name": "Pm_38_Team_F",
-      "discipline": "PM",
-      "initialTeamName": "Team F"
+      "name": "SwDev_38",
+      "discipline": "SwDev",
+      "initialTeamName": "Team E"
     },
     {
       "id": "person_39",
-      "name": "Tester_39_Team_F",
-      "discipline": "Tester",
-      "initialTeamName": "Team F"
+      "name": "SwDev_39",
+      "discipline": "SwDev",
+      "initialTeamName": "Team E"
     },
     {
       "id": "person_40",
-      "name": "Pm_40_Team_F",
-      "discipline": "PM",
-      "initialTeamName": "Team F"
+      "name": "SwDev_40",
+      "discipline": "SwDev",
+      "initialTeamName": "Team E"
     },
     {
       "id": "person_41",
-      "name": "Swdev_41_Team_F",
+      "name": "SwDev_41",
       "discipline": "SwDev",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_37",
+      "name": "Tester_37",
+      "discipline": "Tester",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_43",
+      "name": "Designer_43",
+      "discipline": "Designer",
       "initialTeamName": "Team F"
     },
     {
       "id": "person_42",
-      "name": "Tester_42_Team_F",
+      "name": "PM_42",
+      "discipline": "PM",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_44",
+      "name": "SwDev_44",
+      "discipline": "SwDev",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_46",
+      "name": "SwDev_46",
+      "discipline": "SwDev",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_47",
+      "name": "SwDev_47",
+      "discipline": "SwDev",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_48",
+      "name": "SwDev_48",
+      "discipline": "SwDev",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_45",
+      "name": "Tester_45",
       "discipline": "Tester",
       "initialTeamName": "Team F"
     },
     {
-      "id": "person_43",
-      "name": "Tester_43_Team_G",
-      "discipline": "Tester",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_44",
-      "name": "Designer_44_Team_G",
+      "id": "person_50",
+      "name": "Designer_50",
       "discipline": "Designer",
       "initialTeamName": "Team G"
     },
     {
-      "id": "person_45",
-      "name": "Designer_45_Team_G",
+      "id": "person_58",
+      "name": "Designer_58",
       "discipline": "Designer",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_46",
-      "name": "Designer_46_Team_G",
-      "discipline": "Designer",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_47",
-      "name": "Swdev_47_Team_G",
-      "discipline": "SwDev",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_48",
-      "name": "Tester_48_Team_G",
-      "discipline": "Tester",
       "initialTeamName": "Team G"
     },
     {
       "id": "person_49",
-      "name": "Pm_49_Team_G",
+      "name": "PM_49",
       "discipline": "PM",
       "initialTeamName": "Team G"
     },
     {
-      "id": "person_50",
-      "name": "Designer_50_Team_H",
-      "discipline": "Designer",
-      "initialTeamName": "Team H"
-    },
-    {
       "id": "person_51",
-      "name": "Tester_51_Team_H",
-      "discipline": "Tester",
-      "initialTeamName": "Team H"
-    },
-    {
-      "id": "person_52",
-      "name": "Tester_52_Team_H",
-      "discipline": "Tester",
-      "initialTeamName": "Team H"
+      "name": "SwDev_51",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_53",
-      "name": "Designer_53_Team_H",
-      "discipline": "Designer",
-      "initialTeamName": "Team H"
+      "name": "SwDev_53",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_54",
-      "name": "Designer_54_Team_H",
-      "discipline": "Designer",
-      "initialTeamName": "Team H"
+      "name": "SwDev_54",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_55",
-      "name": "Designer_55_Team_H",
-      "discipline": "Designer",
-      "initialTeamName": "Team H"
+      "name": "SwDev_55",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_56",
-      "name": "Pm_56_Team_H",
-      "discipline": "PM",
-      "initialTeamName": "Team H"
+      "name": "SwDev_56",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_52",
+      "name": "Tester_52",
+      "discipline": "Tester",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_57",
-      "name": "Tester_57_Team_H",
+      "name": "Tester_57",
       "discipline": "Tester",
-      "initialTeamName": "Team H"
+      "initialTeamName": "Team G"
     },
     {
-      "id": "person_58",
-      "name": "Designer_58_Team_H",
+      "id": "person_60",
+      "name": "Designer_60",
       "discipline": "Designer",
       "initialTeamName": "Team H"
     },
     {
       "id": "person_59",
-      "name": "Designer_59_Team_H",
-      "discipline": "Designer",
+      "name": "PM_59",
+      "discipline": "PM",
       "initialTeamName": "Team H"
     },
     {
-      "id": "person_60",
-      "name": "Tester_60_Team_I",
-      "discipline": "Tester",
-      "initialTeamName": "Team I"
-    },
-    {
       "id": "person_61",
-      "name": "Tester_61_Team_I",
-      "discipline": "Tester",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_62",
-      "name": "Designer_62_Team_I",
-      "discipline": "Designer",
-      "initialTeamName": "Team I"
+      "name": "SwDev_61",
+      "discipline": "SwDev",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_63",
-      "name": "Designer_63_Team_I",
-      "discipline": "Designer",
-      "initialTeamName": "Team I"
+      "name": "SwDev_63",
+      "discipline": "SwDev",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_64",
-      "name": "Designer_64_Team_I",
-      "discipline": "Designer",
-      "initialTeamName": "Team I"
+      "name": "SwDev_64",
+      "discipline": "SwDev",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_65",
-      "name": "Designer_65_Team_I",
-      "discipline": "Designer",
-      "initialTeamName": "Team I"
+      "name": "SwDev_65",
+      "discipline": "SwDev",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_66",
-      "name": "Swdev_66_Team_I",
+      "name": "SwDev_66",
       "discipline": "SwDev",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_62",
+      "name": "Tester_62",
+      "discipline": "Tester",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_68",
+      "name": "Designer_68",
+      "discipline": "Designer",
       "initialTeamName": "Team I"
     },
     {
       "id": "person_67",
-      "name": "Swdev_67_Team_I",
+      "name": "PM_67",
+      "discipline": "PM",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_69",
+      "name": "SwDev_69",
       "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_71",
+      "name": "SwDev_71",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_72",
+      "name": "SwDev_72",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_73",
+      "name": "SwDev_73",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_74",
+      "name": "SwDev_74",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_70",
+      "name": "Tester_70",
+      "discipline": "Tester",
       "initialTeamName": "Team I"
     }
   ],
@@ -595,24 +661,584 @@
       "payload": {
         "description": "Generated idea 20"
       }
+    },
+    {
+      "id": "Work-21",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 21"
+      }
+    },
+    {
+      "id": "Work-22",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 22"
+      }
+    },
+    {
+      "id": "Work-23",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 23"
+      }
+    },
+    {
+      "id": "Work-24",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 24"
+      }
+    },
+    {
+      "id": "Work-25",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 25"
+      }
+    },
+    {
+      "id": "Work-26",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 26"
+      }
+    },
+    {
+      "id": "Work-27",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 27"
+      }
+    },
+    {
+      "id": "Work-28",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 28"
+      }
+    },
+    {
+      "id": "Work-29",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 29"
+      }
+    },
+    {
+      "id": "Work-30",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 30"
+      }
+    },
+    {
+      "id": "Work-31",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 31"
+      }
+    },
+    {
+      "id": "Work-32",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 32"
+      }
+    },
+    {
+      "id": "Work-33",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 33"
+      }
+    },
+    {
+      "id": "Work-34",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 34"
+      }
+    },
+    {
+      "id": "Work-35",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 35"
+      }
+    },
+    {
+      "id": "Work-36",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 36"
+      }
+    },
+    {
+      "id": "Work-37",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 37"
+      }
+    },
+    {
+      "id": "Work-38",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 38"
+      }
+    },
+    {
+      "id": "Work-39",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 39"
+      }
+    },
+    {
+      "id": "Work-40",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 40"
+      }
+    },
+    {
+      "id": "Work-41",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 41"
+      }
+    },
+    {
+      "id": "Work-42",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 42"
+      }
+    },
+    {
+      "id": "Work-43",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 43"
+      }
+    },
+    {
+      "id": "Work-44",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 44"
+      }
+    },
+    {
+      "id": "Work-45",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 45"
+      }
+    },
+    {
+      "id": "Work-46",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 46"
+      }
+    },
+    {
+      "id": "Work-47",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 47"
+      }
+    },
+    {
+      "id": "Work-48",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 48"
+      }
+    },
+    {
+      "id": "Work-49",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 49"
+      }
+    },
+    {
+      "id": "Work-50",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 50"
+      }
+    },
+    {
+      "id": "Work-51",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 51"
+      }
+    },
+    {
+      "id": "Work-52",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 52"
+      }
+    },
+    {
+      "id": "Work-53",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 53"
+      }
+    },
+    {
+      "id": "Work-54",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 54"
+      }
+    },
+    {
+      "id": "Work-55",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 55"
+      }
+    },
+    {
+      "id": "Work-56",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 56"
+      }
+    },
+    {
+      "id": "Work-57",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 57"
+      }
+    },
+    {
+      "id": "Work-58",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 58"
+      }
+    },
+    {
+      "id": "Work-59",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 59"
+      }
+    },
+    {
+      "id": "Work-60",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 60"
+      }
+    },
+    {
+      "id": "Work-61",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 61"
+      }
+    },
+    {
+      "id": "Work-62",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 62"
+      }
+    },
+    {
+      "id": "Work-63",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 63"
+      }
+    },
+    {
+      "id": "Work-64",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 64"
+      }
+    },
+    {
+      "id": "Work-65",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 65"
+      }
+    },
+    {
+      "id": "Work-66",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 66"
+      }
+    },
+    {
+      "id": "Work-67",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 67"
+      }
+    },
+    {
+      "id": "Work-68",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 68"
+      }
+    },
+    {
+      "id": "Work-69",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 69"
+      }
+    },
+    {
+      "id": "Work-70",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 70"
+      }
+    },
+    {
+      "id": "Work-71",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 71"
+      }
+    },
+    {
+      "id": "Work-72",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 72"
+      }
+    },
+    {
+      "id": "Work-73",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 73"
+      }
+    },
+    {
+      "id": "Work-74",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 74"
+      }
+    },
+    {
+      "id": "Work-75",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 75"
+      }
+    },
+    {
+      "id": "Work-76",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 76"
+      }
+    },
+    {
+      "id": "Work-77",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 77"
+      }
+    },
+    {
+      "id": "Work-78",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 78"
+      }
+    },
+    {
+      "id": "Work-79",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 79"
+      }
+    },
+    {
+      "id": "Work-80",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 80"
+      }
+    },
+    {
+      "id": "Work-81",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 81"
+      }
+    },
+    {
+      "id": "Work-82",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 82"
+      }
+    },
+    {
+      "id": "Work-83",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 83"
+      }
+    },
+    {
+      "id": "Work-84",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 84"
+      }
+    },
+    {
+      "id": "Work-85",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 85"
+      }
+    },
+    {
+      "id": "Work-86",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 86"
+      }
+    },
+    {
+      "id": "Work-87",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 87"
+      }
+    },
+    {
+      "id": "Work-88",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 88"
+      }
+    },
+    {
+      "id": "Work-89",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 89"
+      }
+    },
+    {
+      "id": "Work-90",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 90"
+      }
+    },
+    {
+      "id": "Work-91",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 91"
+      }
+    },
+    {
+      "id": "Work-92",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 92"
+      }
+    },
+    {
+      "id": "Work-93",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 93"
+      }
+    },
+    {
+      "id": "Work-94",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 94"
+      }
+    },
+    {
+      "id": "Work-95",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 95"
+      }
+    },
+    {
+      "id": "Work-96",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 96"
+      }
+    },
+    {
+      "id": "Work-97",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 97"
+      }
+    },
+    {
+      "id": "Work-98",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 98"
+      }
+    },
+    {
+      "id": "Work-99",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 99"
+      }
+    },
+    {
+      "id": "Work-100",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 100"
+      }
     }
   ],
   "personWorkTicks": {
     "Designer": {
-      "need": 3
+      "need": 2
     },
     "PM": {
       "design": 2
     },
     "SwDev": {
-      "task": 5
+      "task": 20
     },
     "Tester": {
-      "code": 2
+      "code": 3
     },
     "Customer": {
-      "idea": 3,
-      "release": 4
+      "idea": 1,
+      "release": 1
     }
   },
   "workFlow": {

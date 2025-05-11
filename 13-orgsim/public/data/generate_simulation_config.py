@@ -4,11 +4,11 @@ import argparse
 
 # Static data based on the provided simulationConfig.json
 PERSON_WORK_TICKS = {
-    "Designer": {"need": 3},
+    "Designer": {"need": 2},
     "PM": {"design": 2},
-    "SwDev": {"task": 5},
-    "Tester": {"code": 2},
-    "Customer": {"idea": 3, "release": 4}
+    "SwDev": {"task": 20},
+    "Tester": {"code": 3},
+    "Customer": {"idea": 1, "release": 1}
 }
 
 WORK_FLOW = {
@@ -18,11 +18,10 @@ WORK_FLOW = {
     "task": {"nextType": "code", "targetDiscipline": "SwDev"},
     "code": {"nextType": "release", "targetDiscipline": "Tester"},
     "release": {"nextType": "done", "targetDiscipline": "Customer"},
-    "done": { "targetDiscipline": "Customer"}
 }
 
 # Disciplines available for regular team members
-AVAILABLE_DISCIPLINES = ["Designer", "PM", "SwDev", "Tester"]
+AVAILABLE_DISCIPLINES = ["PM", "Designer", "SwDev", "Tester", "SwDev", "SwDev", "SwDev", "SwDev", "Tester", "Designer"]
 
 def generate_teams(num_total_teams):
     """Generates the list of teams, including one customer team."""
@@ -48,33 +47,34 @@ def generate_people(teams_list):
             break
     
     if customer_team_name:
-        people.append({
-            "id": f"person_{person_counter}",
-            "name": f"Client Rep {person_counter}",
-            "discipline": "Customer",
-            "initialTeamName": customer_team_name
-        })
+        for i in range(5):
+            people.append({
+                "id": f"person_{person_counter}-{i}",
+                "name": f"Customer-{i}",
+                "discipline": "Customer",
+                "initialTeamName": customer_team_name
+            })
         person_counter += 1
     else:
         # This should not happen if generate_teams always creates a customer team.
         print("Warning: No customer team was found to assign a representative.")
 
     regular_teams = [team for team in teams_list if not team.get("isCustomerTeam")]
-    for team in regular_teams:
-        num_people_in_team = random.randint(people_per_team_range[0], people_per_team_range[1])
-        for _ in range(num_people_in_team):
-            discipline = random.choice(AVAILABLE_DISCIPLINES)
-            # Generate a descriptive name, e.g., Designer_2_Team_A
-            name_prefix = discipline.split(' ')[0].capitalize() 
-            person_name = f"{name_prefix}_{person_counter}_{team['name'].replace(' ', '_')}"
-            
-            people.append({
+    for team in regular_teams:        
+        num_people_in_team = random.randint(5, 10)
+        team_people = []
+        for i in range(num_people_in_team):
+            discipline = AVAILABLE_DISCIPLINES[i % len(AVAILABLE_DISCIPLINES)]
+            person_name = f"{discipline}_{person_counter}"
+            team_people.append({
                 "id": f"person_{person_counter}",
                 "name": person_name,
                 "discipline": discipline,
                 "initialTeamName": team["name"]
             })
             person_counter += 1
+        team_people = sorted(team_people, key=lambda x: x["discipline"])
+        people.extend(team_people)
     return people
 
 def generate_initial_work_units(num_units):
@@ -101,7 +101,7 @@ def main():
         "--num_initial_workunits", 
         type=int, 
         required=False, 
-        default=20, 
+        default=100, 
         help="Number of initial work units (all will be of type 'idea')."
     )
     parser.add_argument(

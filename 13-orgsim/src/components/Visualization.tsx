@@ -25,8 +25,8 @@ interface Link extends d3.SimulationLinkDatum<Node> {
 // Keep existing color definitions (ensure they are numbers for PixiJS)
 const disciplineColors: Record<string, number> = {
   'Customer': 0xFFE5B4, // Light Amber
-  'Designer': 0xFFB6C1, // Light Pink
-  'PM': 0xB0E2FF, // Light Blue
+  'Designer': 0xFFD0D0, 
+  'PM': 0xFFB0B0,
   'SwDev': 0xE0FFE0, // Light Green
   'Tester': 0xAFEEEE // Light Turquoise
 };
@@ -45,8 +45,8 @@ const PERSON_RADIUS = 20;
 const WORK_UNIT_RADIUS = 16;
 const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
-const ANIMATION_DURATION = 50;
-const TICK_INTERVAL = 50;
+const ANIMATION_DURATION = 500;
+const TICK_INTERVAL = 100;
 
 const DONE_PILE_COLOR = 0x808080; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
@@ -239,7 +239,7 @@ const Visualization: React.FC = () => {
         }
         const personPosInTeam = getPersonPositionInTeam(personIndex, ownerTeam.members.length, TEAM_RADIUS);
         x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS/2;
-        y = teamPos.y + personPosInTeam.y + PERSON_RADIUS + WORK_UNIT_RADIUS/2;
+        y = teamPos.y + personPosInTeam.y + PERSON_RADIUS - WORK_UNIT_RADIUS/2;
       }
     } else if (wu.currentTeamOwnerId) {
       const teamIndex = teams.findIndex(t => t.id === wu.currentTeamOwnerId);
@@ -339,7 +339,8 @@ const Visualization: React.FC = () => {
                           draw={(g: PIXI.Graphics) => {
                             g.clear();
                             g.circle(0, 0, WORK_UNIT_RADIUS);
-                            g.fill(workUnitTypeColors[wu.type] || 0x00ff00);                            
+                            //g.fill(workUnitTypeColors[wu.type] || 0x00ff00);
+                            g.fill(0xfafafa);
                           }}
                         />
                           <pixiText 
