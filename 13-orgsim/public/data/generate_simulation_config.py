@@ -8,7 +8,7 @@ PERSON_WORK_TICKS = {
     "PM": {"task": 3},
     "SwDev": {"code": 24},
     "Tester": {"release": 12},
-    "Customer": {"idea": 5, "need": 3, "done": 1}
+    "Customer": {"idea": 1, "need": 1 }
 }
 
 WORK_FLOW = {
