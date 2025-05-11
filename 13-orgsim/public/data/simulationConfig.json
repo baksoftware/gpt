@@ -1160,7 +1160,7 @@
     },
     "Customer": {
       "idea": 1,
-      "done": 1
+      "need": 1
     }
   },
   "workFlow": {
