@@ -19,19 +19,19 @@
   ],
   "personWorkTicks": {
     "designer": {
-      "need": 10
+      "need": 3
     },
     "product manager": {
-      "design": 8
+      "design": 2
     },
     "software developer": {
-      "task": 20
+      "task": 5
     },
     "tester": {
-      "code": 15
+      "code": 2
     },
     "customer_representative": {
-        "release": 5 
+        "release": 4 
     }
   },
   "workFlow": {

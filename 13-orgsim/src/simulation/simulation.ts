@@ -55,14 +55,13 @@ class OrgSimulation implements SimulationAPI {
     this.state.currentTimeTick = 0;
     this.state.eventLog = ["Simulation initialized."];
     
-    // 1. Initialize Teams and People
     const teamsMap = new Map<string, Team>();
     this.state.teams = config.teams.map(teamConfig => {
       const team: Team = {
         ...teamConfig,
         members: [],
       };
-      teamsMap.set(teamConfig.name, team); // Use name for mapping during person assignment
+      teamsMap.set(teamConfig.name, team);
       return team;
     });
 
@@ -83,7 +82,6 @@ class OrgSimulation implements SimulationAPI {
       }
     });
 
-    // 2. Initialize Work Units
     this.state.workUnits = config.initialWorkUnits.map((wuConfig, index) => {
       const workUnit: WorkUnit = {
         id: wuConfig.id || `wu_${Date.now()}_${index}`,
@@ -93,39 +91,62 @@ class OrgSimulation implements SimulationAPI {
         currentTeamOwnerId: null,
         history: [{
             personId: null,
-            teamId: '', // Will be set below
+            teamId: 'unassigned_initial', // Default, will be updated
             completedAtTick: 0,
             action: `Created with type ${wuConfig.type}`
         }],
       };
 
-      // Assign initial 'need' work units to a customer representative
-      if (workUnit.type === 'need') {
-        const customerTeam = this.state.teams.find(t => t.isCustomerTeam);
-        if (customerTeam) {
-          workUnit.currentTeamOwnerId = customerTeam.id;
-          workUnit.history[0].teamId = customerTeam.id;
-          const customerRep = customerTeam.members.find(m => m.discipline === 'customer_representative' && !m.currentWorkUnitId);
-          if (customerRep) {
-            workUnit.currentOwnerId = customerRep.id;
-            customerRep.currentWorkUnitId = workUnit.id;
-            // Set workRemainingTicks for the customer rep based on config
-            const workTicks = this.config?.personWorkTicks?.[customerRep.discipline]?.[workUnit.type];
-            customerRep.workRemainingTicks = typeof workTicks === 'number' ? workTicks : 0; // Default to 0 if not defined
+      const flowEntry = this.config?.workFlow[workUnit.type];
+      if (flowEntry && flowEntry.targetDiscipline) {
+        const targetDiscipline = flowEntry.targetDiscipline;
+        let assignedPerson: Person | undefined;
+        let assignedTeam: Team | undefined;
 
-            workUnit.history.push({
-              personId: customerRep.id,
-              teamId: customerTeam.id,
-              completedAtTick: 0,
-              action: `Assigned to ${customerRep.name} (${customerRep.discipline})`
-            });
-            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) assigned to ${customerRep.name} in ${customerTeam.name}.`);
-          } else {
-            this.logEvent(`Warning: No available customer representative in ${customerTeam.name} for initial work unit ${workUnit.id}. It remains in team backlog.`);
+        // Try to find a free person with the target discipline in any team
+        for (const team of this.state.teams) {
+          assignedPerson = team.members.find(p => p.discipline === targetDiscipline && !p.currentWorkUnitId);
+          if (assignedPerson) {
+            assignedTeam = team;
+            break;
           }
-        } else {
-           this.logEvent(`Warning: No customer team found for initial 'need' work unit ${workUnit.id}.`);
         }
+
+        if (assignedPerson && assignedTeam) {
+          assignedPerson.currentWorkUnitId = workUnit.id;
+          const workTicksConfig = this.config?.personWorkTicks?.[assignedPerson.discipline]?.[workUnit.type];
+          assignedPerson.workRemainingTicks = typeof workTicksConfig === 'number' ? workTicksConfig : 10; // Default ticks
+
+          workUnit.currentOwnerId = assignedPerson.id;
+          workUnit.currentTeamOwnerId = assignedTeam.id;
+          workUnit.history[0].teamId = assignedTeam.id; // Update history
+
+          this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) assigned to ${assignedPerson.name} (${targetDiscipline}) in ${assignedTeam.name}. Ticks: ${assignedPerson.workRemainingTicks}`);
+          workUnit.history.push({
+            personId: assignedPerson.id,
+            teamId: assignedTeam.id,
+            completedAtTick: 0,
+            action: `Initially assigned to ${assignedPerson.name} (${assignedPerson.discipline})`
+          });
+        } else {
+          // If no free person, try to place in backlog of a suitable team
+          const suitableBacklogTeam = this.state.teams.find(t => t.members.some(m => m.discipline === targetDiscipline));
+          if (suitableBacklogTeam) {
+            workUnit.currentTeamOwnerId = suitableBacklogTeam.id;
+            workUnit.history[0].teamId = suitableBacklogTeam.id; // Update history
+            this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${suitableBacklogTeam.name}. No available ${targetDiscipline}.`);
+            workUnit.history.push({
+                personId: null, teamId: suitableBacklogTeam.id, completedAtTick: 0,
+                action: `Initial: To backlog, awaiting ${targetDiscipline}`
+            });
+          } else {
+            this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No free ${targetDiscipline} and no team has this discipline for backlog.`);
+            workUnit.history[0].action += ` - Unassignable (no ${targetDiscipline} available/no suitable team backlog)`;
+          }
+        }
+      } else {
+        this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) has no defined targetDiscipline in workFlow or workFlow entry is missing. Cannot be initially assigned by flow.`);
+        workUnit.history[0].action += ` - Unassignable (no workflow for type ${workUnit.type})`;
       }
       return workUnit;
     });
@@ -145,47 +166,170 @@ class OrgSimulation implements SimulationAPI {
         return;
     }
     this.state.currentTimeTick++;
-    this.logEvent(`Tick ${this.state.currentTimeTick}`);
+    this.logEvent(`Tick ${this.state.currentTimeTick} begins`);
 
-    // Detailed tick logic will go here:
-    // 1. People work on their current tasks
-    // 2. Completed work units are transitioned
-    // 3. New work units are assigned
+    const completedTasksThisTick: { person: Person, workUnit: WorkUnit }[] = [];
 
-    // This is a very simplified placeholder:
+    // 1. People work on their current tasks & identify completions
     this.state.teams.forEach(team => {
         team.members.forEach(person => {
             if (person.currentWorkUnitId && person.workRemainingTicks > 0) {
                 person.workRemainingTicks--;
                 if (person.workRemainingTicks === 0) {
-                    this.logEvent(`${person.name} completed work on ${person.currentWorkUnitId}.`);
-                    // TODO: Implement work unit transition logic here based on this.config.workFlow
                     const completedWorkUnit = this.state.workUnits.find(wu => wu.id === person.currentWorkUnitId);
-                    if(completedWorkUnit) {
-                        // Mark as completed by this person
+                    if (completedWorkUnit) {
+                        this.logEvent(`${person.name} from ${team.name} completed work on ${completedWorkUnit.id} (${completedWorkUnit.type}).`);
                         completedWorkUnit.history.push({
                             personId: person.id,
                             teamId: person.teamId,
                             completedAtTick: this.state.currentTimeTick,
                             action: `Completed ${completedWorkUnit.type}`
                         });
-                        this.logEvent(`Work unit ${completedWorkUnit.id} type ${completedWorkUnit.type} completed by ${person.name}.`);
-                        
-                        // TODO: Transition to next state
-                        // For now, just clear the person's task
-                        person.currentWorkUnitId = null; 
-                        completedWorkUnit.currentOwnerId = null; 
-                        // The work unit would then be picked up by the next person in the flow or put in a backlog
+                        completedTasksThisTick.push({ person, workUnit: completedWorkUnit });
+                    } else {
+                        this.logEvent(`Error: ${person.name} finished work, but work unit ${person.currentWorkUnitId} not found.`);
+                        person.currentWorkUnitId = null; // Clear invalid task
                     }
                 }
             }
         });
     });
 
+    // 2. Process completed tasks: Transition work units and free up people
+    completedTasksThisTick.forEach(({ person, workUnit }) => {
+      const currentWorkUnitType = workUnit.type;
+      const nextStep = this.config!.workFlow[currentWorkUnitType];
 
-    // TODO: Implement full tick logic as per user requirements
-    // - work goes from customer to designer, from designer to pm, etc.
-    // - at each tick in the simulation the visualisation is updated (this will be handled by the calling code)
+      person.currentWorkUnitId = null; // Person is now free
+      workUnit.currentOwnerId = null;
+      workUnit.currentTeamOwnerId = null; // Clear team ownership, will be reassigned or put in backlog
+
+      if (nextStep) {
+        workUnit.type = nextStep.nextType;
+        this.logEvent(`Work unit ${workUnit.id} transitioned from ${currentWorkUnitType} to ${workUnit.type}. Target: ${nextStep.targetDiscipline}`);
+        workUnit.history.push({
+          personId: person.id, // Person who completed previous step
+          teamId: person.teamId,
+          completedAtTick: this.state.currentTimeTick,
+          action: `Transitioned to ${workUnit.type}, targeting ${nextStep.targetDiscipline}`
+        });
+
+        // Attempt to assign to a new person
+        let assigned = false;
+        for (const team of this.state.teams) {
+          // Prioritize assigning to the same team if the discipline matches
+          const targetPersonInTeam = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
+          if (targetPersonInTeam) {
+            targetPersonInTeam.currentWorkUnitId = workUnit.id;
+            const workTicks = this.config!.personWorkTicks?.[targetPersonInTeam.discipline]?.[workUnit.type];
+            targetPersonInTeam.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default if not found
+            
+            workUnit.currentOwnerId = targetPersonInTeam.id;
+            workUnit.currentTeamOwnerId = targetPersonInTeam.teamId;
+            assigned = true;
+            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) assigned to ${targetPersonInTeam.name} in ${team.name}. Ticks: ${targetPersonInTeam.workRemainingTicks}`);
+            workUnit.history.push({
+              personId: targetPersonInTeam.id,
+              teamId: targetPersonInTeam.teamId,
+              completedAtTick: this.state.currentTimeTick,
+              action: `Assigned to ${targetPersonInTeam.name} (${targetPersonInTeam.discipline})`
+            });
+            break; // Assigned
+          }
+        }
+
+        if (!assigned) {
+          // If no one in the same team, try any team
+          for (const team of this.state.teams) {
+            if (assigned) break;
+            const targetPersonGlobal = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
+            if (targetPersonGlobal) {
+              targetPersonGlobal.currentWorkUnitId = workUnit.id;
+              const workTicks = this.config!.personWorkTicks?.[targetPersonGlobal.discipline]?.[workUnit.type];
+              targetPersonGlobal.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default
+              
+              workUnit.currentOwnerId = targetPersonGlobal.id;
+              workUnit.currentTeamOwnerId = targetPersonGlobal.teamId;
+              assigned = true;
+              this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) assigned to ${targetPersonGlobal.name} in ${team.name}. Ticks: ${targetPersonGlobal.workRemainingTicks}`);
+              workUnit.history.push({
+                personId: targetPersonGlobal.id,
+                teamId: targetPersonGlobal.teamId,
+                completedAtTick: this.state.currentTimeTick,
+                action: `Assigned to ${targetPersonGlobal.name} (${targetPersonGlobal.discipline})`
+              });
+              break; // Assigned
+            }
+          }
+        }
+
+        if (!assigned) {
+          // Place in a backlog of a team that has the target discipline
+          const targetTeamForBacklog = this.state.teams.find(t => t.members.some(m => m.discipline === nextStep.targetDiscipline));
+          if (targetTeamForBacklog) {
+            workUnit.currentTeamOwnerId = targetTeamForBacklog.id;
+            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${targetTeamForBacklog.name}. No available ${nextStep.targetDiscipline}.`);
+            workUnit.history.push({
+              personId: null,
+              teamId: targetTeamForBacklog.id,
+              completedAtTick: this.state.currentTimeTick,
+              action: `To backlog, awaiting ${nextStep.targetDiscipline}`
+            });
+          } else {
+            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) could not be assigned or backlogged. No team has ${nextStep.targetDiscipline}.`);
+             workUnit.history.push({
+              personId: null, teamId: 'none', completedAtTick: this.state.currentTimeTick,
+              action: `Transition failed: No team for ${nextStep.targetDiscipline}`
+            });
+          }
+        }
+      } else {
+        this.logEvent(`Work unit ${workUnit.id} (${currentWorkUnitType}) completed. No further workflow defined.`);
+        workUnit.history.push({
+            personId: person.id, teamId: person.teamId, completedAtTick: this.state.currentTimeTick,
+            action: `Workflow ended or undefined`
+        });
+        // WU is now considered done or stuck, owner is already null
+      }
+    });
+
+    // 3. Attempt to assign work from backlogs
+    this.state.workUnits.forEach(workUnit => {
+      if (workUnit.currentTeamOwnerId && !workUnit.currentOwnerId) {
+        // This work unit is in a team's backlog
+        const teamWithBacklog = this.state.teams.find(t => t.id === workUnit.currentTeamOwnerId);
+        if (teamWithBacklog && this.config?.workFlow[workUnit.type]) {
+            const targetDisciplineForBacklogItem = this.config.workFlow[workUnit.type]?.targetDiscipline;
+            if (!targetDisciplineForBacklogItem) {
+                 this.logEvent(`Warning: Work unit ${workUnit.id} in backlog of ${teamWithBacklog.name} has type ${workUnit.type} which has no defined next target discipline in workflow for backlog processing.`);
+                 return; // Skip if no clear target discipline for current type to progress
+            }
+
+          const availablePersonInTeam = teamWithBacklog.members.find(
+            member => member.discipline === targetDisciplineForBacklogItem && !member.currentWorkUnitId
+          );
+
+          if (availablePersonInTeam) {
+            availablePersonInTeam.currentWorkUnitId = workUnit.id;
+            const workTicks = this.config!.personWorkTicks?.[availablePersonInTeam.discipline]?.[workUnit.type];
+            // For backlog items, the type has already transitioned. We need ticks for *this* type.
+            availablePersonInTeam.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default
+
+            workUnit.currentOwnerId = availablePersonInTeam.id;
+            // currentTeamOwnerId is already correct (teamWithBacklog.id)
+            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) picked from backlog by ${availablePersonInTeam.name} in ${teamWithBacklog.name}. Ticks: ${availablePersonInTeam.workRemainingTicks}`);
+            workUnit.history.push({
+              personId: availablePersonInTeam.id,
+              teamId: availablePersonInTeam.teamId,
+              completedAtTick: this.state.currentTimeTick,
+              action: `Assigned from backlog to ${availablePersonInTeam.name} (${availablePersonInTeam.discipline})`
+            });
+          }
+        }
+      }
+    });
+
+    this.logEvent(`Tick ${this.state.currentTimeTick} ends`);
   }
 
   getState(): SimulationState {
