@@ -224,7 +224,21 @@ class OrgSimulation implements SimulationAPI {
 
         } else {
             // Case 2: Original team CANNOT handle the next step (or originalTeam not found).
-            this._findAlternativeTeam(workUnit, discipline, originalTeamId);
+            const eligibleTeams = this.state.teams
+            .filter(team => 
+              team.id !== originalTeamId && 
+              team.members.some(member => member.discipline === discipline)
+            )
+            .sort((a, b) => this._getTeamBacklogCount(a.id) - this._getTeamBacklogCount(b.id));
+            if (eligibleTeams.length > 0) {                
+                // Choose team with smallest backlog
+                const targetTeam = eligibleTeams[0];
+                workUnit.currentTeamOwnerId = targetTeam.id;
+                this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) placed in ${targetTeam.name}'s backlog.`);
+        
+            } else {
+                this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No team has ${discipline}.`);
+            }            
         }
       }
     });
@@ -276,29 +290,6 @@ class OrgSimulation implements SimulationAPI {
   getState(): SimulationState {
     // Return a deep copy to prevent direct modification of internal state
     return JSON.parse(JSON.stringify(this.state));
-  }
-
-  private _findAlternativeTeam(workUnit: WorkUnit, nextDiscipline: string, originalTeamId: string): void {
-    // put the item on the backlog of the team which has the correct discipline, and which has the fewest items in backlog
-
-    const eligibleTeams = this.state.teams
-      .filter(team => 
-        team.id !== originalTeamId && 
-        team.members.some(member => member.discipline === nextDiscipline)
-      )
-      .sort((a, b) => this._getTeamBacklogCount(a.id) - this._getTeamBacklogCount(b.id));
-
-    if (eligibleTeams.length > 0) {
-        
-      // Choose team with smallest backlog
-      const targetTeam = eligibleTeams[0];
-      workUnit.currentTeamOwnerId = targetTeam.id;
-      this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) placed in ${targetTeam.name}'s backlog.`);
-
-    } else {
-      this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No team has ${nextDiscipline}.`);
-      workUnit.currentTeamOwnerId = null;
-    }
   }
 }
 

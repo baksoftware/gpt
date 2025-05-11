@@ -45,11 +45,12 @@ const PERSON_RADIUS = 22;
 const WORK_UNIT_RADIUS = 12;
 const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
-const TICK_INTERVAL = 150;
+const TICK_INTERVAL = 200;
 
 const ANIMATION_DURATION = TICK_INTERVAL;
 
-const DONE_PILE_COLOR = 0x808080; // Grey for the "done" pile
+const WORK_UNIT_COLOR = 0x606060; // Green for the work unit
+const DONE_PILE_COLOR = WORK_UNIT_COLOR; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
 
 // New AnimatedPixiContainer component
@@ -128,14 +129,6 @@ const Visualization: React.FC = () => {
   const stageWidth = 1200;
   const stageHeight = 800;
 
-  useEffect(() => {
-    setSimApi(OrgSimulation.getInstance());
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   const handleStartSimulation = useCallback(async () => {
     if (!simApi) {
@@ -163,6 +156,23 @@ const Visualization: React.FC = () => {
   const handleToggleRunPause = () => {
     setIsRunning(prev => !prev);
   };
+
+  useEffect(() => {
+    setSimApi(OrgSimulation.getInstance());
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }      
+    };
+  }, []);
+
+  // Auto-start simulation when component mounts and simApi is loaded
+  useEffect(() => {
+    if (simApi) {
+      handleStartSimulation();
+      setIsRunning(true);
+    }
+  }, [simApi, handleStartSimulation]);
 
   useEffect(() => {
     if (isRunning && simApi) {
@@ -222,7 +232,7 @@ const Visualization: React.FC = () => {
 
     let x = PADDING;
     let y = currentStageHeight - PADDING - WORK_UNIT_RADIUS; // Default for unassigned
-
+        
     if (wu.currentOwnerId) {
       const owner = people.find(p => p.id === wu.currentOwnerId);
       const ownerTeam = owner ? teams.find(t => t.id === owner.teamId) : undefined;
@@ -259,6 +269,7 @@ const Visualization: React.FC = () => {
 
   return (
     <div>
+      {/*
       <div>
       <button onClick={handleStartSimulation} disabled={isLoading || !simApi}>
         {isLoading ? 'Initializing Simulation...' : 'Load/Reset Simulation'}
@@ -268,6 +279,7 @@ const Visualization: React.FC = () => {
           {isRunning ? 'Pause Simulation' : 'Run Simulation'}
         </button>
       )}</div>
+      */}
       <Application width={stageWidth} height={stageHeight}  resolution={window.devicePixelRatio} autoDensity={true} background={0xeeeeee}>
         {simState && (
           <>
@@ -342,7 +354,7 @@ const Visualization: React.FC = () => {
                             g.clear();
                             g.circle(0, 0, WORK_UNIT_RADIUS);
                             //g.fill(workUnitTypeColors[wu.type] || 0x00ff00);
-                            g.fill(0x606060);
+                            g.fill(WORK_UNIT_COLOR);
                           }}
                         />
                           <pixiText 
@@ -357,7 +369,7 @@ const Visualization: React.FC = () => {
                   })}
 
                   {doneWorkUnits.length > 0 && (
-                    <pixiContainer x={PADDING + DONE_PILE_RADIUS} y={PADDING + DONE_PILE_RADIUS}>
+                    <pixiContainer x={PADDING + DONE_PILE_RADIUS/2} y={PADDING + DONE_PILE_RADIUS/2}>
                       <pixiGraphics
                         draw={(g: PIXI.Graphics) => {
                           g.clear();
@@ -371,7 +383,7 @@ const Visualization: React.FC = () => {
                         anchor={0.5}
                         x={0}
                         y={0}
-                        style={new PIXI.TextStyle({ fontSize: 12, fill: 0x000000, fontWeight: 'bold' })}
+                        style={new PIXI.TextStyle({ fontSize: 12, fill: 0xfefefe, fontWeight: 'bold' })}
                       />
                     </pixiContainer>
                   )}
