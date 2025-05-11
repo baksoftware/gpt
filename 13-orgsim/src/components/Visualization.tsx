@@ -41,12 +41,12 @@ const workUnitTypeColors: Record<string, number> = {
 };
 
 const TEAM_RADIUS = 100;
-const PERSON_RADIUS = 20;
-const WORK_UNIT_RADIUS = 16;
+const PERSON_RADIUS = 22;
+const WORK_UNIT_RADIUS = 12;
 const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
-const ANIMATION_DURATION = 500;
-const TICK_INTERVAL = 100;
+const ANIMATION_DURATION = 300;
+const TICK_INTERVAL = 300;
 
 const DONE_PILE_COLOR = 0x808080; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
@@ -238,17 +238,18 @@ const Visualization: React.FC = () => {
           return {x,y}; 
         }
         const personPosInTeam = getPersonPositionInTeam(personIndex, ownerTeam.members.length, TEAM_RADIUS);
-        x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS/2;
-        y = teamPos.y + personPosInTeam.y + PERSON_RADIUS - WORK_UNIT_RADIUS/2;
+        x = teamPos.x + personPosInTeam.x*0.6;
+        y = teamPos.y + personPosInTeam.y*0.6;
       }
     } else if (wu.currentTeamOwnerId) {
       const teamIndex = teams.findIndex(t => t.id === wu.currentTeamOwnerId);
       if (teamIndex !== -1) {
         const teamPos = getTeamPosition(teamIndex, currentStageWidth);
         x = teamPos.x;
-        y = teamPos.y + TEAM_RADIUS + WORK_UNIT_RADIUS + 5;
+        y = teamPos.y; // For backlog items, place at the center of the team
       } else {
          console.warn(`Backlog team ${wu.currentTeamOwnerId} not found for WU ${wu.id}`);
+         // Default x, y will be used as set initially
       }
     }
     return { x, y };
@@ -340,7 +341,7 @@ const Visualization: React.FC = () => {
                             g.clear();
                             g.circle(0, 0, WORK_UNIT_RADIUS);
                             //g.fill(workUnitTypeColors[wu.type] || 0x00ff00);
-                            g.fill(0xfafafa);
+                            g.fill(0x606060);
                           }}
                         />
                           <pixiText 
@@ -348,7 +349,7 @@ const Visualization: React.FC = () => {
                             anchor={0.5}
                             x={0}
                             y={0} 
-                            style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
+                            style={new PIXI.TextStyle({ fontSize: 7, fill: 0xfefefe })}
                           />
                       </AnimatedPixiContainer>
                     );
@@ -369,7 +370,7 @@ const Visualization: React.FC = () => {
                         anchor={0.5}
                         x={0}
                         y={0}
-                        style={new PIXI.TextStyle({ fontSize: 12, fill: 0xffffff, fontWeight: 'bold' })}
+                        style={new PIXI.TextStyle({ fontSize: 12, fill: 0x000000, fontWeight: 'bold' })}
                       />
                     </pixiContainer>
                   )}

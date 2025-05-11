@@ -5,7 +5,7 @@ import argparse
 # Static data based on the provided simulationConfig.json
 PERSON_WORK_TICKS = {
     "Designer": {"design": 2},
-    "PM": {"task": 2},
+    "PM": {"task": 1},
     "SwDev": {"code": 20},
     "Tester": {"release": 3},
     "Customer": {"idea": 1, "done": 1}

@@ -130,7 +130,7 @@ class OrgSimulation implements SimulationAPI {
   }
 
   private logEvent(message: string): void {
-    console.log(`[SIM_LOG T-${this.state.currentTimeTick}] ${message}`);
+    // console.log(`[SIM_LOG T-${this.state.currentTimeTick}] ${message}`);
     this.state.eventLog.push(`[T-${this.state.currentTimeTick}] ${message}`);
   }
 
@@ -248,44 +248,75 @@ class OrgSimulation implements SimulationAPI {
           action: `Transitioned to ${workUnit.type}, targeting ${nextStep.targetDiscipline}`
         });
 
-        // Attempt to assign to a new person
-        let assigned = false;
-        for (const team of this.state.teams) {
-          // Prioritize assigning to the same team if the discipline matches
-          const targetPersonInTeam = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
-          if (targetPersonInTeam) {
-            this._assignWorkUnitToPerson(targetPersonInTeam, workUnit, 'direct');
-            assigned = true;
-            break; // Assigned
-          }
-        }
+        let taskPlaced = false;
+        const originalTeamId = person.teamId;
+        const originalTeam = this.state.teams.find(t => t.id === originalTeamId);
 
-        if (!assigned) {
-          // If no one in the same team, try any team
-          for (const team of this.state.teams) {
-            if (assigned) break;
-            const targetPersonGlobal = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
-            if (targetPersonGlobal) {
-              this._assignWorkUnitToPerson(targetPersonGlobal, workUnit, 'global');
-              assigned = true;
-              break; // Assigned
+        if (originalTeam && originalTeam.members.some(m => m.discipline === nextStep.targetDiscipline)) {
+            // Case 1: Original team CAN handle the next step.
+            const availablePersonInOrigin = originalTeam.members.find(
+                m => m.discipline === nextStep.targetDiscipline && !m.currentWorkUnitId
+            );
+            if (availablePersonInOrigin) {
+                this._assignWorkUnitToPerson(availablePersonInOrigin, workUnit, 'direct');
+                taskPlaced = true;
+            } else {
+                // Place in original team's backlog
+                workUnit.currentTeamOwnerId = originalTeam.id;
+                this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) stays in ${originalTeam.name}'s backlog (awaiting ${nextStep.targetDiscipline}).`);
+                workUnit.history.push({
+                    personId: null,
+                    teamId: originalTeam.id,
+                    completedAtTick: this.state.currentTimeTick,
+                    action: `To backlog in ${originalTeam.name} (no free ${nextStep.targetDiscipline})`
+                });
+                taskPlaced = true;
             }
-          }
+        } else {
+            // Case 2: Original team CANNOT handle the next step (or originalTeam not found).
+            // Search other teams for a person.
+            let assignedToPersonInOtherTeam = false;
+            for (const team of this.state.teams) {
+                if (team.id === originalTeamId) continue; // Skip original team
+
+                const targetPersonGlobal = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
+                if (targetPersonGlobal) {
+                    this._assignWorkUnitToPerson(targetPersonGlobal, workUnit, 'global');
+                    assignedToPersonInOtherTeam = true;
+                    taskPlaced = true;
+                    break;
+                }
+            }
+
+            if (!assignedToPersonInOtherTeam) {
+                // No free person in other teams, search for backlog in other teams.
+                const targetTeamForGlobalBacklog = this.state.teams.find(
+                    t => t.id !== originalTeamId && t.members.some(m => m.discipline === nextStep.targetDiscipline)
+                );
+                if (targetTeamForGlobalBacklog) {
+                    workUnit.currentTeamOwnerId = targetTeamForGlobalBacklog.id;
+                    this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) to ${targetTeamForGlobalBacklog.name}'s backlog (global search, no free ${nextStep.targetDiscipline}).`);
+                    workUnit.history.push({
+                        personId: null,
+                        teamId: targetTeamForGlobalBacklog.id,
+                        completedAtTick: this.state.currentTimeTick,
+                        action: `To backlog in ${targetTeamForGlobalBacklog.name} (global search)`
+                    });
+                    taskPlaced = true;
+                }
+            }
         }
 
-        if (!assigned) {
-          // Place in a backlog of a team that has the target discipline
-          const targetTeamForBacklog = this.state.teams.find(t => t.members.some(m => m.discipline === nextStep.targetDiscipline));
-          if (targetTeamForBacklog) {
-            this._assignWorkUnitToPerson(targetTeamForBacklog.members[0], workUnit, 'backlog');
-          } else {
+        if (!taskPlaced) {
+            // If still not placed (e.g., no team anywhere has the discipline).
             this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) could not be assigned or backlogged. No team has ${nextStep.targetDiscipline}.`);
-             workUnit.history.push({
-              personId: null, teamId: 'none', completedAtTick: this.state.currentTimeTick,
+            workUnit.history.push({
+              personId: null,
+              teamId: 'none', // Or a specific unassigned ID
+              completedAtTick: this.state.currentTimeTick,
               action: `Transition failed: No team for ${nextStep.targetDiscipline}`
             });
           }
-        }
       } else {
         this.logEvent(`Work unit ${workUnit.id} (${currentWorkUnitType}) completed. No further workflow defined.`);
         workUnit.history.push({
