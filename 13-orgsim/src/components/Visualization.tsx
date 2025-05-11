@@ -22,23 +22,22 @@ interface Link extends d3.SimulationLinkDatum<Node> {
   target: string; // ID of target node
   type: string; // 'member_of_team', 'works_on', 'backlog_in_team'
 }
-
 // Keep existing color definitions (ensure they are numbers for PixiJS)
 const disciplineColors: Record<string, number> = {
-  'customer_representative': 0xFFBF00, // Amber
-  'designer': 0xDE3163, // Cerise
-  'product manager': 0x6495ED, // Cornflower Blue
-  'software developer': 0x9FE2BF, // Seafoam Green
-  'tester': 0x40E0D0 // Turquoise
+  'Customer': 0xFFE5B4, // Light Amber
+  'Designer': 0xFFB6C1, // Light Pink
+  'PM': 0xB0E2FF, // Light Blue
+  'SwDev': 0xE0FFE0, // Light Green
+  'Tester': 0xAFEEEE // Light Turquoise
 };
 
 const workUnitTypeColors: Record<string, number> = {
-  'need': 0xFF7F50, // Coral
-  'design': 0xFFD700, // Gold
-  'task': 0xADFF2F, // Green Yellow
-  'code': 0x1E90FF, // Dodger Blue
-  'release': 0xBA55D3, // Medium Orchid
-  'done': 0x0000FF // Blue
+  'need': 0xFFDAB9, // Light Coral
+  'design': 0xFFF8DC, // Light Gold
+  'task': 0xF0FFF0, // Light Green Yellow
+  'code': 0xBFEFFF, // Light Blue
+  'release': 0xE6E6FA, // Light Purple
+  'done': 0xADD8E6 // Light Blue
 };
 
 const TEAM_RADIUS = 100;
@@ -239,8 +238,8 @@ const Visualization: React.FC = () => {
           return {x,y}; 
         }
         const personPosInTeam = getPersonPositionInTeam(personIndex, ownerTeam.members.length, TEAM_RADIUS);
-        x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS + 5;
-        y = teamPos.y + personPosInTeam.y;
+        x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS/2;
+        y = teamPos.y + personPosInTeam.y + PERSON_RADIUS + WORK_UNIT_RADIUS/2;
       }
     } else if (wu.currentTeamOwnerId) {
       const teamIndex = teams.findIndex(t => t.id === wu.currentTeamOwnerId);
@@ -304,7 +303,7 @@ const Visualization: React.FC = () => {
                           }}
                         />
                          <pixiText
-                            text={person.name.substring(0,6)}
+                            text={person.discipline}
                             anchor={0.5}
                             x={0}
                             y={0}
@@ -344,19 +343,12 @@ const Visualization: React.FC = () => {
                           }}
                         />
                           <pixiText 
-                            text={wu.id.substring(0,4)}
+                            text={wu.type}
                             anchor={0.5}
                             x={0}
                             y={0} 
                             style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
                           />
-                           <pixiText
-                             text={wu.id.substring(0,4)} 
-                             anchor={0.5}
-                             x={0}
-                             y={WORK_UNIT_RADIUS + 5} 
-                             style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
-                           />
                       </AnimatedPixiContainer>
                     );
                   })}

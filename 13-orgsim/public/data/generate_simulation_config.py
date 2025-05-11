@@ -4,24 +4,25 @@ import argparse
 
 # Static data based on the provided simulationConfig.json
 PERSON_WORK_TICKS = {
-    "designer": {"need": 3},
-    "product manager": {"design": 2},
-    "software developer": {"task": 5},
-    "tester": {"code": 2},
-    "customer_representative": {"idea": 3, "release": 4}
+    "Designer": {"need": 3},
+    "PM": {"design": 2},
+    "SwDev": {"task": 5},
+    "Tester": {"code": 2},
+    "Customer": {"idea": 3, "release": 4}
 }
 
 WORK_FLOW = {
-    "idea": {"nextType": "need", "targetDiscipline": "customer_representative"},
-    "need": {"nextType": "design", "targetDiscipline": "designer"},
-    "design": {"nextType": "task", "targetDiscipline": "product manager"},
-    "task": {"nextType": "code", "targetDiscipline": "software developer"},
-    "code": {"nextType": "release", "targetDiscipline": "tester"},
-    "release": {"nextType": "done", "targetDiscipline": "customer_representative"}
+    "idea": {"nextType": "need", "targetDiscipline": "Customer"},
+    "need": {"nextType": "design", "targetDiscipline": "Designer"},
+    "design": {"nextType": "task", "targetDiscipline": "PM"},
+    "task": {"nextType": "code", "targetDiscipline": "SwDev"},
+    "code": {"nextType": "release", "targetDiscipline": "Tester"},
+    "release": {"nextType": "done", "targetDiscipline": "Customer"},
+    "done": { "targetDiscipline": "Customer"}
 }
 
 # Disciplines available for regular team members
-AVAILABLE_DISCIPLINES = ["designer", "product manager", "software developer", "tester"]
+AVAILABLE_DISCIPLINES = ["Designer", "PM", "SwDev", "Tester"]
 
 def generate_teams(num_total_teams):
     """Generates the list of teams, including one customer team."""
@@ -50,7 +51,7 @@ def generate_people(teams_list):
         people.append({
             "id": f"person_{person_counter}",
             "name": f"Client Rep {person_counter}",
-            "discipline": "customer_representative",
+            "discipline": "Customer",
             "initialTeamName": customer_team_name
         })
         person_counter += 1
@@ -81,7 +82,7 @@ def generate_initial_work_units(num_units):
     work_units = []
     for i in range(num_units):
         work_units.append({
-            "id": f"wu_{i+1}",
+            "id": f"Work-{i+1}",
             "type": "idea",
             "payload": {"description": f"Generated idea {i+1}"}
         })
@@ -92,20 +93,23 @@ def main():
     parser.add_argument(
         "--num_teams", 
         type=int, 
-        required=True, 
+        required=False, 
+        default=10, 
         help="Total number of teams. This includes one dedicated 'Customer' team and (num_teams - 1) other teams. Must be >= 1."
     )
     parser.add_argument(
         "--num_initial_workunits", 
         type=int, 
-        required=True, 
+        required=False, 
+        default=20, 
         help="Number of initial work units (all will be of type 'idea')."
     )
     parser.add_argument(
         "--output_file", 
         type=str, 
-        default="generated_config.json", 
-        help="Name of the output JSON file (default: generated_config.json)."
+        required=False, 
+        default="simulationConfig.json", 
+        help="Name of the output JSON file (default: simulationConfig.json)."
     )
 
     args = parser.parse_args()
