@@ -12,12 +12,12 @@ PERSON_WORK_TICKS = {
 }
 
 WORK_FLOW = {
-    "idea": {"nextType": "need", "nextDiscipline": "Customer"},
-    "need": {"nextType": "design", "nextDiscipline": "Designer"},
-    "design": {"nextType": "task", "nextDiscipline": "PM"},
-    "task": {"nextType": "code", "nextDiscipline": "SwDev"},
-    "code": {"nextType": "release", "nextDiscipline": "Tester"},
-    "release": {"nextType": "done", "nextDiscipline": "Customer"},
+    "idea": { "nextType": "need" },
+    "need": { "nextType": "design" },
+    "design": { "nextType": "task" },
+    "task": { "nextType": "code" },
+    "code": { "nextType": "release" },
+    "release": { "nextType": "done" },
 }
 
 # Disciplines available for regular team members

@@ -1290,34 +1290,27 @@
     },
     "Customer": {
       "idea": 5,
-      "need": 3,
-      "done": 500
+      "need": 3
     }
   },
   "workFlow": {
     "idea": {
-      "nextType": "need",
-      "nextDiscipline": "Customer"
+      "nextType": "need"
     },
     "need": {
-      "nextType": "design",
-      "nextDiscipline": "Designer"
+      "nextType": "design"
     },
     "design": {
-      "nextType": "task",
-      "nextDiscipline": "PM"
+      "nextType": "task"
     },
     "task": {
-      "nextType": "code",
-      "nextDiscipline": "SwDev"
+      "nextType": "code"
     },
     "code": {
-      "nextType": "release",
-      "nextDiscipline": "Tester"
+      "nextType": "release"
     },
     "release": {
-      "nextType": "done",
-      "nextDiscipline": "Customer"
+      "nextType": "done"
     }
   }
 }

@@ -21,6 +21,24 @@ class OrgSimulation implements SimulationAPI {
 
   private config: SimulationConfig | null = null;
 
+  private _workTypeDisciplineMap: { [key: string]: string } = {};
+
+  private _getDiscipline(workUnitType: string): string {
+    return this._workTypeDisciplineMap[workUnitType];
+  }
+
+  private initializeWorkTypeDisciplineMap(): void {
+    this._workTypeDisciplineMap = {};
+    Object.keys(this.config!.personWorkTicks).forEach((discipline) => {
+      Object.keys(this.config!.personWorkTicks[discipline]).forEach(workUnitType => {
+        this._workTypeDisciplineMap[workUnitType] = discipline;
+      });
+    });
+    
+    // Logging to verify the mapping is correct
+    console.log('Work type to discipline mapping:', this._workTypeDisciplineMap);
+  }
+
   constructor() {
     // Private constructor for singleton
   }
@@ -53,6 +71,8 @@ class OrgSimulation implements SimulationAPI {
     this.config = config;
     this.state.currentTimeTick = 0;
     this.state.eventLog = ["Simulation initialized."];
+    
+    this.initializeWorkTypeDisciplineMap();
     
     const teamsMap = new Map<string, Team>();
     this.state.teams = config.teams.map(teamConfig => {
@@ -90,8 +110,9 @@ class OrgSimulation implements SimulationAPI {
       this.logEvent(`Work Unit ${workUnit.id} created with type ${wuConfig.type}.`);
 
       const flowEntry = this.config?.workFlow[workUnit.type];
-      if (flowEntry && flowEntry.nextDiscipline) {
-        const nextDiscipline = flowEntry.nextDiscipline;
+      if (flowEntry && flowEntry.nextType) {
+        const nextWorkType = flowEntry.nextType;
+        const nextDiscipline = this._getDiscipline(nextWorkType);
 
         const suitableBacklogTeam = this.state.teams.find(t => t.members.some(m => m.discipline === nextDiscipline));
         if (suitableBacklogTeam) {
@@ -117,49 +138,16 @@ class OrgSimulation implements SimulationAPI {
     // console.log(`[SIM_LOG T-${this.state.currentTimeTick}] ${message}`);
     this.state.eventLog.push(`[T-${this.state.currentTimeTick}] ${message}`);
   }
+  
+  private _getWorkTicks(discipline: string, workUnitType: string): number {
 
-  private _getWorkTicks(personDiscipline: string, workUnitType: string): number {
-
-    const ticksForDiscipline = this.config!.personWorkTicks[personDiscipline];
+    const ticksForDiscipline = this.config!.personWorkTicks[discipline];
     if (ticksForDiscipline && typeof ticksForDiscipline[workUnitType] === 'number') {
         return ticksForDiscipline[workUnitType] + Math.floor(Math.random() * 10);
     }
-    
-    this.logEvent(`Work Ticks: Critical - No specific or default work ticks for ${personDiscipline}/${workUnitType}. Using hardcoded 1000.`);
-    return 1000; // Final hardcoded fallback
-  }
-
-  private _assignWorkUnitToPerson(person: Person, workUnit: WorkUnit, assignmentType: 'direct' | 'global' | 'backlog'): void {
-    person.workRemainingTicks = this._getWorkTicks(person.discipline, workUnit.type);
-
-    workUnit.currentOwnerId = person.id;
-    workUnit.currentTeamOwnerId = person.teamId;
-
-    const team = this.state.teams.find(t => t.id === person.teamId);
-    const teamName = team ? team.name : "Unknown Team";
-
-    let logMessageActionPart = "";
-    let backlogActionDescription = "";
-
-    switch (assignmentType) {
-        case 'direct':
-            logMessageActionPart = `assigned`;
-            backlogActionDescription = `Assigned to ${person.name} (${person.discipline})`;
-            break;
-        case 'global':
-            logMessageActionPart = `assigned (global pool)`;
-            backlogActionDescription = `Assigned (global pool) to ${person.name} (${person.discipline})`;
-            break;
-        case 'backlog':
-            logMessageActionPart = `picked from backlog`;
-            backlogActionDescription = `Assigned from backlog to ${person.name} (${person.discipline})`;
-            break;
-    }
-
-    this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) ${logMessageActionPart} to ${person.name} in ${teamName}. Ticks: ${person.workRemainingTicks}`);
+    throw new Error(`Work Ticks: Critical - No specific or default work ticks for ${discipline}/${workUnitType}.`);
   }
   
-  // Placeholder for tick
   tick(): TickState {
     if (!this.config) {
         this.logEvent("Simulation not initialized. Cannot tick.");
@@ -195,62 +183,46 @@ class OrgSimulation implements SimulationAPI {
       workUnit.currentTeamOwnerId = null;
 
       if (nextStep) {
-        const previousType = workUnit.type;
         workUnit.type = nextStep.nextType;
-        this.logEvent(`Work unit ${workUnit.id} transitioned from ${previousType} to ${workUnit.type}. Target: ${nextStep.nextDiscipline}. Completed by ${person.name}.`);
+        const nextDiscipline = this._getDiscipline(workUnit.type);
 
-        let taskPlaced = false;
         const originalTeamId = person.teamId;
         const originalTeam = this.state.teams.find(t => t.id === originalTeamId);
 
-        if (originalTeam && originalTeam.members.some(m => m.discipline === nextStep.nextDiscipline)) {
+        if (originalTeam && originalTeam.members.some(m => m.discipline === nextDiscipline)) {
             // Case 1: Original team CAN handle the next step.
             const availablePersonInOrigin = originalTeam.members.find(
-                m => m.discipline === nextStep.nextDiscipline && !this.state.workUnits.some(wu => wu.currentOwnerId === m.id)
+                m => m.discipline === nextDiscipline && 
+                !this.state.workUnits.some(wu => wu.currentOwnerId === m.id)
             );
             if (availablePersonInOrigin) {
-                this._assignWorkUnitToPerson(availablePersonInOrigin, workUnit, 'direct');
-                taskPlaced = true;
+                availablePersonInOrigin.workRemainingTicks = this._getWorkTicks(availablePersonInOrigin.discipline, workUnit.type);
+                workUnit.currentTeamOwnerId = originalTeam.id;
+                workUnit.currentOwnerId = availablePersonInOrigin.id;
             } else {
                 // Place in original team's backlog
                 workUnit.currentTeamOwnerId = originalTeam.id;
-                this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) stays in ${originalTeam.name}'s backlog (awaiting ${nextStep.nextDiscipline}).`);
-                taskPlaced = true;
             }
         } else {
             // Case 2: Original team CANNOT handle the next step (or originalTeam not found).
-            // Search other teams for a person.
-            let assignedToPersonInOtherTeam = false;
+            // Search other teams which will be able to handle it at any point, and put it on their backlog.
+            // Disregarding  how much work they have already.
+            let putOnAnotherTeamBacklog = false;
             for (const team of this.state.teams) {
                 if (team.id === originalTeamId) continue; // Skip original team
 
-                const targetPersonGlobal = team.members.find(
-                    member => member.discipline === nextStep.nextDiscipline && !this.state.workUnits.some(wu => wu.currentOwnerId === member.id)
-                );
-                if (targetPersonGlobal) {
-                    this._assignWorkUnitToPerson(targetPersonGlobal, workUnit, 'global');
-                    assignedToPersonInOtherTeam = true;
-                    taskPlaced = true;
+                if (team.members.some(member => member.discipline === nextDiscipline))
+                {
+                    workUnit.currentTeamOwnerId = team.id;
+                    workUnit.currentOwnerId = null;
+                    putOnAnotherTeamBacklog = true;
                     break;
                 }
             }
 
-            if (!assignedToPersonInOtherTeam) {
-                // No free person in other teams, search for backlog in other teams.
-                const targetTeamForGlobalBacklog = this.state.teams.find(
-                    t => t.id !== originalTeamId && t.members.some(m => m.discipline === nextStep.nextDiscipline)
-                );
-                if (targetTeamForGlobalBacklog) {
-                    workUnit.currentTeamOwnerId = targetTeamForGlobalBacklog.id;
-                    this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) to ${targetTeamForGlobalBacklog.name}'s backlog (global search, no free ${nextStep.nextDiscipline}).`);
-                    taskPlaced = true;
-                }
+            if (!putOnAnotherTeamBacklog) {
+                throw new Error(`Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No team has ${nextDiscipline}.`);
             }
-        }
-
-        if (!taskPlaced) {
-            // If still not placed (e.g., no team anywhere has the discipline).
-            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) could not be assigned or backlogged. No team has ${nextStep.nextDiscipline}. Marked as unassigned.`);
         }
       } else {
         this.logEvent(`Work unit ${workUnit.id} (${currentWorkUnitType}) completed by ${person.name}. No further workflow defined.`);
@@ -260,21 +232,22 @@ class OrgSimulation implements SimulationAPI {
     // 3. Attempt to assign work from backlogs
     this.state.workUnits.forEach(workUnit => {
       if (workUnit.currentTeamOwnerId && !workUnit.currentOwnerId) {
+
         // This work unit is in a team's backlog
         const teamWithBacklog = this.state.teams.find(t => t.id === workUnit.currentTeamOwnerId);
-        if (teamWithBacklog && this.config?.workFlow[workUnit.type]) {
-            const nextDisciplineForBacklogItem = this.config.workFlow[workUnit.type]?.nextDiscipline;
-            if (!nextDisciplineForBacklogItem) {
-                 this.logEvent(`Warning: Work unit ${workUnit.id} in backlog of ${teamWithBacklog.name} has type ${workUnit.type} which has no defined next target discipline in workflow for backlog processing.`);
-                 return; // Skip if no clear target discipline for current type to progress
+        if (teamWithBacklog) {
+
+          const discipline = this._getDiscipline(workUnit.type);
+          let found = false;
+
+          for (const member of teamWithBacklog.members) {
+            if (member.discipline === discipline && !this.state.workUnits.some(wu => wu.currentOwnerId === member.id)) {
+                member.workRemainingTicks = this._getWorkTicks(member.discipline, workUnit.type);
+                workUnit.currentOwnerId = member.id;
+                workUnit.currentTeamOwnerId = member.teamId;
+                found = true;
+                break;
             }
-
-          const availablePersonInTeam = teamWithBacklog.members.find(
-            member => member.discipline === nextDisciplineForBacklogItem && !this.state.workUnits.some(wu => wu.currentOwnerId === member.id)
-          );
-
-          if (availablePersonInTeam) {
-            this._assignWorkUnitToPerson(availablePersonInTeam, workUnit, 'backlog');
           }
         }
       }

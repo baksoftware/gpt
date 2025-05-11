@@ -30,12 +30,12 @@ export interface SimulationConfig {
   people: PersonConfigItem[];
   initialWorkUnits: Omit<WorkUnit, 'currentOwnerId' | 'currentTeamOwnerId'>[];
   personWorkTicks: {
-    [key in string]?: { // Optional because customer_representative might not 'work' on items
-      [key in string]?: number; // Ticks per work unit type for a discipline
+    [key in string]: {
+      [key in string]: number; // Ticks per work unit type for a discipline
     }
   };
   workFlow: {
-    [key in string]?: { nextType: string, nextDiscipline: string };
+    [key in string]?: { nextType: string };
   }
 }
 
