@@ -161,44 +161,44 @@
       "initialTeamName": "Team B"
     },
     {
-      "id": "person_16",
-      "name": "SwDev_16",
-      "discipline": "SwDev",
-      "initialTeamName": "Team B"
-    },
-    {
-      "id": "person_17",
-      "name": "SwDev_17",
-      "discipline": "SwDev",
-      "initialTeamName": "Team B"
-    },
-    {
       "id": "person_13",
       "name": "Tester_13",
       "discipline": "Tester",
       "initialTeamName": "Team B"
     },
     {
-      "id": "person_18",
-      "name": "Tester_18",
-      "discipline": "Tester",
-      "initialTeamName": "Team B"
-    },
-    {
-      "id": "person_20",
-      "name": "Designer_20",
+      "id": "person_17",
+      "name": "Designer_17",
       "discipline": "Designer",
       "initialTeamName": "Team C"
     },
     {
-      "id": "person_19",
-      "name": "PM_19",
+      "id": "person_16",
+      "name": "PM_16",
       "discipline": "PM",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_18",
+      "name": "SwDev_18",
+      "discipline": "SwDev",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_20",
+      "name": "SwDev_20",
+      "discipline": "SwDev",
       "initialTeamName": "Team C"
     },
     {
       "id": "person_21",
       "name": "SwDev_21",
+      "discipline": "SwDev",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_22",
+      "name": "SwDev_22",
       "discipline": "SwDev",
       "initialTeamName": "Team C"
     },
@@ -209,38 +209,38 @@
       "initialTeamName": "Team C"
     },
     {
-      "id": "person_22",
-      "name": "Tester_22",
+      "id": "person_19",
+      "name": "Tester_19",
       "discipline": "Tester",
       "initialTeamName": "Team C"
     },
     {
-      "id": "person_25",
-      "name": "Designer_25",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_33",
-      "name": "Designer_33",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
-    },
-    {
       "id": "person_24",
-      "name": "PM_24",
+      "name": "Tester_24",
+      "discipline": "Tester",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_26",
+      "name": "Designer_26",
+      "discipline": "Designer",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_34",
+      "name": "Designer_34",
+      "discipline": "Designer",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_25",
+      "name": "PM_25",
       "discipline": "PM",
       "initialTeamName": "Team D"
     },
     {
-      "id": "person_26",
-      "name": "SwDev_26",
-      "discipline": "SwDev",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_28",
-      "name": "SwDev_28",
+      "id": "person_27",
+      "name": "SwDev_27",
       "discipline": "SwDev",
       "initialTeamName": "Team D"
     },
@@ -263,38 +263,38 @@
       "initialTeamName": "Team D"
     },
     {
-      "id": "person_27",
-      "name": "Tester_27",
-      "discipline": "Tester",
-      "initialTeamName": "Team D"
-    },
-    {
       "id": "person_32",
-      "name": "Tester_32",
+      "name": "SwDev_32",
+      "discipline": "SwDev",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_28",
+      "name": "Tester_28",
       "discipline": "Tester",
       "initialTeamName": "Team D"
     },
     {
-      "id": "person_35",
-      "name": "Designer_35",
+      "id": "person_33",
+      "name": "Tester_33",
+      "discipline": "Tester",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_36",
+      "name": "Designer_36",
       "discipline": "Designer",
       "initialTeamName": "Team E"
     },
     {
-      "id": "person_34",
-      "name": "PM_34",
+      "id": "person_35",
+      "name": "PM_35",
       "discipline": "PM",
       "initialTeamName": "Team E"
     },
     {
-      "id": "person_36",
-      "name": "SwDev_36",
-      "discipline": "SwDev",
-      "initialTeamName": "Team E"
-    },
-    {
-      "id": "person_38",
-      "name": "SwDev_38",
+      "id": "person_37",
+      "name": "SwDev_37",
       "discipline": "SwDev",
       "initialTeamName": "Team E"
     },
@@ -317,8 +317,8 @@
       "initialTeamName": "Team E"
     },
     {
-      "id": "person_37",
-      "name": "Tester_37",
+      "id": "person_38",
+      "name": "Tester_38",
       "discipline": "Tester",
       "initialTeamName": "Team E"
     },
@@ -359,6 +359,12 @@
       "initialTeamName": "Team F"
     },
     {
+      "id": "person_49",
+      "name": "SwDev_49",
+      "discipline": "SwDev",
+      "initialTeamName": "Team F"
+    },
+    {
       "id": "person_45",
       "name": "Tester_45",
       "discipline": "Tester",
@@ -366,37 +372,25 @@
     },
     {
       "id": "person_50",
-      "name": "Designer_50",
-      "discipline": "Designer",
-      "initialTeamName": "Team G"
+      "name": "Tester_50",
+      "discipline": "Tester",
+      "initialTeamName": "Team F"
     },
     {
-      "id": "person_58",
-      "name": "Designer_58",
+      "id": "person_52",
+      "name": "Designer_52",
       "discipline": "Designer",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_49",
-      "name": "PM_49",
-      "discipline": "PM",
       "initialTeamName": "Team G"
     },
     {
       "id": "person_51",
-      "name": "SwDev_51",
-      "discipline": "SwDev",
+      "name": "PM_51",
+      "discipline": "PM",
       "initialTeamName": "Team G"
     },
     {
       "id": "person_53",
       "name": "SwDev_53",
-      "discipline": "SwDev",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_54",
-      "name": "SwDev_54",
       "discipline": "SwDev",
       "initialTeamName": "Team G"
     },
@@ -413,20 +407,32 @@
       "initialTeamName": "Team G"
     },
     {
-      "id": "person_52",
-      "name": "Tester_52",
-      "discipline": "Tester",
+      "id": "person_57",
+      "name": "SwDev_57",
+      "discipline": "SwDev",
       "initialTeamName": "Team G"
     },
     {
-      "id": "person_57",
-      "name": "Tester_57",
+      "id": "person_58",
+      "name": "SwDev_58",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_54",
+      "name": "Tester_54",
       "discipline": "Tester",
       "initialTeamName": "Team G"
     },
     {
       "id": "person_60",
       "name": "Designer_60",
+      "discipline": "Designer",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_68",
+      "name": "Designer_68",
       "discipline": "Designer",
       "initialTeamName": "Team H"
     },
@@ -473,32 +479,26 @@
       "initialTeamName": "Team H"
     },
     {
-      "id": "person_68",
-      "name": "Designer_68",
+      "id": "person_67",
+      "name": "Tester_67",
+      "discipline": "Tester",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_70",
+      "name": "Designer_70",
       "discipline": "Designer",
       "initialTeamName": "Team I"
     },
     {
-      "id": "person_67",
-      "name": "PM_67",
-      "discipline": "PM",
-      "initialTeamName": "Team I"
-    },
-    {
       "id": "person_69",
-      "name": "SwDev_69",
-      "discipline": "SwDev",
+      "name": "PM_69",
+      "discipline": "PM",
       "initialTeamName": "Team I"
     },
     {
       "id": "person_71",
       "name": "SwDev_71",
-      "discipline": "SwDev",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_72",
-      "name": "SwDev_72",
       "discipline": "SwDev",
       "initialTeamName": "Team I"
     },
@@ -515,8 +515,14 @@
       "initialTeamName": "Team I"
     },
     {
-      "id": "person_70",
-      "name": "Tester_70",
+      "id": "person_75",
+      "name": "SwDev_75",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_72",
+      "name": "Tester_72",
       "discipline": "Tester",
       "initialTeamName": "Team I"
     }
@@ -1225,20 +1231,20 @@
   ],
   "personWorkTicks": {
     "Designer": {
-      "need": 2
-    },
-    "PM": {
       "design": 2
     },
+    "PM": {
+      "task": 2
+    },
     "SwDev": {
-      "task": 20
+      "code": 20
     },
     "Tester": {
-      "code": 3
+      "release": 3
     },
     "Customer": {
       "idea": 1,
-      "release": 1
+      "done": 1
     }
   },
   "workFlow": {

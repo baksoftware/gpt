@@ -123,6 +123,9 @@ class OrgSimulation implements SimulationAPI {
       return workUnit;
     });
 
+    
+    console.log(this.state);
+
     this.logEvent("Teams, people, and initial work units processed.");
   }
 
