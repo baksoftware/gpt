@@ -1,21 +1,601 @@
 {
   "teams": [
-    { "id": "team_customer", "name": "Customer", "isCustomerTeam": true },
-    { "id": "team_alpha", "name": "Team Alpha" },
-    { "id": "team_beta", "name": "Team Beta" }
+    {
+      "id": "team_customer",
+      "name": "Customer",
+      "isCustomerTeam": true
+    },
+    {
+      "id": "team_1",
+      "name": "Team A",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_2",
+      "name": "Team B",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_3",
+      "name": "Team C",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_4",
+      "name": "Team D",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_5",
+      "name": "Team E",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_6",
+      "name": "Team F",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_7",
+      "name": "Team G",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_8",
+      "name": "Team H",
+      "isCustomerTeam": false
+    },
+    {
+      "id": "team_9",
+      "name": "Team I",
+      "isCustomerTeam": false
+    }
   ],
   "people": [
-    { "id": "cust_rep_1", "name": "Client Alice", "discipline": "customer_representative", "initialTeamName": "Customer" },
-    { "id": "designer_1", "name": "Diana Designer", "discipline": "designer", "initialTeamName": "Team Alpha" },
-    { "id": "pm_1", "name": "Peter Manager", "discipline": "product manager", "initialTeamName": "Team Alpha" },
-    { "id": "dev_1", "name": "Devon Developer", "discipline": "software developer", "initialTeamName": "Team Alpha" },
-    { "id": "tester_1", "name": "Tracy Tester", "discipline": "tester", "initialTeamName": "Team Alpha" },
-    { "id": "dev_2", "name": "David Developer", "discipline": "software developer", "initialTeamName": "Team Beta" },
-    { "id": "tester_2", "name": "Terry Tester", "discipline": "tester", "initialTeamName": "Team Beta" }
+    {
+      "id": "person_1c",
+      "name": "Client Rep 1c",
+      "discipline": "customer_representative",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_2c",
+      "name": "Client Rep 2c",
+      "discipline": "customer_representative",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_3c",
+      "name": "Client Rep 3c",
+      "discipline": "customer_representative",
+      "initialTeamName": "Customer"
+    },
+    {
+      "id": "person_2",
+      "name": "Designer_2_Team_A",
+      "discipline": "designer",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_3",
+      "name": "Designer_3_Team_A",
+      "discipline": "designer",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_4",
+      "name": "Software_4_Team_A",
+      "discipline": "software developer",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_5",
+      "name": "Product_5_Team_A",
+      "discipline": "product manager",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_6",
+      "name": "Product_6_Team_A",
+      "discipline": "product manager",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_7",
+      "name": "Software_7_Team_A",
+      "discipline": "software developer",
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_8",
+      "name": "Designer_8_Team_B",
+      "discipline": "designer",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_9",
+      "name": "Tester_9_Team_B",
+      "discipline": "tester",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_10",
+      "name": "Software_10_Team_B",
+      "discipline": "software developer",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_11",
+      "name": "Designer_11_Team_B",
+      "discipline": "designer",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_12",
+      "name": "Product_12_Team_B",
+      "discipline": "product manager",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_13",
+      "name": "Designer_13_Team_B",
+      "discipline": "designer",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_14",
+      "name": "Tester_14_Team_B",
+      "discipline": "tester",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_15",
+      "name": "Product_15_Team_C",
+      "discipline": "product manager",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_16",
+      "name": "Designer_16_Team_C",
+      "discipline": "designer",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_17",
+      "name": "Tester_17_Team_C",
+      "discipline": "tester",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_18",
+      "name": "Product_18_Team_C",
+      "discipline": "product manager",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_19",
+      "name": "Tester_19_Team_C",
+      "discipline": "tester",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_20",
+      "name": "Product_20_Team_C",
+      "discipline": "product manager",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_21",
+      "name": "Tester_21_Team_C",
+      "discipline": "tester",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_22",
+      "name": "Software_22_Team_C",
+      "discipline": "software developer",
+      "initialTeamName": "Team C"
+    },
+    {
+      "id": "person_23",
+      "name": "Software_23_Team_D",
+      "discipline": "software developer",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_24",
+      "name": "Software_24_Team_D",
+      "discipline": "software developer",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_25",
+      "name": "Tester_25_Team_D",
+      "discipline": "tester",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_26",
+      "name": "Product_26_Team_D",
+      "discipline": "product manager",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_27",
+      "name": "Product_27_Team_D",
+      "discipline": "product manager",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_28",
+      "name": "Software_28_Team_E",
+      "discipline": "software developer",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_29",
+      "name": "Product_29_Team_E",
+      "discipline": "product manager",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_30",
+      "name": "Tester_30_Team_E",
+      "discipline": "tester",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_31",
+      "name": "Tester_31_Team_E",
+      "discipline": "tester",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_32",
+      "name": "Designer_32_Team_E",
+      "discipline": "designer",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_33",
+      "name": "Software_33_Team_E",
+      "discipline": "software developer",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_34",
+      "name": "Product_34_Team_E",
+      "discipline": "product manager",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_35",
+      "name": "Tester_35_Team_E",
+      "discipline": "tester",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_36",
+      "name": "Product_36_Team_F",
+      "discipline": "product manager",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_37",
+      "name": "Tester_37_Team_F",
+      "discipline": "tester",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_38",
+      "name": "Tester_38_Team_F",
+      "discipline": "tester",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_39",
+      "name": "Tester_39_Team_F",
+      "discipline": "tester",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_40",
+      "name": "Software_40_Team_F",
+      "discipline": "software developer",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_41",
+      "name": "Product_41_Team_F",
+      "discipline": "product manager",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_42",
+      "name": "Designer_42_Team_F",
+      "discipline": "designer",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_43",
+      "name": "Product_43_Team_F",
+      "discipline": "product manager",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_44",
+      "name": "Tester_44_Team_F",
+      "discipline": "tester",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_45",
+      "name": "Software_45_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_46",
+      "name": "Software_46_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_47",
+      "name": "Designer_47_Team_G",
+      "discipline": "designer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_48",
+      "name": "Software_48_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_49",
+      "name": "Tester_49_Team_G",
+      "discipline": "tester",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_50",
+      "name": "Software_50_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_51",
+      "name": "Software_51_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_52",
+      "name": "Designer_52_Team_G",
+      "discipline": "designer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_53",
+      "name": "Software_53_Team_G",
+      "discipline": "software developer",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_54",
+      "name": "Product_54_Team_H",
+      "discipline": "product manager",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_55",
+      "name": "Tester_55_Team_H",
+      "discipline": "tester",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_56",
+      "name": "Designer_56_Team_H",
+      "discipline": "designer",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_57",
+      "name": "Software_57_Team_H",
+      "discipline": "software developer",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_58",
+      "name": "Designer_58_Team_H",
+      "discipline": "designer",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_59",
+      "name": "Product_59_Team_H",
+      "discipline": "product manager",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_60",
+      "name": "Product_60_Team_H",
+      "discipline": "product manager",
+      "initialTeamName": "Team H"
+    },
+    {
+      "id": "person_61",
+      "name": "Product_61_Team_I",
+      "discipline": "product manager",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_62",
+      "name": "Designer_62_Team_I",
+      "discipline": "designer",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_63",
+      "name": "Designer_63_Team_I",
+      "discipline": "designer",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_64",
+      "name": "Product_64_Team_I",
+      "discipline": "product manager",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_65",
+      "name": "Tester_65_Team_I",
+      "discipline": "tester",
+      "initialTeamName": "Team I"
+    }
   ],
   "initialWorkUnits": [
-    { "id": "wu_1", "type": "idea", "payload": { "description": "Implement feature X" } },
-    { "id": "wu_2", "type": "idea", "payload": { "description": "Fix bug Y" } }
+    {
+      "id": "wu_1",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 1"
+      }
+    },
+    {
+      "id": "wu_2",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 2"
+      }
+    },
+    {
+      "id": "wu_3",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 3"
+      }
+    },
+    {
+      "id": "wu_4",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 4"
+      }
+    },
+    {
+      "id": "wu_5",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 5"
+      }
+    },
+    {
+      "id": "wu_6",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 6"
+      }
+    },
+    {
+      "id": "wu_7",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 7"
+      }
+    },
+    {
+      "id": "wu_8",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 8"
+      }
+    },
+    {
+      "id": "wu_9",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 9"
+      }
+    },
+    {
+      "id": "wu_10",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 10"
+      }
+    },
+    {
+      "id": "wu_11",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 11"
+      }
+    },
+    {
+      "id": "wu_12",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 12"
+      }
+    },
+    {
+      "id": "wu_13",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 13"
+      }
+    },
+    {
+      "id": "wu_14",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 14"
+      }
+    },
+    {
+      "id": "wu_15",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 15"
+      }
+    },
+    {
+      "id": "wu_16",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 16"
+      }
+    },
+    {
+      "id": "wu_17",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 17"
+      }
+    },
+    {
+      "id": "wu_18",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 18"
+      }
+    },
+    {
+      "id": "wu_19",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 19"
+      }
+    },
+    {
+      "id": "wu_20",
+      "type": "idea",
+      "payload": {
+        "description": "Generated idea 20"
+      }
+    }
   ],
   "personWorkTicks": {
     "designer": {
@@ -32,15 +612,33 @@
     },
     "customer_representative": {
       "idea": 3,
-      "release": 4 
+      "release": 4
     }
   },
   "workFlow": {
-    "idea": { "nextType": "need", "targetDiscipline": "customer_representative" },
-    "need": { "nextType": "design", "targetDiscipline": "designer" },
-    "design": { "nextType": "task", "targetDiscipline": "product manager" },
-    "task": { "nextType": "code", "targetDiscipline": "software developer" },
-    "code": { "nextType": "release", "targetDiscipline": "tester" },
-    "release": { "nextType": "done", "targetDiscipline": "customer_representative" } 
+    "idea": {
+      "nextType": "need",
+      "targetDiscipline": "customer_representative"
+    },
+    "need": {
+      "nextType": "design",
+      "targetDiscipline": "designer"
+    },
+    "design": {
+      "nextType": "task",
+      "targetDiscipline": "product manager"
+    },
+    "task": {
+      "nextType": "code",
+      "targetDiscipline": "software developer"
+    },
+    "code": {
+      "nextType": "release",
+      "targetDiscipline": "tester"
+    },
+    "release": {
+      "nextType": "done",
+      "targetDiscipline": "customer_representative"
+    }
   }
-} 
+}

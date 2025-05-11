@@ -24,7 +24,7 @@ interface Link extends d3.SimulationLinkDatum<Node> {
 }
 
 // Keep existing color definitions (ensure they are numbers for PixiJS)
-const disciplineColors: Record<Discipline, number> = {
+const disciplineColors: Record<string, number> = {
   'customer_representative': 0xFFBF00, // Amber
   'designer': 0xDE3163, // Cerise
   'product manager': 0x6495ED, // Cornflower Blue
@@ -32,19 +32,21 @@ const disciplineColors: Record<Discipline, number> = {
   'tester': 0x40E0D0 // Turquoise
 };
 
-const workUnitTypeColors: Record<WorkUnitType, number> = {
+const workUnitTypeColors: Record<string, number> = {
   'need': 0xFF7F50, // Coral
   'design': 0xFFD700, // Gold
   'task': 0xADFF2F, // Green Yellow
   'code': 0x1E90FF, // Dodger Blue
-  'release': 0xBA55D3 // Medium Orchid
+  'release': 0xBA55D3, // Medium Orchid
+  'done': 0x000000 // Black
 };
 
 const TEAM_RADIUS = 100;
 const PERSON_RADIUS = 20;
 const WORK_UNIT_RADIUS = 16;
-const PADDING = 40; // Padding between teams
-const ANIMATION_DURATION = 500; // 0.5 seconds in milliseconds
+const PADDING = 30; // Padding between teams
+const ANIMATION_DURATION = 50;
+const TICK_INTERVAL = 50;
 
 // New AnimatedPixiContainer component
 interface AnimatedPixiContainerProps {
@@ -163,7 +165,7 @@ const Visualization: React.FC = () => {
       intervalRef.current = window.setInterval(() => {
         simApi.tick();
         setSimState(simApi.getState());
-      }, 1000);
+      }, TICK_INTERVAL);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);

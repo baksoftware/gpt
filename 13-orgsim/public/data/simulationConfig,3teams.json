@@ -1,0 +1,46 @@
+{
+  "teams": [
+    { "id": "team_customer", "name": "Customer", "isCustomerTeam": true },
+    { "id": "team_alpha", "name": "Team Alpha" },
+    { "id": "team_beta", "name": "Team Beta" }
+  ],
+  "people": [
+    { "id": "cust_rep_1", "name": "Client Alice", "discipline": "customer_representative", "initialTeamName": "Customer" },
+    { "id": "designer_1", "name": "Diana Designer", "discipline": "designer", "initialTeamName": "Team Alpha" },
+    { "id": "pm_1", "name": "Peter Manager", "discipline": "product manager", "initialTeamName": "Team Alpha" },
+    { "id": "dev_1", "name": "Devon Developer", "discipline": "software developer", "initialTeamName": "Team Alpha" },
+    { "id": "tester_1", "name": "Tracy Tester", "discipline": "tester", "initialTeamName": "Team Alpha" },
+    { "id": "dev_2", "name": "David Developer", "discipline": "software developer", "initialTeamName": "Team Beta" },
+    { "id": "tester_2", "name": "Terry Tester", "discipline": "tester", "initialTeamName": "Team Beta" }
+  ],
+  "initialWorkUnits": [
+    { "id": "wu_1", "type": "idea", "payload": { "description": "Implement feature X" } },
+    { "id": "wu_2", "type": "idea", "payload": { "description": "Fix bug Y" } }
+  ],
+  "personWorkTicks": {
+    "designer": {
+      "need": 3
+    },
+    "product manager": {
+      "design": 2
+    },
+    "software developer": {
+      "task": 5
+    },
+    "tester": {
+      "code": 2
+    },
+    "customer_representative": {
+      "idea": 3,
+      "release": 4 
+    }
+  },
+  "workFlow": {
+    "idea": { "nextType": "need", "targetDiscipline": "customer_representative" },
+    "need": { "nextType": "design", "targetDiscipline": "designer" },
+    "design": { "nextType": "task", "targetDiscipline": "product manager" },
+    "task": { "nextType": "code", "targetDiscipline": "software developer" },
+    "code": { "nextType": "release", "targetDiscipline": "tester" },
+    "release": { "nextType": "done", "targetDiscipline": "customer_representative" } 
+  }
+} 

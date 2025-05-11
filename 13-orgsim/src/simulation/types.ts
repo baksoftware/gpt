@@ -1,13 +1,10 @@
 // Simulation types will be defined here
 
-export type Discipline = 'software developer' | 'tester' | 'product manager' | 'designer' | 'customer_representative';
-
-export type WorkUnitType = 'need' | 'design' | 'task' | 'code' | 'release';
 
 export interface Person {
   id: string;
   name: string;
-  discipline: Discipline;
+  discipline: string;
   teamId: string;
   currentWorkUnitId: string | null;
   workRemainingTicks: number;
@@ -22,7 +19,7 @@ export interface Team {
 
 export interface WorkUnit {
   id: string;
-  type: WorkUnitType;
+  type: string;
   currentOwnerId: string | null; // Person currently working on it or team backlog if no specific person
   currentTeamOwnerId: string | null; // Team currently responsible, especially if it's in a backlog
   history: {
@@ -41,12 +38,12 @@ export interface SimulationConfig {
   people: PersonConfigItem[];
   initialWorkUnits: Omit<WorkUnit, 'history' | 'currentOwnerId' | 'currentTeamOwnerId'>[];
   personWorkTicks: {
-    [key in Discipline]?: { // Optional because customer_representative might not 'work' on items
-      [key in WorkUnitType]?: number; // Ticks per work unit type for a discipline
+    [key in string]?: { // Optional because customer_representative might not 'work' on items
+      [key in string]?: number; // Ticks per work unit type for a discipline
     }
   };
   workFlow: {
-    [key in WorkUnitType]?: { nextType: WorkUnitType, targetDiscipline: Discipline };
+    [key in string]?: { nextType: string, targetDiscipline: string };
   }
 }
 
