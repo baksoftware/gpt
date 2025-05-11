@@ -54,10 +54,16 @@ export interface SimulationState {
   eventLog: string[]; // To log major events in the simulation
 }
 
+export enum TickState {
+  RUNNING,
+  PAUSED,
+  COMPLETED
+}
+
 // API Interface for the simulation
 export interface SimulationAPI {
   initialize: (config: SimulationConfig) => void;
-  tick: () => void;
+  tick: () => TickState;
   getState: () => SimulationState;
   loadConfigAndInitialize: (configPath: string) => Promise<void>;
 } 

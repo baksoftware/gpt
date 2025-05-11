@@ -1,13 +1,12 @@
-import type {
-  SimulationAPI,
-  SimulationConfig,
-  SimulationState,
-  Team,
-  Person,
-  WorkUnit,
-  Discipline,
-  WorkUnitType,
-  PersonConfigItem
+import {
+  TickState,
+  type SimulationAPI,
+  type SimulationConfig,
+  type SimulationState,
+  type Team,
+  type Person,
+  type WorkUnit,
+  type PersonConfigItem
 } from './types';
 
 let simulationInstance: OrgSimulation | null = null;
@@ -160,10 +159,10 @@ class OrgSimulation implements SimulationAPI {
   }
   
   // Placeholder for tick
-  tick(): void {
+  tick(): TickState {
     if (!this.config) {
         this.logEvent("Simulation not initialized. Cannot tick.");
-        return;
+        return TickState.PAUSED;
     }
     this.state.currentTimeTick++;
     this.logEvent(`Tick ${this.state.currentTimeTick} begins`);
@@ -329,7 +328,15 @@ class OrgSimulation implements SimulationAPI {
       }
     });
 
+    // 4. Check if all work units are done
+    const allWorkUnitsDone = this.state.workUnits.every(wu => wu.type === 'done');
+    if (allWorkUnitsDone) {
+      this.logEvent("All work units are done. Simulation complete.");
+      return TickState.COMPLETED;
+    }
+
     this.logEvent(`Tick ${this.state.currentTimeTick} ends`);
+    return TickState.RUNNING;
   }
 
   getState(): SimulationState {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import OrgSimulation from '../simulation/simulation';
-import type { SimulationState, SimulationAPI, Person, Team, WorkUnit, Discipline, WorkUnitType } from '../simulation/types';
+import { TickState, type SimulationState, type SimulationAPI, type Person, type Team, type WorkUnit } from '../simulation/types';
 import { Application, extend, useTick } from '@pixi/react';
 import * as PIXI from 'pixi.js';
 import { Container, Graphics, Text as PixiText } from 'pixi.js';
@@ -45,6 +45,7 @@ const TEAM_RADIUS = 100;
 const PERSON_RADIUS = 20;
 const WORK_UNIT_RADIUS = 16;
 const PADDING = 30; // Padding between teams
+const PERSON_DISTANCE_FROM_RIM  = 25;
 const ANIMATION_DURATION = 50;
 const TICK_INTERVAL = 50;
 
@@ -121,8 +122,8 @@ const Visualization: React.FC = () => {
   const intervalRef = useRef<number | null>(null);
 
   // Component dimensions - can be made dynamic
-  const stageWidth = 800;
-  const stageHeight = 600;
+  const stageWidth = 700;
+  const stageHeight = 900;
 
   useEffect(() => {
     setSimApi(OrgSimulation.getInstance());
@@ -163,8 +164,12 @@ const Visualization: React.FC = () => {
   useEffect(() => {
     if (isRunning && simApi) {
       intervalRef.current = window.setInterval(() => {
-        simApi.tick();
+        const tickState = simApi.tick();
+        console.log(`Tick state: ${tickState}`);
         setSimState(simApi.getState());
+        if (tickState === TickState.COMPLETED) {
+          setIsRunning(false);
+        }
       }, TICK_INTERVAL);
     } else {
       if (intervalRef.current) {
@@ -250,7 +255,7 @@ const Visualization: React.FC = () => {
     if (totalPersons === 0) return { x: 0, y: 0 };
     const angleStep = (2 * Math.PI) / totalPersons;
     const angle = personIndex * angleStep;
-    const orbitRadius = teamRadius * 0.5; // Place them within the team circle
+    const orbitRadius = teamRadius - PERSON_DISTANCE_FROM_RIM; // Place them within the team circle
     return {
       x: orbitRadius * Math.cos(angle),
       y: orbitRadius * Math.sin(angle),
