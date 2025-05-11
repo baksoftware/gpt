@@ -13,7 +13,7 @@ The core simulation logic is written in TypeScript and is designed to be decoupl
     - `people`: Defines individuals with ID, name, `discipline` (e.g., 'software developer', 'designer'), and their `initialTeamName`.
     - `initialWorkUnits`: Specifies the starting work items, each with an ID, `type` (e.g., 'need', 'design').
     - `personWorkTicks`: A nested object defining how many time ticks (hours) each `discipline` takes to complete each `WorkUnitType`.
-    - `workFlow`: Defines the sequence of work. For each `WorkUnitType`, it specifies the `nextType` it transitions to and the `targetDiscipline` required for that next step.
+    - `workFlow`: Defines the sequence of work. For each `WorkUnitType`, it specifies the `nextType` it transitions to and the `nextDiscipline` required for that next step.
 - **State Management**:
   - The simulation maintains an internal `SimulationState` which includes:
     - A list of all `teams` and their `members`.
@@ -23,7 +23,7 @@ The core simulation logic is written in TypeScript and is designed to be decoupl
   - A `getState()` method provides a deep copy of the current state for external use (e.g., by the visualization).
 - **Dynamic Initial Assignment**:
   - When initialized, the simulation assigns `initialWorkUnits` based on the `workFlow` configuration.
-  - It looks for the `targetDiscipline` required for the work unit's initial type and assigns it to the first available (not currently working) person of that discipline across any team.
+  - It looks for the `nextDiscipline` required for the work unit's initial type and assigns it to the first available (not currently working) person of that discipline across any team.
   - If no individual is free, the work unit is placed into the backlog of the first team found that contains members of the required discipline.
   - Logs are generated for assignments or if a work unit cannot be initially placed.
 
@@ -35,7 +35,7 @@ The core simulation logic is written in TypeScript and is designed to be decoupl
   - When a person's `workRemainingTicks` for a unit reaches zero:
     1.  The person is marked as free.
     2.  The `WorkUnit`'s type is updated to its `nextType` as defined in the `workFlow`.
-    3.  The simulation attempts to assign this transitioned `WorkUnit` to an available person of the `nextStep.targetDiscipline` (globally across all teams).
+    3.  The simulation attempts to assign this transitioned `WorkUnit` to an available person of the `nextStep.nextDiscipline` (globally across all teams).
     4.  The `workRemainingTicks` for the newly assigned person are set based on their discipline and the new work unit type (from `personWorkTicks` in config).
 - **Backlog Management**:
   - If a transitioned `WorkUnit` cannot be immediately assigned to a free person of the required discipline, it's placed into a suitable team's backlog (a team that has members of the target discipline).

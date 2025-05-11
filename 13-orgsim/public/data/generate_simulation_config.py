@@ -4,20 +4,20 @@ import argparse
 
 # Static data based on the provided simulationConfig.json
 PERSON_WORK_TICKS = {
-    "Designer": {"design": 4},
+    "Designer": { "design": 4},
     "PM": {"task": 3},
     "SwDev": {"code": 24},
     "Tester": {"release": 12},
-    "Customer": {"idea": 5, "need": 3}
+    "Customer": {"idea": 5, "need": 3, "done": 500}
 }
 
 WORK_FLOW = {
-    "idea": {"nextType": "need", "targetDiscipline": "Customer"},
-    "need": {"nextType": "design", "targetDiscipline": "Designer"},
-    "design": {"nextType": "task", "targetDiscipline": "PM"},
-    "task": {"nextType": "code", "targetDiscipline": "SwDev"},
-    "code": {"nextType": "release", "targetDiscipline": "Tester"},
-    "release": {"nextType": "done", "targetDiscipline": "Customer"},
+    "idea": {"nextType": "need", "nextDiscipline": "Customer"},
+    "need": {"nextType": "design", "nextDiscipline": "Designer"},
+    "design": {"nextType": "task", "nextDiscipline": "PM"},
+    "task": {"nextType": "code", "nextDiscipline": "SwDev"},
+    "code": {"nextType": "release", "nextDiscipline": "Tester"},
+    "release": {"nextType": "done", "nextDiscipline": "Customer"},
 }
 
 # Disciplines available for regular team members

@@ -42,7 +42,7 @@ export interface SimulationConfig {
     }
   };
   workFlow: {
-    [key in string]?: { nextType: string, targetDiscipline: string };
+    [key in string]?: { nextType: string, nextDiscipline: string };
   }
 }
 
