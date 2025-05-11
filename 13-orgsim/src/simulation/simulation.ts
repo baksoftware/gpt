@@ -130,6 +130,65 @@ class OrgSimulation implements SimulationAPI {
     console.log(`[SIM_LOG T-${this.state.currentTimeTick}] ${message}`);
     this.state.eventLog.push(`[T-${this.state.currentTimeTick}] ${message}`);
   }
+
+  private _getWorkTicks(personDiscipline: string, workUnitType: string): number {
+    if (!this.config || !this.config.personWorkTicks) {
+        this.logEvent(`Config Error: personWorkTicks not found. Using default 10 for ${workUnitType} by ${personDiscipline}.`);
+        return 10;
+    }
+    const ticksForDiscipline = this.config.personWorkTicks[personDiscipline];
+    if (ticksForDiscipline && typeof ticksForDiscipline[workUnitType] === 'number') {
+        return ticksForDiscipline[workUnitType];
+    }
+    
+    // Fallback to a configured default for 'software developer' / 'task'
+    const defaultDeveloperTaskTicks = this.config.personWorkTicks['software developer']?.['task'];
+    if (typeof defaultDeveloperTaskTicks === 'number') {
+        this.logEvent(`Work Ticks: No specific value for ${personDiscipline}/${workUnitType}. Using default 'software developer'/'task' ticks: ${defaultDeveloperTaskTicks}.`);
+        return defaultDeveloperTaskTicks;
+    }
+
+    this.logEvent(`Work Ticks: Critical - No specific or default work ticks for ${personDiscipline}/${workUnitType}. Using hardcoded 10.`);
+    return 10; // Final hardcoded fallback
+  }
+
+  private _assignWorkUnitToPerson(person: Person, workUnit: WorkUnit, assignmentType: 'direct' | 'global' | 'backlog'): void {
+    person.currentWorkUnitId = workUnit.id;
+    person.workRemainingTicks = this._getWorkTicks(person.discipline, workUnit.type);
+
+    workUnit.currentOwnerId = person.id;
+    workUnit.currentTeamOwnerId = person.teamId;
+
+    const team = this.state.teams.find(t => t.id === person.teamId);
+    const teamName = team ? team.name : "Unknown Team";
+
+    let logMessageActionPart = "";
+    let historyActionDescription = "";
+
+    switch (assignmentType) {
+        case 'direct':
+            logMessageActionPart = `assigned`;
+            historyActionDescription = `Assigned to ${person.name} (${person.discipline})`;
+            break;
+        case 'global':
+            logMessageActionPart = `assigned (global pool)`;
+            historyActionDescription = `Assigned (global pool) to ${person.name} (${person.discipline})`;
+            break;
+        case 'backlog':
+            logMessageActionPart = `picked from backlog`;
+            historyActionDescription = `Assigned from backlog to ${person.name} (${person.discipline})`;
+            break;
+    }
+
+    this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) ${logMessageActionPart} to ${person.name} in ${teamName}. Ticks: ${person.workRemainingTicks}`);
+    
+    workUnit.history.push({
+        personId: person.id,
+        teamId: person.teamId,
+        completedAtTick: this.state.currentTimeTick,
+        action: historyActionDescription
+    });
+  }
   
   // Placeholder for tick
   tick(): TickState {
@@ -192,20 +251,8 @@ class OrgSimulation implements SimulationAPI {
           // Prioritize assigning to the same team if the discipline matches
           const targetPersonInTeam = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
           if (targetPersonInTeam) {
-            targetPersonInTeam.currentWorkUnitId = workUnit.id;
-            const workTicks = this.config!.personWorkTicks?.[targetPersonInTeam.discipline]?.[workUnit.type];
-            targetPersonInTeam.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default if not found
-            
-            workUnit.currentOwnerId = targetPersonInTeam.id;
-            workUnit.currentTeamOwnerId = targetPersonInTeam.teamId;
+            this._assignWorkUnitToPerson(targetPersonInTeam, workUnit, 'direct');
             assigned = true;
-            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) assigned to ${targetPersonInTeam.name} in ${team.name}. Ticks: ${targetPersonInTeam.workRemainingTicks}`);
-            workUnit.history.push({
-              personId: targetPersonInTeam.id,
-              teamId: targetPersonInTeam.teamId,
-              completedAtTick: this.state.currentTimeTick,
-              action: `Assigned to ${targetPersonInTeam.name} (${targetPersonInTeam.discipline})`
-            });
             break; // Assigned
           }
         }
@@ -216,20 +263,8 @@ class OrgSimulation implements SimulationAPI {
             if (assigned) break;
             const targetPersonGlobal = team.members.find(member => member.discipline === nextStep.targetDiscipline && !member.currentWorkUnitId);
             if (targetPersonGlobal) {
-              targetPersonGlobal.currentWorkUnitId = workUnit.id;
-              const workTicks = this.config!.personWorkTicks?.[targetPersonGlobal.discipline]?.[workUnit.type];
-              targetPersonGlobal.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default
-              
-              workUnit.currentOwnerId = targetPersonGlobal.id;
-              workUnit.currentTeamOwnerId = targetPersonGlobal.teamId;
+              this._assignWorkUnitToPerson(targetPersonGlobal, workUnit, 'global');
               assigned = true;
-              this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) assigned to ${targetPersonGlobal.name} in ${team.name}. Ticks: ${targetPersonGlobal.workRemainingTicks}`);
-              workUnit.history.push({
-                personId: targetPersonGlobal.id,
-                teamId: targetPersonGlobal.teamId,
-                completedAtTick: this.state.currentTimeTick,
-                action: `Assigned to ${targetPersonGlobal.name} (${targetPersonGlobal.discipline})`
-              });
               break; // Assigned
             }
           }
@@ -239,14 +274,7 @@ class OrgSimulation implements SimulationAPI {
           // Place in a backlog of a team that has the target discipline
           const targetTeamForBacklog = this.state.teams.find(t => t.members.some(m => m.discipline === nextStep.targetDiscipline));
           if (targetTeamForBacklog) {
-            workUnit.currentTeamOwnerId = targetTeamForBacklog.id;
-            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${targetTeamForBacklog.name}. No available ${nextStep.targetDiscipline}.`);
-            workUnit.history.push({
-              personId: null,
-              teamId: targetTeamForBacklog.id,
-              completedAtTick: this.state.currentTimeTick,
-              action: `To backlog, awaiting ${nextStep.targetDiscipline}`
-            });
+            this._assignWorkUnitToPerson(targetTeamForBacklog.members[0], workUnit, 'backlog');
           } else {
             this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) could not be assigned or backlogged. No team has ${nextStep.targetDiscipline}.`);
              workUnit.history.push({
@@ -282,20 +310,7 @@ class OrgSimulation implements SimulationAPI {
           );
 
           if (availablePersonInTeam) {
-            availablePersonInTeam.currentWorkUnitId = workUnit.id;
-            const workTicks = this.config!.personWorkTicks?.[availablePersonInTeam.discipline]?.[workUnit.type];
-            // For backlog items, the type has already transitioned. We need ticks for *this* type.
-            availablePersonInTeam.workRemainingTicks = typeof workTicks === 'number' ? workTicks : (this.config!.personWorkTicks?.['software developer']?.['task'] || 10); // Default
-
-            workUnit.currentOwnerId = availablePersonInTeam.id;
-            // currentTeamOwnerId is already correct (teamWithBacklog.id)
-            this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) picked from backlog by ${availablePersonInTeam.name} in ${teamWithBacklog.name}. Ticks: ${availablePersonInTeam.workRemainingTicks}`);
-            workUnit.history.push({
-              personId: availablePersonInTeam.id,
-              teamId: availablePersonInTeam.teamId,
-              completedAtTick: this.state.currentTimeTick,
-              action: `Assigned from backlog to ${availablePersonInTeam.name} (${availablePersonInTeam.discipline})`
-            });
+            this._assignWorkUnitToPerson(availablePersonInTeam, workUnit, 'backlog');
           }
         }
       }
