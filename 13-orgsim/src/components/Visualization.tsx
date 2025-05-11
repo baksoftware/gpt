@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import OrgSimulation from '../simulation/simulation';
 import type { SimulationState, SimulationAPI, Person, Team, WorkUnit, Discipline, WorkUnitType } from '../simulation/types';
-import * as d3 from 'd3';
+import { Application, extend } from '@pixi/react';
+import * as PIXI from 'pixi.js';
+import { Container, Graphics, Text as PixiText } from 'pixi.js';
+
+// Extend @pixi/react with the PixiJS components we want to use
+extend({ Container, Graphics, Text: PixiText });
 
 interface Node extends d3.SimulationNodeDatum {
   id: string;
@@ -18,21 +23,27 @@ interface Link extends d3.SimulationLinkDatum<Node> {
   type: string; // 'member_of_team', 'works_on', 'backlog_in_team'
 }
 
-const disciplineColors: Record<Discipline, string> = {
-  'customer_representative': '#FFBF00', // Amber
-  'designer': '#DE3163', // Cerise
-  'product manager': '#6495ED', // Cornflower Blue
-  'software developer': '#9FE2BF', // Seafoam Green
-  'tester': '#40E0D0' // Turquoise
+// Keep existing color definitions (ensure they are numbers for PixiJS)
+const disciplineColors: Record<Discipline, number> = {
+  'customer_representative': 0xFFBF00, // Amber
+  'designer': 0xDE3163, // Cerise
+  'product manager': 0x6495ED, // Cornflower Blue
+  'software developer': 0x9FE2BF, // Seafoam Green
+  'tester': 0x40E0D0 // Turquoise
 };
 
-const workUnitTypeColors: Record<WorkUnitType, string> = {
-  'need': '#FF7F50', // Coral
-  'design': '#FFD700', // Gold
-  'task': '#ADFF2F', // Green Yellow
-  'code': '#1E90FF', // Dodger Blue
-  'release': '#BA55D3' // Medium Orchid
+const workUnitTypeColors: Record<WorkUnitType, number> = {
+  'need': 0xFF7F50, // Coral
+  'design': 0xFFD700, // Gold
+  'task': 0xADFF2F, // Green Yellow
+  'code': 0x1E90FF, // Dodger Blue
+  'release': 0xBA55D3 // Medium Orchid
 };
+
+const TEAM_RADIUS = 100;
+const PERSON_RADIUS = 20;
+const WORK_UNIT_RADIUS = 16;
+const PADDING = 40; // Padding between teams
 
 const Visualization: React.FC = () => {
   const [simApi, setSimApi] = useState<SimulationAPI | null>(null);
@@ -41,17 +52,16 @@ const Visualization: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<number | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const simulationRef = useRef<d3.Simulation<Node, Link> | null>(null);
+
+  // Component dimensions - can be made dynamic
+  const stageWidth = 800;
+  const stageHeight = 600;
 
   useEffect(() => {
     setSimApi(OrgSimulation.getInstance());
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
-      }
-      if (simulationRef.current) {
-        simulationRef.current.stop();
       }
     };
   }, []);
@@ -67,13 +77,6 @@ const Visualization: React.FC = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
-    }
-    if (simulationRef.current) {
-        simulationRef.current.stop();
-        // Optionally clear old nodes/links from SVG if not handled by D3 update pattern
-        if(svgRef.current){
-            d3.select(svgRef.current).selectAll('*').remove();
-        }
     }
     try {
       await simApi.loadConfigAndInitialize('/data/simulationConfig.json');
@@ -91,7 +94,7 @@ const Visualization: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isRunning && simApi && simState) {
+    if (isRunning && simApi) {
       intervalRef.current = window.setInterval(() => {
         simApi.tick();
         setSimState(simApi.getState());
@@ -107,133 +110,7 @@ const Visualization: React.FC = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, simApi, simState]);
-
-  useEffect(() => {
-    if (!simState || !svgRef.current) return;
-
-    const width = 800;
-    const height = 600;
-    const svg = d3.select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
-      .style('border', '1px solid black');
-
-    // 1. Transform data
-    const nodes: Node[] = [];
-    const links: Link[] = [];
-
-    simState.teams.forEach(team => {
-      nodes.push({ id: team.id, group: 'team', radius: team.isCustomerTeam ? 40 : 30, color: team.isCustomerTeam ? '#f0f0f0' : '#cccccc', name: team.name, originalData: team });
-      team.members.forEach(person => {
-        nodes.push({ id: person.id, group: 'person', radius: 10, color: disciplineColors[person.discipline], name: person.name, originalData: person });
-        links.push({ source: person.id, target: team.id, type: 'member_of_team' });
-        if (person.currentWorkUnitId) {
-          links.push({ source: person.id, target: person.currentWorkUnitId, type: 'works_on' });
-        }
-      });
-    });
-
-    simState.workUnits.forEach(wu => {
-      nodes.push({ id: wu.id, group: 'workunit', radius: 8, color: workUnitTypeColors[wu.type], name: wu.id, originalData: wu });
-      if (wu.currentTeamOwnerId && !wu.currentOwnerId) { // In backlog
-        links.push({ source: wu.id, target: wu.currentTeamOwnerId, type: 'backlog_in_team' });
-      }
-    });
-    
-    // Initialize or update simulation
-    if (!simulationRef.current) {
-        simulationRef.current = d3.forceSimulation<Node, Link>(nodes)
-            .force('link', d3.forceLink<Node, Link>(links).id((d: Node) => d.id).distance((d: Link) => {
-                if (d.type === 'member_of_team') return 50;
-                if (d.type === 'works_on') return 20;
-                if (d.type === 'backlog_in_team') return 40;
-                return 30;
-            }))
-            .force('charge', d3.forceManyBody().strength(-100))
-            .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius((d: Node) => d.radius + 5));
-    } else {
-        simulationRef.current.nodes(nodes);
-        const linkForce = simulationRef.current.force('link') as d3.ForceLink<Node, Link>; 
-        if(linkForce) {
-            linkForce.links(links);
-        }
-        simulationRef.current.alpha(0.3).restart();
-    }
-    
-    // Draw links
-    const linkElements = svg.selectAll<SVGLineElement, Link>('.link')
-        .data(links, (d: Link) => `${(d.source as Node).id}-${(d.target as Node).id}`);
-    
-    linkElements.exit().remove();
-    
-    const linkEnter = linkElements.enter().append('line')
-        .attr('class', 'link')
-        .style('stroke', (d: Link) => d.type === 'works_on' ? '#2ecc71' : '#999')
-        .style('stroke-opacity', 0.6)
-        .style('stroke-width', (d: Link) => d.type === 'works_on' ? 2 : 1);
-
-    const allLinks = linkEnter.merge(linkElements);
-
-    // Draw nodes (circles + text)
-    const nodeGroups = svg.selectAll<SVGGElement, Node>('.node-group')
-        .data(nodes, (d: Node) => d.id);
-
-    nodeGroups.exit().remove();
-
-    const nodeEnter = nodeGroups.enter().append('g')
-        .attr('class', 'node-group')
-        .call(d3.drag<SVGGElement, Node>()
-            .on('start', (event: d3.D3DragEvent<SVGGElement, Node, Node>, d: Node) => {
-                if (!event.active && simulationRef.current) simulationRef.current.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            })
-            .on('drag', (event: d3.D3DragEvent<SVGGElement, Node, Node>, d: Node) => {
-                d.fx = event.x;
-                d.fy = event.y;
-            })
-            .on('end', (event: d3.D3DragEvent<SVGGElement, Node, Node>, d: Node) => {
-                if (!event.active && simulationRef.current) simulationRef.current.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            })
-        );
-
-    nodeEnter.append('circle')
-        .attr('r', (d: Node) => d.radius)
-        .style('fill', (d: Node) => d.color)
-        .style('stroke', '#fff')
-        .style('stroke-width', 1.5);
-
-    nodeEnter.append('text')
-        .text((d: Node) => d.name || '')
-        .attr('x', (d: Node) => d.radius + 5)
-        .attr('y', 5)
-        .style('font-size', '10px')
-        .style('fill', '#333');
-        
-    const allNodes = nodeEnter.merge(nodeGroups);
-    allNodes.select('circle')
-        .attr('r', (d: Node) => d.radius)
-        .style('fill', (d: Node) => d.color);
-    allNodes.select('text')
-        .text((d: Node) => d.name || '');
-
-    // Simulation tick function
-    simulationRef.current.on('tick', () => {
-        allLinks
-            .attr('x1', (d: Link) => (d.source as Node).x || 0)
-            .attr('y1', (d: Link) => (d.source as Node).y || 0)
-            .attr('x2', (d: Link) => (d.target as Node).x || 0)
-            .attr('y2', (d: Link) => (d.target as Node).y || 0);
-
-        allNodes
-            .attr('transform', (d: Node) => `translate(${d.x || 0},${d.y || 0})`);
-    });
-
-  }, [simState]); // Rerun D3 rendering when simState changes
+  }, [isRunning, simApi]);
 
   const renderSimulationDetails = () => {
     if (isLoading) {
@@ -246,7 +123,7 @@ const Visualization: React.FC = () => {
       return <p>Click "Load/Reset Simulation" to load data.</p>;
     }
 
-    const getWorkUnitLocation = (wu: import('../simulation/types').WorkUnit): string => {
+    const getWorkUnitLocation = (wu: WorkUnit): string => {
       if (wu.currentOwnerId) {
         for (const team of simState.teams) {
           const person = team.members.find(p => p.id === wu.currentOwnerId);
@@ -290,6 +167,74 @@ const Visualization: React.FC = () => {
       </div>
     );
   };
+  
+  // Simple layout function for teams
+  const getTeamPosition = (teamIndex: number) => {
+    const teamsPerRow = Math.floor(stageWidth / (TEAM_RADIUS * 2 + PADDING));
+    const row = Math.floor(teamIndex / teamsPerRow);
+    const col = teamIndex % teamsPerRow;
+    const x = col * (TEAM_RADIUS * 2 + PADDING) + TEAM_RADIUS + PADDING;
+    const y = row * (TEAM_RADIUS * 2 + PADDING) + TEAM_RADIUS + PADDING;
+    return { x, y };
+  };
+
+  // Simple layout for people within a team (arrange in a circle)
+  const getPersonPositionInTeam = (personIndex: number, totalPersons: number, teamRadius: number) => {
+    if (totalPersons === 0) return { x: 0, y: 0 };
+    const angleStep = (2 * Math.PI) / totalPersons;
+    const angle = personIndex * angleStep;
+    const orbitRadius = teamRadius * 0.5; // Place them within the team circle
+    return {
+      x: orbitRadius * Math.cos(angle),
+      y: orbitRadius * Math.sin(angle),
+    };
+  };
+  
+  // Calculate positions for work units (simplified)
+  const getWorkUnitPosition = (wu: WorkUnit, teams: Team[], people: Person[]) => {
+    // Default position, maybe top-left or a dedicated "unassigned" area
+    let x = PADDING;
+    let y = stageHeight - PADDING - WORK_UNIT_RADIUS;
+
+    if (wu.currentOwnerId) {
+      const owner = people.find(p => p.id === wu.currentOwnerId);
+      // Ensure owner and owner.teamId are valid before proceeding
+      const ownerTeam = owner ? teams.find(t => t.id === owner.teamId) : undefined;
+      if (owner && ownerTeam) {
+        const teamIndex = teams.findIndex(t => t.id === ownerTeam.id);
+          if (teamIndex === -1) { // Safety check if team not found by index
+            console.warn(`Owner team ${ownerTeam.id} not found in teams list for WU ${wu.id}`);
+            return {x,y}; // return default position
+          }
+        const teamPos = getTeamPosition(teamIndex);
+        const personIndex = ownerTeam.members.findIndex(m => m.id === owner.id);
+         if (personIndex === -1) { // Safety check
+            console.warn(`Owner ${owner.id} not found in team members for WU ${wu.id}`);
+            return {x,y}; // return default position
+          }
+        const personPosInTeam = getPersonPositionInTeam(
+          personIndex,
+          ownerTeam.members.length,
+          TEAM_RADIUS
+        );
+        // Position near the person: person's absolute position + an offset
+        x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS + 5;
+        y = teamPos.y + personPosInTeam.y;
+      }
+    } else if (wu.currentTeamOwnerId) {
+      const teamIndex = teams.findIndex(t => t.id === wu.currentTeamOwnerId);
+      if (teamIndex !== -1) {
+        const teamPos = getTeamPosition(teamIndex);
+        // Position in a "backlog" area of the team, e.g., below the team circle
+        x = teamPos.x;
+        y = teamPos.y + TEAM_RADIUS + WORK_UNIT_RADIUS + 5;
+      } else {
+         console.warn(`Backlog team ${wu.currentTeamOwnerId} not found for WU ${wu.id}`);
+      }
+    }
+    return { x, y };
+  };
+
 
   return (
     <div>
@@ -303,8 +248,89 @@ const Visualization: React.FC = () => {
         </button>
       )}
       <hr />
-      {/* D3 SVG container */}
-      <svg ref={svgRef}></svg>
+      <Application width={stageWidth} height={stageHeight} background={0xeeeeee}>
+        {simState && (
+          <>
+            {/* Render Teams */}
+            {simState.teams.map((team, teamIndex) => {
+              const { x: teamX, y: teamY } = getTeamPosition(teamIndex);
+              return (
+                <pixiContainer key={team.id} x={teamX} y={teamY}>
+                  <pixiGraphics
+                    draw={(g: PIXI.Graphics) => {
+                      g.clear();
+                      g.beginFill(team.isCustomerTeam ? 0xdddddd : 0xcccccc);
+                      g.drawCircle(0, 0, TEAM_RADIUS);
+                      g.endFill();
+                      g.lineStyle(1, 0x333333);
+                      g.drawCircle(0,0, TEAM_RADIUS);
+                    }}
+                  />
+                  <pixiText
+                    text={team.name}
+                    anchor={0.5}
+                    x={0}
+                    y={0}
+                    style={new PIXI.TextStyle({ fontSize: 10, fill: 0x000000 })}
+                  />
+                  {/* Render People in Team */}
+                  {team.members.map((person, personIndex) => {
+                    const { x: personX, y: personY } = getPersonPositionInTeam(
+                      personIndex,
+                      team.members.length,
+                      TEAM_RADIUS
+                    );
+                    return (
+                      <pixiContainer key={person.id} x={personX} y={personY}>
+                        <pixiGraphics
+                          draw={(g: PIXI.Graphics) => {
+                            g.clear();
+                            g.beginFill(disciplineColors[person.discipline] || 0xff00ff);
+                            g.drawCircle(0, 0, PERSON_RADIUS);
+                            g.endFill();
+                          }}
+                        />
+                         <pixiText
+                            text={person.name.substring(0,3)} // Short name
+                            anchor={0.5}
+                            x={0}
+                            y={0}
+                            style={new PIXI.TextStyle({ fontSize: 8, fill: 0x000000 })}
+                        />
+                      </pixiContainer>
+                    );
+                  })}
+                </pixiContainer>
+              );
+            })}
+            
+            {/* Render Work Units */}
+            {simState.workUnits.map(wu => {
+              const allPeople = simState.teams.flatMap(t => t.members);
+              const { x: wuX, y: wuY } = getWorkUnitPosition(wu, simState.teams, allPeople);
+              return (
+                <pixiContainer key={wu.id} x={wuX} y={wuY}>
+                  <pixiGraphics
+                    draw={(g: PIXI.Graphics) => {
+                      g.clear();
+                      g.beginFill(workUnitTypeColors[wu.type] || 0x00ff00);
+                      g.drawCircle(0, 0, WORK_UNIT_RADIUS);
+                      g.endFill();
+                    }}
+                  />
+                   <pixiText
+                      text={wu.id.substring(0,4)} // Short ID
+                      anchor={0.5}
+                      x={0}
+                      y={WORK_UNIT_RADIUS + 5}
+                      style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
+                    />
+                </pixiContainer>
+              );
+            })}
+          </>
+        )}
+      </Application>
       <hr />
       {renderSimulationDetails()}
     </div>

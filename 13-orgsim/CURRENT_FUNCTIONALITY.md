@@ -48,10 +48,10 @@ The core simulation logic is written in TypeScript and is designed to be decoupl
 
 ## II. Visualization (`src/components/Visualization.tsx`)
 
-The visualization is a React component that uses D3.js to render the simulation state.
+The visualization is a React component that uses PixiJS (via `react-pixi-fiber` or a similar React-Pixi binding) to render the simulation state.
 
 ### 1. UI Controls
-- **Load/Reset Simulation Button**: Fetches data from `public/data/simulationConfig.json` and initializes/re-initializes the simulation through the `SimulationAPI`. Clears any ongoing D3 simulation.
+- **Load/Reset Simulation Button**: Fetches data from `public/data/simulationConfig.json` and initializes/re-initializes the simulation through the `SimulationAPI`. Clears any ongoing PixiJS rendering.
 - **Run/Pause Simulation Button**: Toggles the automatic advancement of simulation ticks.
   - When running, `simApi.tick()` is called every 1 second, and the display updates.
 
@@ -63,23 +63,14 @@ The visualization is a React component that uses D3.js to render the simulation 
   - Current Location (e.g., "Assigned to [Person Name] ([Discipline]) on Team [Team Name]" or "Backlog of Team [Team Name]").
 - **Event Log**: A scrollable view of the `eventLog` from the `SimulationState`.
 
-### 3. D3.js Force-Directed Graph
-- **SVG Canvas**: An SVG element hosts the D3 visualization.
-- **Nodes**:
-  - **Teams**: Rendered as large circles. Customer teams have a distinct appearance.
-  - **People**: Rendered as smaller circles, positioned generally within their team circle by the force simulation. Colors are based on their `discipline`.
-  - **Work Units**: Rendered as small circles. Colors are based on their `type`.
-  - Node labels display names/IDs.
-- **Links (Lines)**:
-  - Connecting people to their respective teams.
-  - Connecting people to the `WorkUnit` they are currently working on (styled distinctively).
-  - Connecting `WorkUnits` in a team's backlog to that team circle.
-- **Force Simulation**:
-  - `d3.forceSimulation` manages node positions.
-  - Forces include:
-    - `forceLink`: Maintains link distances (varied by link type).
-    - `forceManyBody`: Provides repulsion between nodes.
-    - `forceCenter`: Keeps the graph centered.
-    - `forceCollide`: Prevents nodes from overlapping based on their radius.
-- **Interactivity**: Nodes can be manually dragged with the mouse; the simulation adapts.
-- **Dynamic Updates**: The D3 graph (node positions, link states, colors, presence of nodes/links) updates reactively whenever the `simState` from the simulation engine changes (i.e., after each tick when running, or after load/reset). 
+### 3. PixiJS Canvas Rendering
+- **Pixi Stage**: A PixiJS stage hosts the rendering.
+- **Elements**:
+  - **Teams**: Rendered as circles. Customer teams might have a distinct appearance.
+  - **People**: Rendered as smaller circles, positioned within their team circle. Colors could be based on their `discipline`.
+  - **Work Units**: Rendered as small circles. Colors could be based on their `type`.
+  - Labels might display names/IDs.
+- **Layout**:
+  - Basic positioning logic to place people within their teams and arrange teams on the stage.
+  - Work units are positioned based on their current assignment (e.g., near a person or in a team's backlog area).
+- **Dynamic Updates**: The PixiJS stage updates reactively whenever the `simState` from the simulation engine changes (i.e., after each tick when running, or after load/reset). 
