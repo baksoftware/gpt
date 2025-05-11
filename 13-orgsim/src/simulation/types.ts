@@ -34,9 +34,11 @@ export interface WorkUnit {
   payload?: any; // Could hold specific data for the work unit
 }
 
+export type PersonConfigItem = Omit<Person, 'currentWorkUnitId' | 'workRemainingTicks' | 'teamId'> & { initialTeamName: string };
+
 export interface SimulationConfig {
   teams: Omit<Team, 'members'>[]; // Initial team structure without people
-  people: Omit<Person, 'currentWorkUnitId' | 'workRemainingTicks' | 'teamId'> & { initialTeamName: string }[];
+  people: PersonConfigItem[];
   initialWorkUnits: Omit<WorkUnit, 'history' | 'currentOwnerId' | 'currentTeamOwnerId'>[];
   personWorkTicks: {
     [key in Discipline]?: { // Optional because customer_representative might not 'work' on items

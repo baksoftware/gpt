@@ -6,7 +6,8 @@ import type {
   Person,
   WorkUnit,
   Discipline,
-  WorkUnitType
+  WorkUnitType,
+  PersonConfigItem
 } from './types';
 
 let simulationInstance: OrgSimulation | null = null;
@@ -65,7 +66,7 @@ class OrgSimulation implements SimulationAPI {
       return team;
     });
 
-    config.people.forEach(personConfig => {
+    config.people.forEach((personConfig: PersonConfigItem) => {
       const team = teamsMap.get(personConfig.initialTeamName);
       if (team) {
         const person: Person = {
