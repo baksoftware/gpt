@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Architecture Overview
+
+This project follows a decoupled architecture separating the visualization layer from the simulation logic.
+
+## Key Architectural Principles:
+
+*   **Separation of Concerns**: The visualization (React and D3.js) is distinctly separate from the core simulation logic (pure TypeScript).
+*   **Defined Interface**: All interactions between the visualization and the simulation occur exclusively through a single, well-defined API interface. This ensures modularity and allows for independent development and testing of each component.
+*   **Technology Stack**:
+    *   **Visualization**: Implemented using React for the UI components and D3.js for rendering complex data visualizations.
+    *   **Simulation**: Developed purely in TypeScript, with no React dependencies. This keeps the simulation logic lean and focused.
+
+## Component Interaction:
+
+The React-based front-end consumes data and triggers actions in the TypeScript simulation backend solely via the designated API. This API acts as the single point of entry to the simulation's functionalities.
