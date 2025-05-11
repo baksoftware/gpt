@@ -85,10 +85,9 @@ class OrgSimulation implements SimulationAPI {
       const workUnit: WorkUnit = {
         id: wuConfig.id || `wu_${Date.now()}_${index}`,
         type: wuConfig.type,
-        payload: wuConfig.payload,
         currentOwnerId: null,
         currentTeamOwnerId: null,
-        history: [{
+        backlog: [{
             personId: null,
             teamId: 'unassigned_initial', // Default, will be updated
             completedAtTick: 0,
@@ -105,20 +104,20 @@ class OrgSimulation implements SimulationAPI {
         const suitableBacklogTeam = this.state.teams.find(t => t.members.some(m => m.discipline === targetDiscipline));
         if (suitableBacklogTeam) {
         workUnit.currentTeamOwnerId = suitableBacklogTeam.id;
-        workUnit.history[0].teamId = suitableBacklogTeam.id; // Update history
+        workUnit.backlog[0].teamId = suitableBacklogTeam.id; // Update history
         this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${suitableBacklogTeam.name}. No available ${targetDiscipline}.`);
-        workUnit.history.push({
+        workUnit.backlog.push({
             personId: null, teamId: suitableBacklogTeam.id, completedAtTick: 0,
             action: `Initial: To backlog, awaiting ${targetDiscipline}`
         });
         } else {
         this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No free ${targetDiscipline} and no team has this discipline for backlog.`);
-        workUnit.history[0].action += ` - Unassignable (no ${targetDiscipline} available/no suitable team backlog)`;
+        workUnit.backlog[0].action += ` - Unassignable (no ${targetDiscipline} available/no suitable team backlog)`;
         }
 
       } else {
         this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) has no defined targetDiscipline in workFlow or workFlow entry is missing. Cannot be initially assigned by flow.`);
-        workUnit.history[0].action += ` - Unassignable (no workflow for type ${workUnit.type})`;
+        workUnit.backlog[0].action += ` - Unassignable (no workflow for type ${workUnit.type})`;
       }
       return workUnit;
     });
@@ -156,30 +155,30 @@ class OrgSimulation implements SimulationAPI {
     const teamName = team ? team.name : "Unknown Team";
 
     let logMessageActionPart = "";
-    let historyActionDescription = "";
+    let backlogActionDescription = "";
 
     switch (assignmentType) {
         case 'direct':
             logMessageActionPart = `assigned`;
-            historyActionDescription = `Assigned to ${person.name} (${person.discipline})`;
+            backlogActionDescription = `Assigned to ${person.name} (${person.discipline})`;
             break;
         case 'global':
             logMessageActionPart = `assigned (global pool)`;
-            historyActionDescription = `Assigned (global pool) to ${person.name} (${person.discipline})`;
+            backlogActionDescription = `Assigned (global pool) to ${person.name} (${person.discipline})`;
             break;
         case 'backlog':
             logMessageActionPart = `picked from backlog`;
-            historyActionDescription = `Assigned from backlog to ${person.name} (${person.discipline})`;
+            backlogActionDescription = `Assigned from backlog to ${person.name} (${person.discipline})`;
             break;
     }
 
     this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) ${logMessageActionPart} to ${person.name} in ${teamName}. Ticks: ${person.workRemainingTicks}`);
     
-    workUnit.history.push({
+    workUnit.backlog.push({
         personId: person.id,
         teamId: person.teamId,
         completedAtTick: this.state.currentTimeTick,
-        action: historyActionDescription
+        action: backlogActionDescription
     });
   }
   
@@ -203,7 +202,7 @@ class OrgSimulation implements SimulationAPI {
                     const completedWorkUnit = this.state.workUnits.find(wu => wu.id === person.currentWorkUnitId);
                     if (completedWorkUnit) {
                         this.logEvent(`${person.name} from ${team.name} completed work on ${completedWorkUnit.id} (${completedWorkUnit.type}).`);
-                        completedWorkUnit.history.push({
+                        completedWorkUnit.backlog.push({
                             personId: person.id,
                             teamId: person.teamId,
                             completedAtTick: this.state.currentTimeTick,
@@ -231,7 +230,7 @@ class OrgSimulation implements SimulationAPI {
       if (nextStep) {
         workUnit.type = nextStep.nextType;
         this.logEvent(`Work unit ${workUnit.id} transitioned from ${currentWorkUnitType} to ${workUnit.type}. Target: ${nextStep.targetDiscipline}`);
-        workUnit.history.push({
+        workUnit.backlog.push({
           personId: person.id, // Person who completed previous step
           teamId: person.teamId,
           completedAtTick: this.state.currentTimeTick,
@@ -254,7 +253,7 @@ class OrgSimulation implements SimulationAPI {
                 // Place in original team's backlog
                 workUnit.currentTeamOwnerId = originalTeam.id;
                 this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) stays in ${originalTeam.name}'s backlog (awaiting ${nextStep.targetDiscipline}).`);
-                workUnit.history.push({
+                workUnit.backlog.push({
                     personId: null,
                     teamId: originalTeam.id,
                     completedAtTick: this.state.currentTimeTick,
@@ -286,7 +285,7 @@ class OrgSimulation implements SimulationAPI {
                 if (targetTeamForGlobalBacklog) {
                     workUnit.currentTeamOwnerId = targetTeamForGlobalBacklog.id;
                     this.logEvent(`Work Unit ${workUnit.id} (${workUnit.type}) to ${targetTeamForGlobalBacklog.name}'s backlog (global search, no free ${nextStep.targetDiscipline}).`);
-                    workUnit.history.push({
+                    workUnit.backlog.push({
                         personId: null,
                         teamId: targetTeamForGlobalBacklog.id,
                         completedAtTick: this.state.currentTimeTick,
@@ -300,7 +299,7 @@ class OrgSimulation implements SimulationAPI {
         if (!taskPlaced) {
             // If still not placed (e.g., no team anywhere has the discipline).
             this.logEvent(`Work unit ${workUnit.id} (${workUnit.type}) could not be assigned or backlogged. No team has ${nextStep.targetDiscipline}.`);
-            workUnit.history.push({
+            workUnit.backlog.push({
               personId: null,
               teamId: 'none', // Or a specific unassigned ID
               completedAtTick: this.state.currentTimeTick,
@@ -309,7 +308,7 @@ class OrgSimulation implements SimulationAPI {
           }
       } else {
         this.logEvent(`Work unit ${workUnit.id} (${currentWorkUnitType}) completed. No further workflow defined.`);
-        workUnit.history.push({
+        workUnit.backlog.push({
             personId: person.id, teamId: person.teamId, completedAtTick: this.state.currentTimeTick,
             action: `Workflow ended or undefined`
         });

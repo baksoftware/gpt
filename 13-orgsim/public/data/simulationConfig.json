@@ -53,63 +53,45 @@
   ],
   "people": [
     {
-      "id": "person_1-0",
-      "name": "Customer-0",
-      "discipline": "Customer",
-      "initialTeamName": "Customer"
-    },
-    {
-      "id": "person_1-1",
+      "id": "person_1",
       "name": "Customer-1",
       "discipline": "Customer",
       "initialTeamName": "Customer"
     },
     {
-      "id": "person_1-2",
+      "id": "person_2",
       "name": "Customer-2",
       "discipline": "Customer",
       "initialTeamName": "Customer"
     },
     {
-      "id": "person_1-3",
+      "id": "person_3",
       "name": "Customer-3",
       "discipline": "Customer",
       "initialTeamName": "Customer"
     },
     {
-      "id": "person_1-4",
+      "id": "person_4",
       "name": "Customer-4",
       "discipline": "Customer",
       "initialTeamName": "Customer"
     },
     {
-      "id": "person_3",
-      "name": "Designer_3",
-      "discipline": "Designer",
-      "initialTeamName": "Team A"
+      "id": "person_5",
+      "name": "Customer-5",
+      "discipline": "Customer",
+      "initialTeamName": "Customer"
     },
     {
-      "id": "person_2",
-      "name": "PM_2",
+      "id": "person_6",
+      "name": "PM_6",
       "discipline": "PM",
       "initialTeamName": "Team A"
     },
     {
-      "id": "person_4",
-      "name": "SwDev_4",
-      "discipline": "SwDev",
-      "initialTeamName": "Team A"
-    },
-    {
-      "id": "person_6",
-      "name": "SwDev_6",
-      "discipline": "SwDev",
-      "initialTeamName": "Team A"
-    },
-    {
       "id": "person_7",
-      "name": "SwDev_7",
-      "discipline": "SwDev",
+      "name": "Designer_7",
+      "discipline": "Designer",
       "initialTeamName": "Team A"
     },
     {
@@ -119,87 +101,87 @@
       "initialTeamName": "Team A"
     },
     {
-      "id": "person_5",
-      "name": "Tester_5",
+      "id": "person_9",
+      "name": "Tester_9",
       "discipline": "Tester",
       "initialTeamName": "Team A"
     },
     {
       "id": "person_10",
-      "name": "Designer_10",
-      "discipline": "Designer",
-      "initialTeamName": "Team B"
-    },
-    {
-      "id": "person_9",
-      "name": "PM_9",
-      "discipline": "PM",
-      "initialTeamName": "Team B"
+      "name": "SwDev_10",
+      "discipline": "SwDev",
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_11",
       "name": "SwDev_11",
       "discipline": "SwDev",
-      "initialTeamName": "Team B"
+      "initialTeamName": "Team A"
+    },
+    {
+      "id": "person_12",
+      "name": "SwDev_12",
+      "discipline": "SwDev",
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_13",
       "name": "SwDev_13",
       "discipline": "SwDev",
-      "initialTeamName": "Team B"
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_14",
-      "name": "SwDev_14",
-      "discipline": "SwDev",
-      "initialTeamName": "Team B"
+      "name": "Tester_14",
+      "discipline": "Tester",
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_15",
-      "name": "SwDev_15",
-      "discipline": "SwDev",
-      "initialTeamName": "Team B"
+      "name": "Designer_15",
+      "discipline": "Designer",
+      "initialTeamName": "Team A"
     },
     {
       "id": "person_16",
-      "name": "SwDev_16",
-      "discipline": "SwDev",
+      "name": "PM_16",
+      "discipline": "PM",
       "initialTeamName": "Team B"
     },
     {
-      "id": "person_12",
-      "name": "Tester_12",
-      "discipline": "Tester",
+      "id": "person_17",
+      "name": "Designer_17",
+      "discipline": "Designer",
       "initialTeamName": "Team B"
     },
     {
       "id": "person_18",
-      "name": "Designer_18",
-      "discipline": "Designer",
-      "initialTeamName": "Team C"
+      "name": "SwDev_18",
+      "discipline": "SwDev",
+      "initialTeamName": "Team B"
     },
     {
-      "id": "person_17",
-      "name": "PM_17",
+      "id": "person_19",
+      "name": "Tester_19",
+      "discipline": "Tester",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_20",
+      "name": "SwDev_20",
+      "discipline": "SwDev",
+      "initialTeamName": "Team B"
+    },
+    {
+      "id": "person_21",
+      "name": "PM_21",
       "discipline": "PM",
       "initialTeamName": "Team C"
     },
     {
-      "id": "person_19",
-      "name": "SwDev_19",
-      "discipline": "SwDev",
-      "initialTeamName": "Team C"
-    },
-    {
-      "id": "person_21",
-      "name": "SwDev_21",
-      "discipline": "SwDev",
-      "initialTeamName": "Team C"
-    },
-    {
       "id": "person_22",
-      "name": "SwDev_22",
-      "discipline": "SwDev",
+      "name": "Designer_22",
+      "discipline": "Designer",
       "initialTeamName": "Team C"
     },
     {
@@ -210,33 +192,15 @@
     },
     {
       "id": "person_24",
-      "name": "SwDev_24",
-      "discipline": "SwDev",
-      "initialTeamName": "Team C"
-    },
-    {
-      "id": "person_20",
-      "name": "Tester_20",
+      "name": "Tester_24",
       "discipline": "Tester",
       "initialTeamName": "Team C"
     },
     {
       "id": "person_25",
-      "name": "Tester_25",
-      "discipline": "Tester",
+      "name": "SwDev_25",
+      "discipline": "SwDev",
       "initialTeamName": "Team C"
-    },
-    {
-      "id": "person_27",
-      "name": "Designer_27",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
-    },
-    {
-      "id": "person_35",
-      "name": "Designer_35",
-      "discipline": "Designer",
-      "initialTeamName": "Team D"
     },
     {
       "id": "person_26",
@@ -245,9 +209,21 @@
       "initialTeamName": "Team D"
     },
     {
+      "id": "person_27",
+      "name": "Designer_27",
+      "discipline": "Designer",
+      "initialTeamName": "Team D"
+    },
+    {
       "id": "person_28",
       "name": "SwDev_28",
       "discipline": "SwDev",
+      "initialTeamName": "Team D"
+    },
+    {
+      "id": "person_29",
+      "name": "Tester_29",
+      "discipline": "Tester",
       "initialTeamName": "Team D"
     },
     {
@@ -275,22 +251,16 @@
       "initialTeamName": "Team D"
     },
     {
-      "id": "person_29",
-      "name": "Tester_29",
-      "discipline": "Tester",
-      "initialTeamName": "Team D"
-    },
-    {
       "id": "person_34",
       "name": "Tester_34",
       "discipline": "Tester",
       "initialTeamName": "Team D"
     },
     {
-      "id": "person_37",
-      "name": "Designer_37",
+      "id": "person_35",
+      "name": "Designer_35",
       "discipline": "Designer",
-      "initialTeamName": "Team E"
+      "initialTeamName": "Team D"
     },
     {
       "id": "person_36",
@@ -299,9 +269,21 @@
       "initialTeamName": "Team E"
     },
     {
+      "id": "person_37",
+      "name": "Designer_37",
+      "discipline": "Designer",
+      "initialTeamName": "Team E"
+    },
+    {
       "id": "person_38",
       "name": "SwDev_38",
       "discipline": "SwDev",
+      "initialTeamName": "Team E"
+    },
+    {
+      "id": "person_39",
+      "name": "Tester_39",
+      "discipline": "Tester",
       "initialTeamName": "Team E"
     },
     {
@@ -317,39 +299,33 @@
       "initialTeamName": "Team E"
     },
     {
-      "id": "person_39",
-      "name": "Tester_39",
-      "discipline": "Tester",
+      "id": "person_42",
+      "name": "SwDev_42",
+      "discipline": "SwDev",
       "initialTeamName": "Team E"
     },
     {
       "id": "person_43",
-      "name": "Designer_43",
-      "discipline": "Designer",
-      "initialTeamName": "Team F"
-    },
-    {
-      "id": "person_51",
-      "name": "Designer_51",
-      "discipline": "Designer",
-      "initialTeamName": "Team F"
-    },
-    {
-      "id": "person_42",
-      "name": "PM_42",
+      "name": "PM_43",
       "discipline": "PM",
       "initialTeamName": "Team F"
     },
     {
       "id": "person_44",
-      "name": "SwDev_44",
+      "name": "Designer_44",
+      "discipline": "Designer",
+      "initialTeamName": "Team F"
+    },
+    {
+      "id": "person_45",
+      "name": "SwDev_45",
       "discipline": "SwDev",
       "initialTeamName": "Team F"
     },
     {
       "id": "person_46",
-      "name": "SwDev_46",
-      "discipline": "SwDev",
+      "name": "Tester_46",
+      "discipline": "Tester",
       "initialTeamName": "Team F"
     },
     {
@@ -366,32 +342,32 @@
     },
     {
       "id": "person_49",
-      "name": "SwDev_49",
-      "discipline": "SwDev",
-      "initialTeamName": "Team F"
-    },
-    {
-      "id": "person_45",
-      "name": "Tester_45",
-      "discipline": "Tester",
-      "initialTeamName": "Team F"
+      "name": "PM_49",
+      "discipline": "PM",
+      "initialTeamName": "Team G"
     },
     {
       "id": "person_50",
-      "name": "Tester_50",
-      "discipline": "Tester",
-      "initialTeamName": "Team F"
-    },
-    {
-      "id": "person_53",
-      "name": "Designer_53",
+      "name": "Designer_50",
       "discipline": "Designer",
       "initialTeamName": "Team G"
     },
     {
+      "id": "person_51",
+      "name": "SwDev_51",
+      "discipline": "SwDev",
+      "initialTeamName": "Team G"
+    },
+    {
       "id": "person_52",
-      "name": "PM_52",
-      "discipline": "PM",
+      "name": "Tester_52",
+      "discipline": "Tester",
+      "initialTeamName": "Team G"
+    },
+    {
+      "id": "person_53",
+      "name": "SwDev_53",
+      "discipline": "SwDev",
       "initialTeamName": "Team G"
     },
     {
@@ -401,1544 +377,902 @@
       "initialTeamName": "Team G"
     },
     {
+      "id": "person_55",
+      "name": "PM_55",
+      "discipline": "PM",
+      "initialTeamName": "Team H"
+    },
+    {
       "id": "person_56",
-      "name": "SwDev_56",
-      "discipline": "SwDev",
-      "initialTeamName": "Team G"
+      "name": "Designer_56",
+      "discipline": "Designer",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_57",
       "name": "SwDev_57",
       "discipline": "SwDev",
-      "initialTeamName": "Team G"
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_58",
-      "name": "SwDev_58",
-      "discipline": "SwDev",
-      "initialTeamName": "Team G"
+      "name": "Tester_58",
+      "discipline": "Tester",
+      "initialTeamName": "Team H"
     },
     {
       "id": "person_59",
       "name": "SwDev_59",
       "discipline": "SwDev",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_55",
-      "name": "Tester_55",
-      "discipline": "Tester",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_60",
-      "name": "Tester_60",
-      "discipline": "Tester",
-      "initialTeamName": "Team G"
-    },
-    {
-      "id": "person_62",
-      "name": "Designer_62",
-      "discipline": "Designer",
       "initialTeamName": "Team H"
     },
     {
-      "id": "person_70",
-      "name": "Designer_70",
-      "discipline": "Designer",
+      "id": "person_60",
+      "name": "SwDev_60",
+      "discipline": "SwDev",
       "initialTeamName": "Team H"
     },
     {
       "id": "person_61",
       "name": "PM_61",
       "discipline": "PM",
-      "initialTeamName": "Team H"
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_62",
+      "name": "Designer_62",
+      "discipline": "Designer",
+      "initialTeamName": "Team I"
     },
     {
       "id": "person_63",
       "name": "SwDev_63",
       "discipline": "SwDev",
-      "initialTeamName": "Team H"
-    },
-    {
-      "id": "person_65",
-      "name": "SwDev_65",
-      "discipline": "SwDev",
-      "initialTeamName": "Team H"
-    },
-    {
-      "id": "person_66",
-      "name": "SwDev_66",
-      "discipline": "SwDev",
-      "initialTeamName": "Team H"
-    },
-    {
-      "id": "person_67",
-      "name": "SwDev_67",
-      "discipline": "SwDev",
-      "initialTeamName": "Team H"
-    },
-    {
-      "id": "person_68",
-      "name": "SwDev_68",
-      "discipline": "SwDev",
-      "initialTeamName": "Team H"
+      "initialTeamName": "Team I"
     },
     {
       "id": "person_64",
       "name": "Tester_64",
       "discipline": "Tester",
-      "initialTeamName": "Team H"
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_65",
+      "name": "SwDev_65",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_66",
+      "name": "SwDev_66",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_67",
+      "name": "SwDev_67",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
+    },
+    {
+      "id": "person_68",
+      "name": "SwDev_68",
+      "discipline": "SwDev",
+      "initialTeamName": "Team I"
     },
     {
       "id": "person_69",
       "name": "Tester_69",
       "discipline": "Tester",
-      "initialTeamName": "Team H"
+      "initialTeamName": "Team I"
     },
     {
-      "id": "person_72",
-      "name": "Designer_72",
+      "id": "person_70",
+      "name": "Designer_70",
       "discipline": "Designer",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_71",
-      "name": "PM_71",
-      "discipline": "PM",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_73",
-      "name": "SwDev_73",
-      "discipline": "SwDev",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_75",
-      "name": "SwDev_75",
-      "discipline": "SwDev",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_76",
-      "name": "SwDev_76",
-      "discipline": "SwDev",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_77",
-      "name": "SwDev_77",
-      "discipline": "SwDev",
-      "initialTeamName": "Team I"
-    },
-    {
-      "id": "person_74",
-      "name": "Tester_74",
-      "discipline": "Tester",
       "initialTeamName": "Team I"
     }
   ],
   "initialWorkUnits": [
     {
       "id": "Work-1",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 1"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-2",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 2"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-3",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 3"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-4",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 4"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-5",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 5"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-6",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 6"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-7",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 7"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-8",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 8"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-9",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 9"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-10",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 10"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-11",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 11"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-12",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 12"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-13",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 13"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-14",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 14"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-15",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 15"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-16",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 16"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-17",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 17"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-18",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 18"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-19",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 19"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-20",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 20"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-21",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 21"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-22",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 22"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-23",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 23"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-24",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 24"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-25",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 25"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-26",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 26"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-27",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 27"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-28",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 28"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-29",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 29"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-30",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 30"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-31",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 31"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-32",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 32"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-33",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 33"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-34",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 34"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-35",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 35"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-36",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 36"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-37",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 37"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-38",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 38"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-39",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 39"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-40",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 40"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-41",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 41"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-42",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 42"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-43",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 43"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-44",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 44"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-45",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 45"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-46",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 46"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-47",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 47"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-48",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 48"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-49",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 49"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-50",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 50"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-51",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 51"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-52",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 52"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-53",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 53"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-54",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 54"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-55",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 55"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-56",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 56"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-57",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 57"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-58",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 58"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-59",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 59"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-60",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 60"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-61",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 61"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-62",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 62"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-63",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 63"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-64",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 64"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-65",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 65"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-66",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 66"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-67",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 67"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-68",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 68"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-69",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 69"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-70",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 70"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-71",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 71"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-72",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 72"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-73",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 73"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-74",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 74"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-75",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 75"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-76",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 76"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-77",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 77"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-78",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 78"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-79",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 79"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-80",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 80"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-81",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 81"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-82",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 82"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-83",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 83"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-84",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 84"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-85",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 85"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-86",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 86"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-87",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 87"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-88",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 88"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-89",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 89"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-90",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 90"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-91",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 91"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-92",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 92"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-93",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 93"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-94",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 94"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-95",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 95"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-96",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 96"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-97",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 97"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-98",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 98"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-99",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 99"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-100",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 100"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-101",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 101"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-102",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 102"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-103",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 103"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-104",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 104"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-105",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 105"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-106",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 106"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-107",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 107"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-108",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 108"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-109",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 109"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-110",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 110"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-111",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 111"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-112",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 112"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-113",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 113"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-114",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 114"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-115",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 115"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-116",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 116"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-117",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 117"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-118",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 118"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-119",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 119"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-120",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 120"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-121",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 121"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-122",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 122"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-123",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 123"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-124",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 124"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-125",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 125"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-126",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 126"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-127",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 127"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-128",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 128"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-129",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 129"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-130",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 130"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-131",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 131"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-132",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 132"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-133",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 133"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-134",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 134"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-135",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 135"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-136",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 136"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-137",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 137"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-138",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 138"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-139",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 139"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-140",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 140"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-141",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 141"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-142",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 142"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-143",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 143"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-144",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 144"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-145",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 145"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-146",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 146"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-147",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 147"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-148",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 148"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-149",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 149"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-150",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 150"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-151",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 151"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-152",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 152"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-153",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 153"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-154",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 154"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-155",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 155"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-156",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 156"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-157",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 157"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-158",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 158"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-159",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 159"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-160",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 160"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-161",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 161"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-162",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 162"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-163",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 163"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-164",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 164"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-165",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 165"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-166",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 166"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-167",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 167"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-168",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 168"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-169",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 169"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-170",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 170"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-171",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 171"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-172",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 172"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-173",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 173"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-174",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 174"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-175",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 175"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-176",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 176"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-177",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 177"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-178",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 178"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-179",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 179"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-180",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 180"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-181",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 181"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-182",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 182"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-183",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 183"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-184",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 184"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-185",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 185"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-186",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 186"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-187",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 187"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-188",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 188"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-189",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 189"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-190",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 190"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-191",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 191"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-192",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 192"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-193",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 193"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-194",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 194"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-195",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 195"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-196",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 196"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-197",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 197"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-198",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 198"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-199",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 199"
-      }
+      "type": "idea"
     },
     {
       "id": "Work-200",
-      "type": "idea",
-      "payload": {
-        "description": "Generated idea 200"
-      }
+      "type": "idea"
     }
   ],
   "personWorkTicks": {

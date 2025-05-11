@@ -11,7 +11,7 @@ The core simulation logic is written in TypeScript and is designed to be decoupl
   - **Configurable Elements**:
     - `teams`: Defines team structures (ID, name, customer team flag).
     - `people`: Defines individuals with ID, name, `discipline` (e.g., 'software developer', 'designer'), and their `initialTeamName`.
-    - `initialWorkUnits`: Specifies the starting work items, each with an ID, `type` (e.g., 'need', 'design'), and an optional `payload`.
+    - `initialWorkUnits`: Specifies the starting work items, each with an ID, `type` (e.g., 'need', 'design').
     - `personWorkTicks`: A nested object defining how many time ticks (hours) each `discipline` takes to complete each `WorkUnitType`.
     - `workFlow`: Defines the sequence of work. For each `WorkUnitType`, it specifies the `nextType` it transitions to and the `targetDiscipline` required for that next step.
 - **State Management**:

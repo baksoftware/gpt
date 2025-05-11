@@ -47,14 +47,14 @@ def generate_people(teams_list):
             break
     
     if customer_team_name:
-        for i in range(5):
+        for _ in range(5):
             people.append({
-                "id": f"person_{person_counter}-{i}",
-                "name": f"Customer-{i}",
+                "id": f"person_{person_counter}",
+                "name": f"Customer-{person_counter}",
                 "discipline": "Customer",
                 "initialTeamName": customer_team_name
             })
-        person_counter += 1
+            person_counter += 1
     else:
         # This should not happen if generate_teams always creates a customer team.
         print("Warning: No customer team was found to assign a representative.")
@@ -73,7 +73,7 @@ def generate_people(teams_list):
                 "initialTeamName": team["name"]
             })
             person_counter += 1
-        team_people = sorted(team_people, key=lambda x: x["discipline"])
+        # team_people = sorted(team_people, key=lambda x: x["discipline"])
         people.extend(team_people)
     return people
 
@@ -83,12 +83,12 @@ def generate_initial_work_units(num_units):
     for i in range(num_units):
         work_units.append({
             "id": f"Work-{i+1}",
-            "type": "idea",
-            "payload": {"description": f"Generated idea {i+1}"}
+            "type": "idea"
         })
     return work_units
 
 def main():
+    random.seed(42);
     parser = argparse.ArgumentParser(description="Generate a simulationConfig.json-like file.")
     parser.add_argument(
         "--num_teams", 
