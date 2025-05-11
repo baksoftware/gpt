@@ -599,20 +599,20 @@
   ],
   "personWorkTicks": {
     "designer": {
-      "need": 3
+      "need": 1
     },
     "product manager": {
-      "design": 2
+      "design": 10
     },
     "software developer": {
-      "task": 5
+      "task": 10
     },
     "tester": {
-      "code": 2
+      "code": 1
     },
     "customer_representative": {
-      "idea": 3,
-      "release": 4
+      "idea": 1,
+      "release": 1
     }
   },
   "workFlow": {

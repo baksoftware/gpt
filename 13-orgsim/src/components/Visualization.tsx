@@ -38,7 +38,7 @@ const workUnitTypeColors: Record<string, number> = {
   'task': 0xADFF2F, // Green Yellow
   'code': 0x1E90FF, // Dodger Blue
   'release': 0xBA55D3, // Medium Orchid
-  'done': 0x000000 // Black
+  'done': 0x0000FF // Blue
 };
 
 const TEAM_RADIUS = 100;
@@ -48,6 +48,9 @@ const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
 const ANIMATION_DURATION = 50;
 const TICK_INTERVAL = 50;
+
+const DONE_PILE_COLOR = 0x808080; // Grey for the "done" pile
+const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
 
 // New AnimatedPixiContainer component
 interface AnimatedPixiContainerProps {
@@ -122,8 +125,8 @@ const Visualization: React.FC = () => {
   const intervalRef = useRef<number | null>(null);
 
   // Component dimensions - can be made dynamic
-  const stageWidth = 700;
-  const stageHeight = 900;
+  const stageWidth = 1200;
+  const stageHeight = 800;
 
   useEffect(() => {
     setSimApi(OrgSimulation.getInstance());
@@ -184,120 +187,65 @@ const Visualization: React.FC = () => {
     };
   }, [isRunning, simApi]);
 
-  const renderSimulationDetails = () => {
-    if (isLoading) {
-      return <p>Loading simulation data...</p>;
-    }
-    if (error) {
-      return <p style={{ color: 'red' }}>Error: {error}</p>;
-    }
-    if (!simState) {
-      return <p>Click "Load/Reset Simulation" to load data.</p>;
-    }
-
-    const getWorkUnitLocation = (wu: WorkUnit): string => {
-      if (wu.currentOwnerId) {
-        for (const team of simState.teams) {
-          const person = team.members.find(p => p.id === wu.currentOwnerId);
-          if (person) {
-            return `${person.name} (${person.discipline}) on Team ${team.name}`;
-          }
-        }
-        return `Person ID: ${wu.currentOwnerId} (Team not found)`;
-      }
-      if (wu.currentTeamOwnerId) {
-        const team = simState.teams.find(t => t.id === wu.currentTeamOwnerId);
-        return team ? `Backlog of Team ${team.name}` : `Team ID: ${wu.currentTeamOwnerId} (Not found)`;
-      }
-      return "Unassigned";
-    };
-
-    return (
-      <div>
-        <p>Current Tick: {simState.currentTimeTick}</p>
-        <p>Teams: {simState.teams.length}</p>
-        <p>Work Units: {simState.workUnits.length}</p>
-        
-        <h4>Work Unit Status:</h4>
-        {simState.workUnits.length > 0 ? (
-          <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-            {simState.workUnits.map(wu => (
-              <li key={wu.id} style={{ borderBottom: '1px solid #eee', paddingBottom: '5px', marginBottom: '5px'}}>
-                <strong>ID:</strong> {wu.id} | <strong>Type:</strong> {wu.type} <br />
-                <strong>Location:</strong> {getWorkUnitLocation(wu)}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No work units in the simulation.</p>
-        )}
-
-        <h4>Event Log:</h4>
-        <pre style={{ maxHeight: '200px', overflowY: 'scroll', border: '1px solid #ccc', padding: '10px', background: '#f9f9f9' }}>
-          {simState.eventLog.join('\n')}
-        </pre>
-      </div>
-    );
-  };
-  
-  // Simple layout function for teams
-  const getTeamPosition = (teamIndex: number) => {
-    const teamsPerRow = Math.floor(stageWidth / (TEAM_RADIUS * 2 + PADDING));
+  const getTeamPosition = (teamIndex: number, currentStageWidth: number) => {
+    const teamsPerRow = Math.floor(currentStageWidth / (TEAM_RADIUS * 2 + PADDING));
     const row = Math.floor(teamIndex / teamsPerRow);
     const col = teamIndex % teamsPerRow;
     const x = col * (TEAM_RADIUS * 2 + PADDING) + TEAM_RADIUS + PADDING;
     const y = row * (TEAM_RADIUS * 2 + PADDING) + TEAM_RADIUS + PADDING;
     return { x, y };
   };
-
-  // Simple layout for people within a team (arrange in a circle)
+  
   const getPersonPositionInTeam = (personIndex: number, totalPersons: number, teamRadius: number) => {
     if (totalPersons === 0) return { x: 0, y: 0 };
     const angleStep = (2 * Math.PI) / totalPersons;
     const angle = personIndex * angleStep;
-    const orbitRadius = teamRadius - PERSON_DISTANCE_FROM_RIM; // Place them within the team circle
+    const orbitRadius = teamRadius - PERSON_DISTANCE_FROM_RIM; 
     return {
       x: orbitRadius * Math.cos(angle),
       y: orbitRadius * Math.sin(angle),
     };
   };
-  
-  // Calculate positions for work units (simplified)
-  const getWorkUnitPosition = (wu: WorkUnit, teams: Team[], people: Person[]) => {
-    // Default position, maybe top-left or a dedicated "unassigned" area
+
+  const getWorkUnitPosition = useCallback((
+    wu: WorkUnit, 
+    teams: Team[], 
+    people: Person[],
+    currentStageWidth: number,
+    currentStageHeight: number,
+    forHeightCalculation: boolean = false
+    ): { x: number; y: number } => {
+    
+    if (wu.type === 'done' && !forHeightCalculation) {
+      return { x: PADDING + DONE_PILE_RADIUS, y: PADDING + DONE_PILE_RADIUS };
+    }
+
     let x = PADDING;
-    let y = stageHeight - PADDING - WORK_UNIT_RADIUS;
+    let y = currentStageHeight - PADDING - WORK_UNIT_RADIUS; // Default for unassigned
 
     if (wu.currentOwnerId) {
       const owner = people.find(p => p.id === wu.currentOwnerId);
-      // Ensure owner and owner.teamId are valid before proceeding
       const ownerTeam = owner ? teams.find(t => t.id === owner.teamId) : undefined;
       if (owner && ownerTeam) {
         const teamIndex = teams.findIndex(t => t.id === ownerTeam.id);
-          if (teamIndex === -1) { // Safety check if team not found by index
-            console.warn(`Owner team ${ownerTeam.id} not found in teams list for WU ${wu.id}`);
-            return {x,y}; // return default position
-          }
-        const teamPos = getTeamPosition(teamIndex);
+        if (teamIndex === -1) { 
+          console.warn(`Owner team ${ownerTeam.id} not found in teams list for WU ${wu.id}`);
+          return {x,y}; 
+        }
+        const teamPos = getTeamPosition(teamIndex, currentStageWidth);
         const personIndex = ownerTeam.members.findIndex(m => m.id === owner.id);
-         if (personIndex === -1) { // Safety check
-            console.warn(`Owner ${owner.id} not found in team members for WU ${wu.id}`);
-            return {x,y}; // return default position
-          }
-        const personPosInTeam = getPersonPositionInTeam(
-          personIndex,
-          ownerTeam.members.length,
-          TEAM_RADIUS
-        );
-        // Position near the person: person's absolute position + an offset
+        if (personIndex === -1) { 
+          console.warn(`Owner ${owner.id} not found in team members for WU ${wu.id}`);
+          return {x,y}; 
+        }
+        const personPosInTeam = getPersonPositionInTeam(personIndex, ownerTeam.members.length, TEAM_RADIUS);
         x = teamPos.x + personPosInTeam.x + PERSON_RADIUS + WORK_UNIT_RADIUS + 5;
         y = teamPos.y + personPosInTeam.y;
       }
     } else if (wu.currentTeamOwnerId) {
       const teamIndex = teams.findIndex(t => t.id === wu.currentTeamOwnerId);
       if (teamIndex !== -1) {
-        const teamPos = getTeamPosition(teamIndex);
-        // Position in a "backlog" area of the team, e.g., below the team circle
+        const teamPos = getTeamPosition(teamIndex, currentStageWidth);
         x = teamPos.x;
         y = teamPos.y + TEAM_RADIUS + WORK_UNIT_RADIUS + 5;
       } else {
@@ -305,12 +253,12 @@ const Visualization: React.FC = () => {
       }
     }
     return { x, y };
-  };
+  }, []);
 
 
   return (
     <div>
-      <h1>Simulation Visualization</h1>
+      <div>
       <button onClick={handleStartSimulation} disabled={isLoading || !simApi}>
         {isLoading ? 'Initializing Simulation...' : 'Load/Reset Simulation'}
       </button>
@@ -318,54 +266,55 @@ const Visualization: React.FC = () => {
         <button onClick={handleToggleRunPause} disabled={isLoading || !simApi}>
           {isRunning ? 'Pause Simulation' : 'Run Simulation'}
         </button>
-      )}
-      <hr />
-      <Application width={stageWidth} height={stageHeight} background={0xeeeeee}>
+      )}</div>
+      <Application width={stageWidth} height={stageHeight}  resolution={window.devicePixelRatio} autoDensity={true} background={0xeeeeee}>
         {simState && (
           <>
             {/* Render Teams */}
             {simState.teams.map((team, teamIndex) => {
-              const { x: teamX, y: teamY } = getTeamPosition(teamIndex);
+              const teamPos = getTeamPosition(teamIndex, stageWidth);
               return (
-                <pixiContainer key={team.id} x={teamX} y={teamY}>
+                <pixiContainer key={team.id} x={teamPos.x} y={teamPos.y}>
                   <pixiGraphics
                     draw={(g: PIXI.Graphics) => {
                       g.clear();
-                      g.lineStyle(1, 0x333333);
-                      g.beginFill(team.isCustomerTeam ? 0xdddddd : 0xcccccc);
-                      g.drawCircle(0, 0, TEAM_RADIUS);
-                      g.endFill();
+                      g.setStrokeStyle({ width: 1, color: 0x333333 });
+                      g.fill(team.isCustomerTeam ? 0xdddddd : 0xcccccc);
+                      g.circle(0, 0, TEAM_RADIUS);
+                      g.fill()
                     }}
                   />
                   <pixiText
                     text={team.name}
-                    anchor={0.5}
+                    anchor={0.5}                    
                     x={0}
-                    y={0}
+                    y={-TEAM_RADIUS-7}
                     style={new PIXI.TextStyle({ fontSize: 10, fill: 0x000000 })}
                   />
-                  {/* Render People in Team */}
                   {team.members.map((person, personIndex) => {
-                    const { x: personX, y: personY } = getPersonPositionInTeam(
-                      personIndex,
-                      team.members.length,
-                      TEAM_RADIUS
-                    );
+                    const personPosInTeam = getPersonPositionInTeam(personIndex, team.members.length, TEAM_RADIUS);
                     return (
-                      <pixiContainer key={person.id} x={personX} y={personY}>
+                      <pixiContainer key={person.id} x={personPosInTeam.x} y={personPosInTeam.y}>
                         <pixiGraphics
                           draw={(g: PIXI.Graphics) => {
                             g.clear();
-                            g.beginFill(disciplineColors[person.discipline] || 0xff00ff);
-                            g.drawCircle(0, 0, PERSON_RADIUS);
-                            g.endFill();
+                            g.fill(disciplineColors[person.discipline] || 0xff00ff);
+                            g.circle(0, 0, PERSON_RADIUS);
+                            g.fill()
                           }}
                         />
                          <pixiText
-                            text={person.name.substring(0,3)} // Short name
+                            text={person.name.substring(0,6)}
                             anchor={0.5}
                             x={0}
                             y={0}
+                            style={new PIXI.TextStyle({ fontSize: 8, fill: 0x000000 })}
+                        />
+                         <pixiText
+                            text={person.workRemainingTicks.toString()}
+                            anchor={0.5}
+                            x={0}
+                            y={10}
                             style={new PIXI.TextStyle({ fontSize: 8, fill: 0x000000 })}
                         />
                       </pixiContainer>
@@ -375,36 +324,68 @@ const Visualization: React.FC = () => {
               );
             })}
             
-            {/* Render Work Units */}
-            {simState.workUnits.map(wu => {
+            {(() => {
+              const doneWorkUnits = simState.workUnits.filter(wu => wu.type === 'done');
+              const activeWorkUnits = simState.workUnits.filter(wu => wu.type !== 'done');
               const allPeople = simState.teams.flatMap(t => t.members);
-              const { x: wuX, y: wuY } = getWorkUnitPosition(wu, simState.teams, allPeople);
+
               return (
-                // Use AnimatedPixiContainer for work units
-                <AnimatedPixiContainer key={wu.id} x={wuX} y={wuY} idForAnimation={wu.id}>
-                  <pixiGraphics
-                    draw={(g: PIXI.Graphics) => {
-                      g.clear();
-                      g.beginFill(workUnitTypeColors[wu.type] || 0x00ff00);
-                      g.drawCircle(0, 0, WORK_UNIT_RADIUS);
-                      g.endFill();
-                    }}
-                  />
-                   <pixiText
-                      text={wu.id.substring(0,4)} // Short ID
-                      anchor={0.5}
-                      x={0}
-                      y={WORK_UNIT_RADIUS + 5}
-                      style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
-                    />
-                </AnimatedPixiContainer>
+                <>
+                  {activeWorkUnits.map(wu => {
+                    const wuPos = getWorkUnitPosition(wu, simState.teams, allPeople, stageWidth, stageHeight);
+
+                    return (
+                      <AnimatedPixiContainer key={wu.id} x={wuPos.x} y={wuPos.y} idForAnimation={wu.id}>
+                        <pixiGraphics
+                          draw={(g: PIXI.Graphics) => {
+                            g.clear();
+                            g.circle(0, 0, WORK_UNIT_RADIUS);
+                            g.fill(workUnitTypeColors[wu.type] || 0x00ff00);                            
+                          }}
+                        />
+                          <pixiText 
+                            text={wu.id.substring(0,4)}
+                            anchor={0.5}
+                            x={0}
+                            y={0} 
+                            style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
+                          />
+                           <pixiText
+                             text={wu.id.substring(0,4)} 
+                             anchor={0.5}
+                             x={0}
+                             y={WORK_UNIT_RADIUS + 5} 
+                             style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
+                           />
+                      </AnimatedPixiContainer>
+                    );
+                  })}
+
+                  {doneWorkUnits.length > 0 && (
+                    <pixiContainer x={PADDING + DONE_PILE_RADIUS} y={PADDING + DONE_PILE_RADIUS}>
+                      <pixiGraphics
+                        draw={(g: PIXI.Graphics) => {
+                          g.clear();
+                          g.fill(DONE_PILE_COLOR);
+                          g.circle(0, 0, DONE_PILE_RADIUS);
+                          g.fill()
+                        }}
+                      />
+                      <pixiText
+                        text={doneWorkUnits.length.toString()}
+                        anchor={0.5}
+                        x={0}
+                        y={0}
+                        style={new PIXI.TextStyle({ fontSize: 12, fill: 0xffffff, fontWeight: 'bold' })}
+                      />
+                    </pixiContainer>
+                  )}
+                </>
               );
-            })}
+            })()}
           </>
         )}
       </Application>
-      <hr />
-      {renderSimulationDetails()}
     </div>
   );
 };
