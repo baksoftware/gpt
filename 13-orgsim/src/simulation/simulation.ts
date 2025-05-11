@@ -99,50 +99,23 @@ class OrgSimulation implements SimulationAPI {
       const flowEntry = this.config?.workFlow[workUnit.type];
       if (flowEntry && flowEntry.targetDiscipline) {
         const targetDiscipline = flowEntry.targetDiscipline;
-        let assignedPerson: Person | undefined;
-        let assignedTeam: Team | undefined;
 
-        // Try to find a free person with the target discipline in any team
-        for (const team of this.state.teams) {
-          assignedPerson = team.members.find(p => p.discipline === targetDiscipline && !p.currentWorkUnitId);
-          if (assignedPerson) {
-            assignedTeam = team;
-            break;
-          }
-        }
-
-        if (assignedPerson && assignedTeam) {
-          assignedPerson.currentWorkUnitId = workUnit.id;
-          const workTicksConfig = this.config?.personWorkTicks?.[assignedPerson.discipline]?.[workUnit.type];
-          assignedPerson.workRemainingTicks = typeof workTicksConfig === 'number' ? workTicksConfig : 10; // Default ticks
-
-          workUnit.currentOwnerId = assignedPerson.id;
-          workUnit.currentTeamOwnerId = assignedTeam.id;
-          workUnit.history[0].teamId = assignedTeam.id; // Update history
-
-          this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) assigned to ${assignedPerson.name} (${targetDiscipline}) in ${assignedTeam.name}. Ticks: ${assignedPerson.workRemainingTicks}`);
-          workUnit.history.push({
-            personId: assignedPerson.id,
-            teamId: assignedTeam.id,
-            completedAtTick: 0,
-            action: `Initially assigned to ${assignedPerson.name} (${assignedPerson.discipline})`
-          });
+         
+        // If no free person, try to place in backlog of a suitable team
+        const suitableBacklogTeam = this.state.teams.find(t => t.members.some(m => m.discipline === targetDiscipline));
+        if (suitableBacklogTeam) {
+        workUnit.currentTeamOwnerId = suitableBacklogTeam.id;
+        workUnit.history[0].teamId = suitableBacklogTeam.id; // Update history
+        this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${suitableBacklogTeam.name}. No available ${targetDiscipline}.`);
+        workUnit.history.push({
+            personId: null, teamId: suitableBacklogTeam.id, completedAtTick: 0,
+            action: `Initial: To backlog, awaiting ${targetDiscipline}`
+        });
         } else {
-          // If no free person, try to place in backlog of a suitable team
-          const suitableBacklogTeam = this.state.teams.find(t => t.members.some(m => m.discipline === targetDiscipline));
-          if (suitableBacklogTeam) {
-            workUnit.currentTeamOwnerId = suitableBacklogTeam.id;
-            workUnit.history[0].teamId = suitableBacklogTeam.id; // Update history
-            this.logEvent(`Initial Work Unit ${workUnit.id} (${workUnit.type}) placed in backlog of ${suitableBacklogTeam.name}. No available ${targetDiscipline}.`);
-            workUnit.history.push({
-                personId: null, teamId: suitableBacklogTeam.id, completedAtTick: 0,
-                action: `Initial: To backlog, awaiting ${targetDiscipline}`
-            });
-          } else {
-            this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No free ${targetDiscipline} and no team has this discipline for backlog.`);
-            workUnit.history[0].action += ` - Unassignable (no ${targetDiscipline} available/no suitable team backlog)`;
-          }
+        this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) could not be assigned. No free ${targetDiscipline} and no team has this discipline for backlog.`);
+        workUnit.history[0].action += ` - Unassignable (no ${targetDiscipline} available/no suitable team backlog)`;
         }
+
       } else {
         this.logEvent(`Warning: Initial Work Unit ${workUnit.id} (${workUnit.type}) has no defined targetDiscipline in workFlow or workFlow entry is missing. Cannot be initially assigned by flow.`);
         workUnit.history[0].action += ` - Unassignable (no workflow for type ${workUnit.type})`;
