@@ -2,10 +2,44 @@ import streamlit as st
 # Updated imports for wizard flow
 # from state import ( # Removed empty import
 # )
-from card_query import generate_cards # Updated import
+from card_query import generate_cards, expand_topic_details # Updated import
 
 def display_search_box_and_cards(container):
     """Displays the search box, cards, and navigation buttons."""
+
+    # Initialize session state for the dig deeper drawer if not already present
+    if 'drawer_topic_title' not in st.session_state:
+        st.session_state.drawer_topic_title = None
+    if 'drawer_topic_content' not in st.session_state:
+        st.session_state.drawer_topic_content = None
+    if 'expanded_content' not in st.session_state:
+        st.session_state.expanded_content = None
+    if 'dig_deeper_active' not in st.session_state: # To control sidebar visibility more directly
+        st.session_state.dig_deeper_active = False
+
+    # --- Handle "Dig Deeper" Sidebar --- 
+    if st.session_state.dig_deeper_active and st.session_state.drawer_topic_title:
+        with st.sidebar:
+            st.header(st.session_state.drawer_topic_title)
+            if st.button("Close Drawer", key="close_drawer_button"):
+                st.session_state.dig_deeper_active = False
+                st.session_state.drawer_topic_title = None
+                st.session_state.drawer_topic_content = None
+                st.session_state.expanded_content = None
+                st.rerun()
+            
+            if st.session_state.expanded_content is None and st.session_state.drawer_topic_content:
+                with st.spinner("Digging deeper..."):
+                    st.session_state.expanded_content = expand_topic_details(
+                        st.session_state.drawer_topic_title,
+                        st.session_state.drawer_topic_content
+                    )
+            
+            if st.session_state.expanded_content:
+                st.markdown(st.session_state.expanded_content)
+            elif st.session_state.drawer_topic_content: # Still loading or failed
+                st.write("Loading details or no details found.")
+            # else: no topic selected for drawer yet
 
     # --- Handle programmatic updates to search_input for the current run ---
     # This must happen before the text_area widget is instantiated.
@@ -130,7 +164,7 @@ def display_search_box_and_cards(container):
                 with st.container(border=True):
                     st.markdown(f"### {card_data.title}")
                     st.markdown(card_data.content)
-                    if st.button("Next", key=f"next_card_{i}"):
+                    if st.button("Related", key=f"next_card_{i}"):
                         new_search_query = f"{card_data.title}. {card_data.content}"
                         # Set search_query for the actual search
                         st.session_state.search_query = new_search_query
@@ -138,6 +172,13 @@ def display_search_box_and_cards(container):
                         st.session_state.next_run_search_input_value = new_search_query
                         # update_history_and_search will use st.session_state.search_query, update history, fetch, rerun
                         update_history_and_search(new_search_query)
+                    
+                    if st.button("Dig deeper", key=f"dig_deeper_card_{i}"):
+                        st.session_state.drawer_topic_title = card_data.title
+                        st.session_state.drawer_topic_content = card_data.content
+                        st.session_state.expanded_content = None # Reset for new content
+                        st.session_state.dig_deeper_active = True
+                        st.rerun() # Rerun to show sidebar and trigger content loading
         
     elif st.session_state.get('search_query') and not st.session_state.get('cards'):
         pass # Handled by spinner/generate_cards 
