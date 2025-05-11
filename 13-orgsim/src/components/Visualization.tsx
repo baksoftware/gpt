@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import OrgSimulation from '../simulation/simulation';
 import type { SimulationState, SimulationAPI, Person, Team, WorkUnit, Discipline, WorkUnitType } from '../simulation/types';
-import { Application, extend } from '@pixi/react';
+import { Application, extend, useTick } from '@pixi/react';
 import * as PIXI from 'pixi.js';
 import { Container, Graphics, Text as PixiText } from 'pixi.js';
 
@@ -44,6 +44,70 @@ const TEAM_RADIUS = 100;
 const PERSON_RADIUS = 20;
 const WORK_UNIT_RADIUS = 16;
 const PADDING = 40; // Padding between teams
+const ANIMATION_DURATION = 500; // 0.5 seconds in milliseconds
+
+// New AnimatedPixiContainer component
+interface AnimatedPixiContainerProps {
+  x: number;
+  y: number;
+  children: React.ReactNode;
+  idForAnimation: string; // To help manage animation state across re-renders
+}
+
+const AnimatedPixiContainer: React.FC<AnimatedPixiContainerProps> = ({ x: targetX, y: targetY, children, idForAnimation }) => {
+  const [currentX, setCurrentX] = useState(targetX);
+  const [currentY, setCurrentY] = useState(targetY);
+  const animationState = useRef({
+    startTime: 0,
+    startX: targetX,
+    startY: targetY,
+    endX: targetX,
+    endY: targetY,
+    isAnimating: false,
+  });
+
+  useEffect(() => {
+    // If target changes and we are not already animating to this exact target, start a new animation
+    if ((targetX !== animationState.current.endX || targetY !== animationState.current.endY) || !animationState.current.isAnimating) {
+      animationState.current = {
+        startTime: performance.now(),
+        startX: currentX, // Animate from current rendered position
+        startY: currentY,
+        endX: targetX,
+        endY: targetY,
+        isAnimating: true,
+      };
+    }
+    // This effect should re-run if targetX/Y changes, to trigger new animations.
+    // Also, when idForAnimation changes (e.g. new element), reset position immediately.
+    // However, for existing elements, we want to animate from their current spot.
+  }, [targetX, targetY, idForAnimation, currentX, currentY]); // currentX/Y added to ensure animation starts from visual pos
+
+  useTick((delta: number, ticker: PIXI.Ticker) => {
+    if (!animationState.current.isAnimating) return;
+
+    const now = performance.now();
+    const elapsed = now - animationState.current.startTime;
+    let progress = Math.min(elapsed / ANIMATION_DURATION, 1);
+
+    // Simple ease-out cubic easing
+    progress = 1 - Math.pow(1 - progress, 3);
+
+    const newX = animationState.current.startX + (animationState.current.endX - animationState.current.startX) * progress;
+    const newY = animationState.current.startY + (animationState.current.endY - animationState.current.startY) * progress;
+
+    setCurrentX(newX);
+    setCurrentY(newY);
+
+    if (progress >= 1) {
+      animationState.current.isAnimating = false;
+      setCurrentX(animationState.current.endX); // Ensure it lands exactly on target
+      setCurrentY(animationState.current.endY);
+    }
+  }, { isEnabled: animationState.current.isAnimating }); // Using options object for enabling/disabling tick
+
+  return <pixiContainer x={currentX} y={currentY}>{children}</pixiContainer>;
+};
 
 const Visualization: React.FC = () => {
   const [simApi, setSimApi] = useState<SimulationAPI | null>(null);
@@ -309,7 +373,8 @@ const Visualization: React.FC = () => {
               const allPeople = simState.teams.flatMap(t => t.members);
               const { x: wuX, y: wuY } = getWorkUnitPosition(wu, simState.teams, allPeople);
               return (
-                <pixiContainer key={wu.id} x={wuX} y={wuY}>
+                // Use AnimatedPixiContainer for work units
+                <AnimatedPixiContainer key={wu.id} x={wuX} y={wuY} idForAnimation={wu.id}>
                   <pixiGraphics
                     draw={(g: PIXI.Graphics) => {
                       g.clear();
@@ -325,7 +390,7 @@ const Visualization: React.FC = () => {
                       y={WORK_UNIT_RADIUS + 5}
                       style={new PIXI.TextStyle({ fontSize: 7, fill: 0x333333 })}
                     />
-                </pixiContainer>
+                </AnimatedPixiContainer>
               );
             })}
           </>
