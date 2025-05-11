@@ -135,24 +135,14 @@ class OrgSimulation implements SimulationAPI {
   }
 
   private _getWorkTicks(personDiscipline: string, workUnitType: string): number {
-    if (!this.config || !this.config.personWorkTicks) {
-        this.logEvent(`Config Error: personWorkTicks not found. Using default 10 for ${workUnitType} by ${personDiscipline}.`);
-        return 10;
-    }
-    const ticksForDiscipline = this.config.personWorkTicks[personDiscipline];
+
+    const ticksForDiscipline = this.config!.personWorkTicks[personDiscipline];
     if (ticksForDiscipline && typeof ticksForDiscipline[workUnitType] === 'number') {
-        return ticksForDiscipline[workUnitType];
+        return ticksForDiscipline[workUnitType] + Math.floor(Math.random() * 10);
     }
     
-    // Fallback to a configured default for 'software developer' / 'task'
-    const defaultDeveloperTaskTicks = this.config.personWorkTicks['software developer']?.['task'];
-    if (typeof defaultDeveloperTaskTicks === 'number') {
-        this.logEvent(`Work Ticks: No specific value for ${personDiscipline}/${workUnitType}. Using default 'software developer'/'task' ticks: ${defaultDeveloperTaskTicks}.`);
-        return defaultDeveloperTaskTicks;
-    }
-
-    this.logEvent(`Work Ticks: Critical - No specific or default work ticks for ${personDiscipline}/${workUnitType}. Using hardcoded 10.`);
-    return 10; // Final hardcoded fallback
+    this.logEvent(`Work Ticks: Critical - No specific or default work ticks for ${personDiscipline}/${workUnitType}. Using hardcoded 1000.`);
+    return 1000; // Final hardcoded fallback
   }
 
   private _assignWorkUnitToPerson(person: Person, workUnit: WorkUnit, assignmentType: 'direct' | 'global' | 'backlog'): void {

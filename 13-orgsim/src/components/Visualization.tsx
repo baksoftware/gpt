@@ -45,8 +45,9 @@ const PERSON_RADIUS = 22;
 const WORK_UNIT_RADIUS = 12;
 const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
-const ANIMATION_DURATION = 300;
-const TICK_INTERVAL = 300;
+const TICK_INTERVAL = 150;
+
+const ANIMATION_DURATION = TICK_INTERVAL;
 
 const DONE_PILE_COLOR = 0x808080; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile

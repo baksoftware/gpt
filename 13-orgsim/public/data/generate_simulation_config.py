@@ -4,11 +4,11 @@ import argparse
 
 # Static data based on the provided simulationConfig.json
 PERSON_WORK_TICKS = {
-    "Designer": {"design": 3},
-    "PM": {"task": 1},
-    "SwDev": {"code": 20},
-    "Tester": {"release": 3},
-    "Customer": {"idea": 1, "need": 1}
+    "Designer": {"design": 4},
+    "PM": {"task": 3},
+    "SwDev": {"code": 24},
+    "Tester": {"release": 12},
+    "Customer": {"idea": 5, "need": 3}
 }
 
 WORK_FLOW = {
@@ -101,7 +101,7 @@ def main():
         "--num_initial_workunits", 
         type=int, 
         required=False, 
-        default=100, 
+        default=200, 
         help="Number of initial work units (all will be of type 'idea')."
     )
     parser.add_argument(
