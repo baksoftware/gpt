@@ -4,6 +4,7 @@ import { TickState, type SimulationState, type SimulationAPI, type Person, type 
 import { Application, extend, useTick } from '@pixi/react';
 import * as PIXI from 'pixi.js';
 import { Container, Graphics, Text as PixiText } from 'pixi.js';
+import PerformanceGraph from './PerformanceGraph';
 
 // Extend @pixi/react with the PixiJS components we want to use
 extend({ Container, Graphics, Text: PixiText });
@@ -45,7 +46,7 @@ const PERSON_RADIUS = 22;
 const WORK_UNIT_RADIUS = 12;
 const PADDING = 30; // Padding between teams
 const PERSON_DISTANCE_FROM_RIM  = 25;
-const TICK_INTERVAL = 200;
+const TICK_INTERVAL = 50;
 
 const ANIMATION_DURATION = TICK_INTERVAL;
 
@@ -54,12 +55,6 @@ const DONE_PILE_COLOR = WORK_UNIT_COLOR; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
 
 const CHART_TICKS = 300;
-const CHART_PADDING = 20;
-const CHART_AXIS_COLOR = 0x333333;
-const CHART_LINE_COLOR = 0x606060;
-const CHART_BG_COLOR = 0xf8f8f8;
-const RATE_CALCULATION_WINDOW = 3;
-const CHART_RATE_LINE_COLOR = 0xffa500; // Orange for the rate line
 
 // New AnimatedPixiContainer component
 interface AnimatedPixiContainerProps {
@@ -133,7 +128,6 @@ const Visualization: React.FC = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<number | null>(null);
   const [doneTasksHistory, setDoneTasksHistory] = useState<number[]>(() => Array(CHART_TICKS).fill(0));
-  const [doneTasksRateHistory, setDoneTasksRateHistory] = useState<number[]>(() => Array(CHART_TICKS).fill(0));
 
   // Component dimensions - can be made dynamic
   const stageWidth = 1200;
@@ -156,7 +150,6 @@ const Visualization: React.FC = () => {
     }
     // Reset chart history
     setDoneTasksHistory(Array(CHART_TICKS).fill(0));
-    setDoneTasksRateHistory(Array(CHART_TICKS).fill(0));
 
     try {
       await simApi.loadConfigAndInitialize('/data/simulationConfig.json');
@@ -202,15 +195,6 @@ const Visualization: React.FC = () => {
         const currentDoneCount = newState.workUnits.filter(wu => wu.type === 'done').length;
         setDoneTasksHistory(prevHistory => {
           const updatedHistory = [...prevHistory.slice(1), currentDoneCount];
-
-          // Calculate rate based on the most up-to-date history for this tick
-          const currentRate = updatedHistory[CHART_TICKS - 1] - updatedHistory[Math.max(0, CHART_TICKS - 1 - RATE_CALCULATION_WINDOW)];
-
-          // Update rate history
-          setDoneTasksRateHistory(prevRateHistory => {
-            return [...prevRateHistory.slice(1), Math.max(0, currentRate)]; // Ensure rate is not negative
-          });
-
           return updatedHistory;
         });
 
@@ -426,110 +410,12 @@ const Visualization: React.FC = () => {
 
             {/* Performance Chart */}
             <pixiContainer x={0} y={mainVisualizationHeight}>
-              <pixiGraphics
-                draw={(g: PIXI.Graphics) => {
-                  g.clear();
-                  // Chart Background
-                  g.rect(0, 0, stageWidth, chartHeight);
-                  g.fill(CHART_BG_COLOR);
-
-                  // Chart Axes
-                  g.setStrokeStyle({ width: 1, color: CHART_AXIS_COLOR });
-                  g.moveTo(CHART_PADDING, CHART_PADDING);
-                  g.lineTo(CHART_PADDING, chartHeight - CHART_PADDING);
-                  g.moveTo(CHART_PADDING, chartHeight - CHART_PADDING);
-                  g.lineTo(stageWidth - CHART_PADDING, chartHeight - CHART_PADDING);
-                  g.stroke(); // Stroke the axes
-
-                  // Plotting the lines for done tasks history and rate
-                  if (doneTasksHistory.length > 1) {
-                    // Define chart plotting dimensions once for both lines
-                    const chartPlotWidth = stageWidth - 2 * CHART_PADDING;
-                    const chartPlotHeight = chartHeight - 2 * CHART_PADDING;
-                    const firstX = CHART_PADDING;
-
-                    // 1. Plotting total done tasks
-                    g.setStrokeStyle({ width: 2, color: CHART_LINE_COLOR });
-                    const firstValue = doneTasksHistory[0];
-                    const firstY = (chartHeight - CHART_PADDING) - (firstValue / maxYForChart) * chartPlotHeight;
-                    g.moveTo(firstX, Math.max(CHART_PADDING, Math.min(firstY, chartHeight - CHART_PADDING)));
-
-                    for (let i = 1; i < doneTasksHistory.length; i++) {
-                      const value = doneTasksHistory[i];
-                      const x = CHART_PADDING + (i / (CHART_TICKS - 1)) * chartPlotWidth;
-                      const y = (chartHeight - CHART_PADDING) - (value / maxYForChart) * chartPlotHeight;
-                      const clampedY = Math.max(CHART_PADDING, Math.min(y, chartHeight - CHART_PADDING));
-                      g.lineTo(x, clampedY);
-                    }
-                    g.stroke(); 
-
-                    // 2. Plotting the line for done tasks rate history
-                    if (doneTasksRateHistory.length > 1) {
-                      g.setStrokeStyle({ width: 2, color: CHART_RATE_LINE_COLOR });
-                      
-                      const firstRateValue = doneTasksRateHistory[0];
-                      const firstRateY = (chartHeight - CHART_PADDING) - (firstRateValue / maxYForChart) * chartPlotHeight;
-                      const safeFirstRateY = isNaN(firstRateY) ? (chartHeight - CHART_PADDING) : firstRateY;
-                      g.moveTo(firstX, Math.max(CHART_PADDING, Math.min(safeFirstRateY, chartHeight - CHART_PADDING)));
-                  
-                      for (let i = 1; i < doneTasksRateHistory.length; i++) {
-                        const rateValue = doneTasksRateHistory[i];
-                        const x = CHART_PADDING + (i / (CHART_TICKS - 1)) * chartPlotWidth;
-                        let y = (chartHeight - CHART_PADDING) - (rateValue / maxYForChart) * chartPlotHeight;
-                        y = isNaN(y) ? (chartHeight - CHART_PADDING) : y;
-                        const clampedY = Math.max(CHART_PADDING, Math.min(y, chartHeight - CHART_PADDING));
-                        g.lineTo(x, clampedY);
-                      }
-                      g.stroke();
-                    }
-                  }
-                }}
-              />
-              {/* X-Axis Labels */}
-              <pixiText
-                text="0"
-                x={CHART_PADDING}
-                y={chartHeight - CHART_PADDING + 5}
-                style={new PIXI.TextStyle({ fontSize: 10, fill: CHART_AXIS_COLOR })}
-                anchor={{ x: 0.5, y: 0 }}
-              />
-              <pixiText
-                text={CHART_TICKS.toString()}
-                x={stageWidth - CHART_PADDING}
-                y={chartHeight - CHART_PADDING + 5}
-                style={new PIXI.TextStyle({ fontSize: 10, fill: CHART_AXIS_COLOR })}
-                anchor={{ x: 0.5, y: 0 }}
-              />
-              <pixiText
-                text="Ticks"
-                x={stageWidth / 2}
-                y={chartHeight - CHART_PADDING + 15}
-                style={new PIXI.TextStyle({ fontSize: 12, fill: CHART_AXIS_COLOR, fontWeight: 'bold' })}
-                anchor={0.5}
-              />
-
-              {/* Y-Axis Labels */}
-              <pixiText
-                text="0"
-                x={CHART_PADDING - 5}
-                y={chartHeight - CHART_PADDING}
-                style={new PIXI.TextStyle({ fontSize: 10, fill: CHART_AXIS_COLOR })}
-                anchor={{ x: 1, y: 0.5 }}
-              />
-              <pixiText
-                text={maxYForChart.toString()}
-                x={CHART_PADDING - 5}
-                y={CHART_PADDING}
-                style={new PIXI.TextStyle({ fontSize: 10, fill: CHART_AXIS_COLOR })}
-                anchor={{ x: 1, y: 0.5 }}
-              />
-               <pixiText
-                text="Done Tasks"
-                x={CHART_PADDING - 15}
-                y={chartHeight / 2}
-                style={new PIXI.TextStyle({ fontSize: 12, fill: CHART_AXIS_COLOR, fontWeight: 'bold' })}
-                anchor={0.5}
-                rotation={-Math.PI / 2}
+              <PerformanceGraph
+                doneTasksHistory={doneTasksHistory}
+                chartHeight={chartHeight}
+                stageWidth={stageWidth}
+                chartTicks={CHART_TICKS}
+                maxYForChart={maxYForChart}
               />
             </pixiContainer>
           </>
