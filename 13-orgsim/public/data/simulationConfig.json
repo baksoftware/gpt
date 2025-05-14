@@ -1277,20 +1277,20 @@
   ],
   "personWorkTicks": {
     "Designer": {
-      "design": 4
+      "design": 5
     },
     "PM": {
-      "task": 3
+      "task": 2
     },
     "SwDev": {
-      "code": 24
+      "code": 30
     },
     "Tester": {
-      "release": 12
+      "release": 10
     },
     "Customer": {
-      "idea": 1,
-      "need": 1,
+      "idea": 3,
+      "need": 3,
       "done": 1
     }
   },

@@ -54,7 +54,7 @@ const WORK_UNIT_COLOR = 0x606060; // Green for the work unit
 const DONE_PILE_COLOR = WORK_UNIT_COLOR; // Grey for the "done" pile
 const DONE_PILE_RADIUS = WORK_UNIT_RADIUS * 1.5; // Slightly larger for the pile
 
-const CHART_TICKS = 300;
+const CHART_TICKS = 600;
 
 // New AnimatedPixiContainer component
 interface AnimatedPixiContainerProps {
@@ -288,8 +288,8 @@ const Visualization: React.FC = () => {
 
   return (
     <div>
-      <div>
-      <button onClick={handleStartSimulation} disabled={isLoading || !simApi}>
+      {/* <div>
+             <button onClick={handleStartSimulation} disabled={isLoading || !simApi}>
         {isLoading ? 'Initializing Simulation...' : 'Load/Reset Simulation'}
       </button>
       {simState && (
@@ -297,6 +297,8 @@ const Visualization: React.FC = () => {
           {isRunning ? 'Pause Simulation' : 'Run Simulation'}
         </button>
       )}</div>
+    */}
+
       <Application width={stageWidth} height={totalStageHeight}  resolution={window.devicePixelRatio} autoDensity={true} background={0xeeeeee}>
         {simState && (
           <>

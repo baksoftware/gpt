@@ -13,11 +13,10 @@ const CHART_LINE_COLOR = 0x606060;
 const CHART_BG_COLOR = 0xf8f8f8;
 const CHART_RATE_LINE_COLOR = 0xffa500;
 
-const RATE_CALCULATION_WINDOW = 5;
-const RATE_SCALING_FACTOR = 4;
+const RATE_CALCULATION_WINDOW = 3;
+const RATE_SCALING_FACTOR = 5;
 interface PerformanceGraphProps {
   doneTasksHistory: number[];
-  doneTasksRateHistory: number[];
   chartHeight: number;
   stageWidth: number;
   chartTicks: number;
