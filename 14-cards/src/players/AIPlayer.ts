@@ -1,10 +1,10 @@
-import { Player, GameState, GameAction, PlayerState } from '../gameEngine'
+import { Player, GameState, GameAction, PlayerState, Card } from '../gameEngine'
 
 export class AIPlayer implements Player {
   id: string
   name: string
   isHuman = false
-  
+
   private difficulty: 'easy' | 'medium' | 'hard'
   private thinkingTime: number
 
@@ -12,7 +12,7 @@ export class AIPlayer implements Player {
     this.id = id
     this.name = name
     this.difficulty = difficulty
-    
+
     // AI thinking time based on difficulty
     this.thinkingTime = {
       easy: 1000,
@@ -24,7 +24,7 @@ export class AIPlayer implements Player {
   // Called when it's the AI's turn to make a decision
   async makeMove(gameState: GameState): Promise<GameAction | null> {
     console.log(`🤖 ${this.name} is thinking...`)
-    
+
     // Simulate thinking time
     await this.sleep(this.thinkingTime)
 
@@ -33,18 +33,30 @@ export class AIPlayer implements Player {
 
     // AI decision making logic
     const action = this.decideAction(gameState, myPlayerState)
-    
+
     if (action) {
       console.log(`🤖 ${this.name} decides to:`, action.type, action.cardId || '')
     }
-    
+
     return action
   }
 
   // AI decision making logic
   private decideAction(gameState: GameState, myPlayerState: PlayerState): GameAction | null {
-    // Strategy 1: Try to play a card if arena isn't full
-    if (myPlayerState.arenaCards.length < myPlayerState.maxArenaSize && myPlayerState.hand.length > 0) {
+    const opponentState = gameState.players.find(p => p.id !== this.id)
+    if (!opponentState) return null
+
+    // Strategy 1: Attack opponent cards if we have cards in arena
+    if (myPlayerState.arenaCards.length > 0 && opponentState.arenaCards.length > 0) {
+      const attackAction = this.selectAttackAction(myPlayerState, opponentState)
+      if (attackAction) {
+        return attackAction
+      }
+    }
+
+    // Strategy 2: Play a card if we haven't played one this turn and have cards
+    if (!myPlayerState.hasPlayedCard && myPlayerState.hand.length > 0 &&
+      myPlayerState.arenaCards.length < myPlayerState.maxArenaSize) {
       const cardToPlay = this.selectCardToPlay(myPlayerState)
       if (cardToPlay) {
         const position = this.selectPlayPosition(myPlayerState)
@@ -57,23 +69,72 @@ export class AIPlayer implements Player {
       }
     }
 
-    // Strategy 2: Sometimes remove an arena card (10% chance)
-    if (myPlayerState.arenaCards.length > 0 && Math.random() < 0.1) {
-      const cardToRemove = this.selectCardToRemove(myPlayerState)
-      if (cardToRemove) {
-        return {
-          type: 'removeCard',
-          playerId: this.id,
-          cardId: cardToRemove.id
-        }
-      }
-    }
-
-    // Strategy 3: End turn if no other action is beneficial
+    // Strategy 3: End turn if no beneficial actions remain
     return {
       type: 'endTurn',
       playerId: this.id
     }
+  }
+
+  // Select an attack action
+  private selectAttackAction(myPlayerState: PlayerState, opponentState: PlayerState): GameAction | null {
+    if (myPlayerState.arenaCards.length === 0 || opponentState.arenaCards.length === 0) {
+      return null
+    }
+
+    // Find the best attack based on difficulty
+    let bestAttacker: Card | null = null
+    let bestTarget: Card | null = null
+
+    switch (this.difficulty) {
+      case 'easy':
+        // Random attack
+        bestAttacker = myPlayerState.arenaCards[Math.floor(Math.random() * myPlayerState.arenaCards.length)]
+        bestTarget = opponentState.arenaCards[Math.floor(Math.random() * opponentState.arenaCards.length)]
+        break
+
+      case 'medium':
+        // Attack weakest enemy with strongest unit
+        bestAttacker = myPlayerState.arenaCards.reduce((strongest, card) =>
+          card.attack > strongest.attack ? card : strongest)
+        bestTarget = opponentState.arenaCards.reduce((weakest, card) =>
+          card.health < weakest.health ? card : weakest)
+        break
+
+      case 'hard':
+        // Strategic: Look for favorable trades
+        for (const attacker of myPlayerState.arenaCards) {
+          for (const target of opponentState.arenaCards) {
+            // Prefer trades where we destroy their card but survive
+            if (attacker.attack >= target.health && attacker.health > target.attack) {
+              bestAttacker = attacker
+              bestTarget = target
+              break
+            }
+          }
+          if (bestAttacker && bestTarget) break
+        }
+
+        // If no favorable trade, attack weakest with strongest
+        if (!bestAttacker || !bestTarget) {
+          bestAttacker = myPlayerState.arenaCards.reduce((strongest, card) =>
+            card.attack > strongest.attack ? card : strongest)
+          bestTarget = opponentState.arenaCards.reduce((weakest, card) =>
+            card.health < weakest.health ? card : weakest)
+        }
+        break
+    }
+
+    if (bestAttacker && bestTarget) {
+      return {
+        type: 'attackCard',
+        playerId: this.id,
+        cardId: bestAttacker.id,
+        targetCardId: bestTarget.id
+      }
+    }
+
+    return null
   }
 
   // Select which card to play from hand
@@ -84,18 +145,35 @@ export class AIPlayer implements Player {
       case 'easy':
         // Play random card
         return myPlayerState.hand[Math.floor(Math.random() * myPlayerState.hand.length)]
-      
+
       case 'medium':
-        // Prefer to play cards from the beginning or end of hand
-        const edgeIndices = [0, myPlayerState.hand.length - 1]
-        const index = edgeIndices[Math.floor(Math.random() * edgeIndices.length)]
-        return myPlayerState.hand[index]
-      
+        // Prefer cards with good attack/health ratio
+        return myPlayerState.hand.reduce((best, card) => {
+          const cardValue = card.attack + card.health
+          const bestValue = best.attack + best.health
+          return cardValue > bestValue ? card : best
+        })
+
       case 'hard':
-        // More strategic: prefer certain card types or positions
-        // For now, play the first card (can be enhanced with more strategy)
-        return myPlayerState.hand[0]
-      
+        // Strategic: Prefer cards that counter opponent or have good stats
+        const opponentState = this.getOpponentPlayerState()
+        if (opponentState && opponentState.arenaCards.length > 0) {
+          // If opponent has weak cards, play strong attackers
+          const opponentMaxHealth = Math.max(...opponentState.arenaCards.map(c => c.health))
+          const strongAttackers = myPlayerState.hand.filter(c => c.attack >= opponentMaxHealth)
+          if (strongAttackers.length > 0) {
+            return strongAttackers.reduce((best, card) =>
+              card.attack > best.attack ? card : best)
+          }
+        }
+
+        // Otherwise play card with best overall stats
+        return myPlayerState.hand.reduce((best, card) => {
+          const cardValue = card.attack + card.health + card.level
+          const bestValue = best.attack + best.health + best.level
+          return cardValue > bestValue ? card : best
+        })
+
       default:
         return myPlayerState.hand[0]
     }
@@ -104,53 +182,31 @@ export class AIPlayer implements Player {
   // Select position to play card (0-5 for arena positions)
   private selectPlayPosition(myPlayerState: PlayerState): number {
     const currentArenaSize = myPlayerState.arenaCards.length
-    
+
     switch (this.difficulty) {
       case 'easy':
         // Random position
         return Math.floor(Math.random() * (currentArenaSize + 1))
-      
+
       case 'medium':
-        // Prefer center positions (Hearthstone-style)
-        const centerPositions = [2, 3, 1, 4, 0, 5]
-        for (const pos of centerPositions) {
-          if (pos <= currentArenaSize) {
-            return pos
-          }
-        }
-        return currentArenaSize
-      
       case 'hard':
-        // Strategic positioning (can be enhanced)
-        return Math.floor(currentArenaSize / 2) // Try to place in middle
-      
+        // Place in center for better positioning
+        return Math.floor(currentArenaSize / 2)
+
       default:
         return currentArenaSize // Add to end
-    }
-  }
-
-  // Select which arena card to remove
-  private selectCardToRemove(myPlayerState: PlayerState) {
-    if (myPlayerState.arenaCards.length === 0) return null
-
-    switch (this.difficulty) {
-      case 'easy':
-        // Remove random card
-        return myPlayerState.arenaCards[Math.floor(Math.random() * myPlayerState.arenaCards.length)]
-      
-      case 'medium':
-      case 'hard':
-        // Remove oldest card (first in arena)
-        return myPlayerState.arenaCards[0]
-      
-      default:
-        return myPlayerState.arenaCards[0]
     }
   }
 
   // Get AI's player state from game state
   private getMyPlayerState(gameState: GameState): PlayerState | null {
     return gameState.players.find(p => p.id === this.id) || null
+  }
+
+  // Get opponent's player state
+  private getOpponentPlayerState(): PlayerState | null {
+    // This would need access to game state - simplified for now
+    return null
   }
 
   // Utility method for async delay
