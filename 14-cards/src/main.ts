@@ -23,7 +23,8 @@ async function init(): Promise<void> {
     height: window.innerHeight,
     backgroundColor: 0x2c3e50,
     antialias: true,
-    resizeTo: window
+    resizeTo: window,
+    resolution: window.devicePixelRatio
   })
 
   // Add the canvas to the DOM
@@ -35,6 +36,8 @@ async function init(): Promise<void> {
   // Handle window resize
   window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight)
+    // Clear arena cards array when resizing to avoid conflicts
+    arenaCards = []
     // Recreate scene with new dimensions
     app.stage.removeChildren()
     createGameScene()
@@ -104,6 +107,7 @@ function exitFullscreen(): void {
 let dragTarget: GameCard | null = null
 let arenaCards: GameCard[] = [] // Track cards in arena
 let arenaContainer: Container | null = null
+let gameScale: number = 1 // Global scale factor based on arena fitting
 
 function createGameScene(): void {
   // Create arena background that fills the entire screen
@@ -111,11 +115,15 @@ function createGameScene(): void {
   arena.anchor.set(0.5)
   arena.position.set(app.screen.width / 2, app.screen.height / 2)
   
-  // Scale arena to cover entire screen while maintaining aspect ratio
+  // Calculate scale to fill entire screen (crop if needed to maintain aspect ratio)
   const scaleX = app.screen.width / arena.texture.width
   const scaleY = app.screen.height / arena.texture.height
-  const scale = Math.max(scaleX, scaleY) // Use larger scale to ensure full coverage
-  arena.scale.set(scale)
+  const arenaScale = Math.max(scaleX, scaleY) // Use larger scale to ensure full coverage
+  
+  arena.scale.set(arenaScale)
+  
+  // Store the global game scale for all other elements (use smaller scale for UI consistency)
+  gameScale = Math.min(scaleX, scaleY)
   
   app.stage.addChild(arena)
 
@@ -127,6 +135,13 @@ function createGameScene(): void {
   const cardContainer = new Container()
   app.stage.addChild(cardContainer)
 
+  // Calculate card scale based on game scale (not arena scale)
+  const baseCardScale = gameScale * 0.15 // Cards are 15% of game scale
+  const cardScale = Math.max(0.05, Math.min(0.3, baseCardScale)) // Clamp for safety
+
+  // Calculate spacing based on game scale
+  const cardSpacing = gameScale * 100 // Fixed spacing relative to game scale
+
   // Create cards in a hand formation
   const cardNames: string[] = ['card1', 'card2', 'card3', 'card4', 'card5', 'card1', 'card2']
   const cards: GameCard[] = []
@@ -135,21 +150,21 @@ function createGameScene(): void {
     const card = Sprite.from(cardName) as GameCard
     card.anchor.set(0.5)
     
-    // Position cards in a fan layout at the bottom (even smaller cards)
-    const cardSpacing = 80
+    // Position cards relative to screen size but scaled with game scale
     const startX = (app.screen.width / 2) - ((cardNames.length - 1) * cardSpacing / 2)
+    const handY = app.screen.height - (gameScale * 120) // Bottom margin relative to game scale
     
-    card.position.set(startX + index * cardSpacing, app.screen.height - 100)
-    card.scale.set(0.15) // Made cards even smaller
+    card.position.set(startX + index * cardSpacing, handY)
+    card.scale.set(cardScale)
     
     // Store original position and rotation
     card.originalX = card.position.x
     card.originalY = card.position.y
-    card.originalRotation = (index - 2) * 0.06 // Smaller rotation for smaller cards
-    card.originalScale = 0.15
+    card.originalRotation = (index - 2) * 0.06
+    card.originalScale = cardScale
     card.cardIndex = index
     card.isPlayed = false
-    card.arenaPosition = null // Track position in arena
+    card.arenaPosition = null
     
     // Add slight rotation for fan effect
     card.rotation = card.originalRotation
@@ -172,22 +187,6 @@ function createGameScene(): void {
   app.stage.on('pointermove', onDragMove)
   app.stage.on('pointerup', onDragEnd)
   app.stage.on('pointerupoutside', onDragEnd)
-
-  // // Add title text
-  // const title = new Graphics()
-  //   .roundRect(50, 30, 300, 60, 10)
-  //   .fill(0x34495e)
-  //   .stroke({ color: 0xecf0f1, width: 2 })
-  
-  // app.stage.addChild(title)
-  
-  // // Add instructions
-  // const instructions = new Graphics()
-  //   .roundRect(50, app.screen.height - 60, 500, 40, 8)
-  //   .fill(0x34495e)
-  //   .stroke({ color: 0xecf0f1, width: 2 })
-  
-  // app.stage.addChild(instructions)
 }
 
 function onCardHover(event: FederatedPointerEvent): void {
@@ -196,8 +195,10 @@ function onCardHover(event: FederatedPointerEvent): void {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
     
-    card.scale.set(0.25)
-    card.position.y = card.originalY - 80
+    // Scale up proportionally based on game scale
+    const hoverScale = card.originalScale * 1.5
+    card.scale.set(hoverScale)
+    card.position.y = card.originalY - (gameScale * 80) // Lift relative to arena scale
     card.rotation = 0
   }
 }
@@ -226,7 +227,8 @@ function onCardDragStart(event: FederatedPointerEvent): void {
   
   // Bring card to front and make it larger while dragging
   dragTarget.parent.setChildIndex(dragTarget, dragTarget.parent.children.length - 1)
-  dragTarget.scale.set(0.18)
+  const dragScale = dragTarget.originalScale * 1.2
+  dragTarget.scale.set(dragScale)
   dragTarget.rotation = 0
   dragTarget.alpha = 0.8
   
@@ -245,8 +247,9 @@ function onDragEnd(_event: FederatedPointerEvent): void {
   if (dragTarget) {
     const card = dragTarget
     
-    // Check if card is dropped above the hand area (anywhere above y = screen height - 200)
-    if (card.position.y < app.screen.height - 200) {
+    // Check if card is dropped in the arena area (above the hand area)
+    const handAreaTop = app.screen.height - (gameScale * 200) // Hand area threshold
+    if (card.position.y < handAreaTop) {
       // Card dropped in play area - play it
       playCardInArena(card)
     } else {
@@ -298,17 +301,20 @@ function playCardInArena(card: GameCard): void {
   card.cursor = 'pointer'
   card.on('pointerdown', () => removeCardFromArena(card))
   
-  // Calculate target position in the row (6 fixed spaces, no overlap)
-  const cardSpacing = 180 // Increased spacing to prevent overlap
+  // Calculate target position in the row with arena-relative spacing
+  const cardSpacing = gameScale * 180 // Spacing relative to arena scale
   const rowWidth = 5 * cardSpacing // 6 cards = 5 spaces between them
   const startX = (app.screen.width / 2) - (rowWidth / 2)
   const targetX = startX + (card.arenaPosition! * cardSpacing)
-  const targetY = app.screen.height / 2 - 50 // Above center of arena
+  const targetY = app.screen.height / 2 - (gameScale * 60) // Above arena center
+  
+  // Arena cards scale relative to game scale
+  const finalArenaScale = gameScale * 0.12 // 12% of arena scale
   
   const animate = (): void => {
     const dx = targetX - card.position.x
     const dy = targetY - card.position.y
-    const dScale = 0.15 - card.scale.x // Target scale for arena cards
+    const dScale = finalArenaScale - card.scale.x
     
     card.position.x += dx * 0.12
     card.position.y += dy * 0.12
@@ -320,7 +326,7 @@ function playCardInArena(card: GameCard): void {
     } else {
       card.position.x = targetX
       card.position.y = targetY
-      card.scale.set(0.15)
+      card.scale.set(finalArenaScale)
       
       // Cards stay in arena permanently - no auto return
     }
