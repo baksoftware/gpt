@@ -1,7 +1,7 @@
 # Pixi.js Card Game
 
-A beautiful card game built with Vite and Pixi.js featuring interactive cards
-and smooth animations.
+A beautiful card game built with Vite, TypeScript and Pixi.js featuring
+interactive cards and smooth animations.
 
 ## Features
 
@@ -11,6 +11,7 @@ and smooth animations.
 - 📱 Responsive design for different screen sizes
 - 🎮 Card play mechanics with return animations
 - 🖥️ **Full-screen mode support**
+- 📝 **TypeScript for type safety**
 
 ## Getting Started
 
@@ -41,6 +42,7 @@ npm run dev
 - **Drag** any card upward (above the hand area) to play it
 - Cards arrange themselves in Hearthstone-style positioning (center outward)
 - Maximum 6 cards can be played in the arena
+- **Click arena cards** to remove them (they fly upward and disappear)
 
 ## 🖥️ Full-Screen Mode (macOS)
 
@@ -67,9 +69,10 @@ npm run dev
 ```
 ├── public/           # Static assets (images)
 ├── src/
-│   ├── main.js      # Main Pixi.js application
+│   ├── main.ts      # Main Pixi.js application (TypeScript)
 │   └── style.css    # CSS styles
 ├── index.html       # HTML entry point
+├── tsconfig.json    # TypeScript configuration
 └── package.json     # Dependencies and scripts
 ```
 
@@ -81,9 +84,9 @@ are loaded asynchronously using Pixi.js Assets loader.
 ## Technologies Used
 
 - **Vite** - Fast build tool and development server
+- **TypeScript** - Type-safe JavaScript with modern features
 - **Pixi.js** - 2D WebGL renderer for smooth graphics and animations
-- **Vanilla JavaScript** - Clean, modern JavaScript without additional
-  frameworks
+- **Modern CSS** - Full-screen responsive design
 
 ## Building for Production
 
@@ -92,6 +95,14 @@ npm run build
 ```
 
 The built files will be in the `dist/` directory.
+
+## Development
+
+The project uses TypeScript for type safety. You can run type checking with:
+
+```bash
+npx tsc --noEmit
+```
 
 ## License
 

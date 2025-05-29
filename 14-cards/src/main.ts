@@ -1,11 +1,23 @@
 import './style.css'
-import { Application, Assets, Sprite, Container, Graphics } from 'pixi.js'
+import { Application, Assets, Sprite, Container, FederatedPointerEvent } from 'pixi.js'
 
 // Create the application
 const app = new Application()
 
+// Type definitions
+interface GameCard extends Sprite {
+  originalX: number
+  originalY: number
+  originalRotation: number
+  originalScale: number
+  cardIndex: number
+  isPlayed: boolean
+  arenaPosition: number | null
+  dragOffset?: { x: number; y: number }
+}
+
 // Initialize the application
-async function init() {
+async function init(): Promise<void> {
   await app.init({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -15,7 +27,10 @@ async function init() {
   })
 
   // Add the canvas to the DOM
-  document.querySelector('#game-container').appendChild(app.canvas)
+  const gameContainer = document.querySelector('#game-container') as HTMLElement
+  if (gameContainer) {
+    gameContainer.appendChild(app.canvas)
+  }
 
   // Handle window resize
   window.addEventListener('resize', () => {
@@ -45,9 +60,9 @@ async function init() {
   createGameScene()
 }
 
-function setupFullscreen() {
+function setupFullscreen(): void {
   // Add fullscreen toggle on F key press or double-click
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'f' || e.key === 'F') {
       toggleFullscreen()
     }
@@ -68,7 +83,7 @@ function setupFullscreen() {
   console.log('  • On macOS: Cmd+Shift+F in browser also works')
 }
 
-function toggleFullscreen() {
+function toggleFullscreen(): void {
   if (!document.fullscreenElement) {
     // Enter fullscreen
     document.documentElement.requestFullscreen().catch(err => {
@@ -80,18 +95,17 @@ function toggleFullscreen() {
   }
 }
 
-function exitFullscreen() {
+function exitFullscreen(): void {
   if (document.fullscreenElement) {
     document.exitFullscreen()
   }
 }
 
-let dragTarget = null
-let dragData = null
-let arenaCards = [] // Track cards in arena
-let arenaContainer = null
+let dragTarget: GameCard | null = null
+let arenaCards: GameCard[] = [] // Track cards in arena
+let arenaContainer: Container | null = null
 
-function createGameScene() {
+function createGameScene(): void {
   // Create arena background that fills the entire screen
   const arena = Sprite.from('arena')
   arena.anchor.set(0.5)
@@ -114,11 +128,11 @@ function createGameScene() {
   app.stage.addChild(cardContainer)
 
   // Create cards in a hand formation
-  const cardNames = ['card1', 'card2', 'card3', 'card4', 'card5', 'card1', 'card2']
-  const cards = []
+  const cardNames: string[] = ['card1', 'card2', 'card3', 'card4', 'card5', 'card1', 'card2']
+  const cards: GameCard[] = []
 
-  cardNames.forEach((cardName, index) => {
-    const card = Sprite.from(cardName)
+  cardNames.forEach((cardName: string, index: number) => {
+    const card = Sprite.from(cardName) as GameCard
     card.anchor.set(0.5)
     
     // Position cards in a fan layout at the bottom (even smaller cards)
@@ -176,10 +190,9 @@ function createGameScene() {
   // app.stage.addChild(instructions)
 }
 
-function onCardHover(event) {
-  if (!dragTarget && !event.currentTarget.isPlayed) {
-    const card = event.currentTarget
-    
+function onCardHover(event: FederatedPointerEvent): void {
+  const card = event.currentTarget as GameCard
+  if (!dragTarget && !card.isPlayed) {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
     
@@ -189,19 +202,20 @@ function onCardHover(event) {
   }
 }
 
-function onCardOut(event) {
-  if (!dragTarget && !event.currentTarget.isPlayed) {
-    event.currentTarget.scale.set(event.currentTarget.originalScale)
-    event.currentTarget.position.y = event.currentTarget.originalY
-    event.currentTarget.rotation = event.currentTarget.originalRotation
+function onCardOut(event: FederatedPointerEvent): void {
+  const card = event.currentTarget as GameCard
+  if (!dragTarget && !card.isPlayed) {
+    card.scale.set(card.originalScale)
+    card.position.y = card.originalY
+    card.rotation = card.originalRotation
   }
 }
 
-function onCardDragStart(event) {
-  if (event.currentTarget.isPlayed) return
+function onCardDragStart(event: FederatedPointerEvent): void {
+  const card = event.currentTarget as GameCard
+  if (card.isPlayed) return
   
-  dragTarget = event.currentTarget
-  dragData = event.data
+  dragTarget = card
   
   // Store the initial mouse position relative to the card
   const globalPos = event.data.global
@@ -219,15 +233,15 @@ function onCardDragStart(event) {
   console.log(`Started dragging card ${dragTarget.cardIndex + 1}`)
 }
 
-function onDragMove(event) {
-  if (dragTarget) {
+function onDragMove(event: FederatedPointerEvent): void {
+  if (dragTarget && dragTarget.dragOffset) {
     const globalPos = event.data.global
     dragTarget.position.x = globalPos.x - dragTarget.dragOffset.x
     dragTarget.position.y = globalPos.y - dragTarget.dragOffset.y
   }
 }
 
-function onDragEnd(event) {
+function onDragEnd(_event: FederatedPointerEvent): void {
   if (dragTarget) {
     const card = dragTarget
     
@@ -241,11 +255,10 @@ function onDragEnd(event) {
     }
     
     dragTarget = null
-    dragData = null
   }
 }
 
-function playCardInArena(card) {
+function playCardInArena(card: GameCard): void {
   console.log(`Card ${card.cardIndex + 1} played in arena!`)
   
   // Check if arena is full (6 cards max)
@@ -258,14 +271,14 @@ function playCardInArena(card) {
   card.isPlayed = true
   card.alpha = 1
   
-   
-  const occupiedPositions = arenaCards.map(c => c.arenaPosition).filter(pos => pos !== null);
+  const occupiedPositions: number[] = arenaCards.map(c => c.arenaPosition).filter((pos): pos is number => pos !== null)
 
-  let found = false;
-  [2,3,1,4,0,5].forEach((position, index) => {
+  let found = false
+  const priorityOrder: number[] = [2, 3, 1, 4, 0, 5]
+  priorityOrder.forEach((position: number) => {
     if (!found && !occupiedPositions.includes(position)) {
       card.arenaPosition = position
-      found = true;
+      found = true
     }
   })
 
@@ -275,7 +288,9 @@ function playCardInArena(card) {
   
   // Move card to arena container
   card.parent.removeChild(card)
-  arenaContainer.addChild(card)
+  if (arenaContainer) {
+    arenaContainer.addChild(card)
+  }
   
   // Add click handler for removing card from arena
   card.removeAllListeners() // Clear previous event listeners
@@ -287,10 +302,10 @@ function playCardInArena(card) {
   const cardSpacing = 180 // Increased spacing to prevent overlap
   const rowWidth = 5 * cardSpacing // 6 cards = 5 spaces between them
   const startX = (app.screen.width / 2) - (rowWidth / 2)
-  const targetX = startX + (card.arenaPosition * cardSpacing)
+  const targetX = startX + (card.arenaPosition! * cardSpacing)
   const targetY = app.screen.height / 2 - 50 // Above center of arena
   
-  const animate = () => {
+  const animate = (): void => {
     const dx = targetX - card.position.x
     const dy = targetY - card.position.y
     const dScale = 0.15 - card.scale.x // Target scale for arena cards
@@ -314,7 +329,7 @@ function playCardInArena(card) {
   animate()
 }
 
-function removeCardFromArena(card) {
+function removeCardFromArena(card: GameCard): void {
   console.log(`Removing card ${card.cardIndex + 1} from arena`)
   
   // Remove click handler to prevent multiple clicks
@@ -328,7 +343,7 @@ function removeCardFromArena(card) {
   }
   
   // Animate card upward and out of screen
-  const animate = () => {
+  const animate = (): void => {
     card.position.y -= 15 // Move up quickly
     card.alpha -= 0.03 // Fade out
     card.scale.x += 0.01 // Slight scale increase
@@ -346,10 +361,10 @@ function removeCardFromArena(card) {
   animate()
 }
 
-function returnCardToHand(card) {
+function returnCardToHand(card: GameCard): void {
   card.alpha = 1
   
-  const animate = () => {
+  const animate = (): void => {
     const dx = card.originalX - card.position.x
     const dy = card.originalY - card.position.y
     const dScale = card.originalScale - card.scale.x
@@ -375,4 +390,4 @@ function returnCardToHand(card) {
 }
 
 // Start the application
-init()
+init() 
