@@ -10,6 +10,7 @@ and smooth animations.
 - ✨ Smooth card animations
 - 📱 Responsive design for different screen sizes
 - 🎮 Card play mechanics with return animations
+- 🖥️ **Full-screen mode support**
 
 ## Getting Started
 
@@ -37,8 +38,29 @@ npm run dev
 ## How to Play
 
 - **Hover** over cards to see them lift up and grow slightly
-- **Click** on any card to play it (it will animate to the center and return)
-- Cards are arranged in a fan formation at the bottom of the screen
+- **Drag** any card upward (above the hand area) to play it
+- Cards arrange themselves in Hearthstone-style positioning (center outward)
+- Maximum 6 cards can be played in the arena
+
+## 🖥️ Full-Screen Mode (macOS)
+
+### Automatic Controls:
+
+- **Press F key** to toggle fullscreen
+- **Double-click anywhere** to toggle fullscreen
+- **Press Escape** to exit fullscreen
+
+### Manual Browser Controls:
+
+- **Safari**: Press `Cmd + Shift + F`
+- **Chrome/Firefox**: Press `Cmd + Shift + F` or click View → Enter Full Screen
+- **Any Browser**: Press `F11` (if available)
+
+### Best Experience:
+
+1. Start the game in your browser
+2. Press **F** key or **double-click** to enter fullscreen
+3. Enjoy immersive full-screen gaming!
 
 ## Project Structure
 
