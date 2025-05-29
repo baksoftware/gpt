@@ -126,13 +126,13 @@ function createGameScene() {
     const startX = (app.screen.width / 2) - ((cardNames.length - 1) * cardSpacing / 2)
     
     card.position.set(startX + index * cardSpacing, app.screen.height - 100)
-    card.scale.set(0.12) // Made cards even smaller
+    card.scale.set(0.15) // Made cards even smaller
     
     // Store original position and rotation
     card.originalX = card.position.x
     card.originalY = card.position.y
     card.originalRotation = (index - 2) * 0.06 // Smaller rotation for smaller cards
-    card.originalScale = 0.12
+    card.originalScale = 0.15
     card.cardIndex = index
     card.isPlayed = false
     card.arenaPosition = null // Track position in arena
@@ -159,21 +159,21 @@ function createGameScene() {
   app.stage.on('pointerup', onDragEnd)
   app.stage.on('pointerupoutside', onDragEnd)
 
-  // Add title text
-  const title = new Graphics()
-    .roundRect(50, 30, 300, 60, 10)
-    .fill(0x34495e)
-    .stroke({ color: 0xecf0f1, width: 2 })
+  // // Add title text
+  // const title = new Graphics()
+  //   .roundRect(50, 30, 300, 60, 10)
+  //   .fill(0x34495e)
+  //   .stroke({ color: 0xecf0f1, width: 2 })
   
-  app.stage.addChild(title)
+  // app.stage.addChild(title)
   
-  // Add instructions
-  const instructions = new Graphics()
-    .roundRect(50, app.screen.height - 60, 500, 40, 8)
-    .fill(0x34495e)
-    .stroke({ color: 0xecf0f1, width: 2 })
+  // // Add instructions
+  // const instructions = new Graphics()
+  //   .roundRect(50, app.screen.height - 60, 500, 40, 8)
+  //   .fill(0x34495e)
+  //   .stroke({ color: 0xecf0f1, width: 2 })
   
-  app.stage.addChild(instructions)
+  // app.stage.addChild(instructions)
 }
 
 function onCardHover(event) {
@@ -183,8 +183,8 @@ function onCardHover(event) {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
     
-    card.scale.set(0.15)
-    card.position.y = card.originalY - 15
+    card.scale.set(0.25)
+    card.position.y = card.originalY - 80
     card.rotation = 0
   }
 }
@@ -258,32 +258,30 @@ function playCardInArena(card) {
   card.isPlayed = true
   card.alpha = 1
   
-  // Add card to arena tracking
-  arenaCards.push(card)
-  
-  // Calculate Hearthstone-style position (center outward)
-  const arenaPosition = getHearthstonePosition(arenaCards.length - 1, arenaCards.length)
-  
-  // Validate that this position is not already occupied
-  const occupiedPositions = arenaCards.slice(0, -1).map(c => c.arenaPosition).filter(pos => pos !== null)
-  if (occupiedPositions.includes(arenaPosition)) {
-    console.error(`Position ${arenaPosition} is already occupied! This should never happen.`)
-    // Find the first available position as fallback
-    for (let i = 0; i < 6; i++) {
-      if (!occupiedPositions.includes(i)) {
-        card.arenaPosition = i
-        break
-      }
+   
+  const occupiedPositions = arenaCards.map(c => c.arenaPosition).filter(pos => pos !== null);
+
+  let found = false;
+  [2,3,1,4,0,5].forEach((position, index) => {
+    if (!found && !occupiedPositions.includes(position)) {
+      card.arenaPosition = position
+      found = true;
     }
-  } else {
-    card.arenaPosition = arenaPosition
-  }
-  
+  })
+
+  arenaCards.push(card)
+     
   console.log(`Card ${card.cardIndex + 1} assigned to arena position ${card.arenaPosition}`)
   
   // Move card to arena container
   card.parent.removeChild(card)
   arenaContainer.addChild(card)
+  
+  // Add click handler for removing card from arena
+  card.removeAllListeners() // Clear previous event listeners
+  card.eventMode = 'static'
+  card.cursor = 'pointer'
+  card.on('pointerdown', () => removeCardFromArena(card))
   
   // Calculate target position in the row (6 fixed spaces, no overlap)
   const cardSpacing = 180 // Increased spacing to prevent overlap
@@ -316,19 +314,36 @@ function playCardInArena(card) {
   animate()
 }
 
-// Hearthstone-style positioning: fill from center outward
-function getHearthstonePosition(cardIndex, totalCards) {
-  // Positions for each number of cards (0-indexed positions in a 6-slot row)
-  const positionMaps = {
-    1: [2],                    // 1 card: middle
-    2: [2, 3],                 // 2 cards: left-center, right-center  
-    3: [1, 2, 3],              // 3 cards: left-center, middle, right-center
-    4: [1, 2, 3, 4],           // 4 cards: skip position 2 (middle)
-    5: [0, 1, 2, 3, 4],        // 5 cards: fill almost all
-    6: [0, 1, 2, 3, 4, 5]      // 6 cards: fill all positions
+function removeCardFromArena(card) {
+  console.log(`Removing card ${card.cardIndex + 1} from arena`)
+  
+  // Remove click handler to prevent multiple clicks
+  card.removeAllListeners()
+  card.eventMode = 'none'
+  
+  // Remove from arena tracking
+  const index = arenaCards.indexOf(card)
+  if (index > -1) {
+    arenaCards.splice(index, 1)
   }
   
-  return positionMaps[totalCards][cardIndex]
+  // Animate card upward and out of screen
+  const animate = () => {
+    card.position.y -= 15 // Move up quickly
+    card.alpha -= 0.03 // Fade out
+    card.scale.x += 0.01 // Slight scale increase
+    card.scale.y += 0.01
+    
+    if (card.position.y > -200 && card.alpha > 0) {
+      requestAnimationFrame(animate)
+    } else {
+      // Remove card completely
+      card.parent.removeChild(card)
+      card.destroy()
+    }
+  }
+  
+  animate()
 }
 
 function returnCardToHand(card) {
