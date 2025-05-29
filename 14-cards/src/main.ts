@@ -1,11 +1,19 @@
 import './style.css'
 import { Application, Assets, Sprite, Container, FederatedPointerEvent } from 'pixi.js'
+import { GameEngine, GameState, Card as GameCard } from './gameEngine'
+import { HumanPlayer } from './players/HumanPlayer'
+import { AIPlayer } from './players/AIPlayer'
 
 // Create the application
 const app = new Application()
 
-// Type definitions
-interface GameCard extends Sprite {
+// Game engine and players
+let gameEngine: GameEngine
+let humanPlayer: HumanPlayer
+let aiPlayer: AIPlayer
+
+// Type definitions for visual cards
+interface VisualCard extends Sprite {
   originalX: number
   originalY: number
   originalRotation: number
@@ -14,6 +22,8 @@ interface GameCard extends Sprite {
   isPlayed: boolean
   arenaPosition: number | null
   dragOffset?: { x: number; y: number }
+  gameCardId?: string // Link to game engine card
+  playerId?: string // Which player owns this card
 }
 
 // Initialize the application
@@ -36,8 +46,6 @@ async function init(): Promise<void> {
   // Handle window resize
   window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight)
-    // Clear arena cards array when resizing to avoid conflicts
-    arenaCards = []
     // Recreate scene with new dimensions
     app.stage.removeChildren()
     createGameScene()
@@ -59,8 +67,37 @@ async function init(): Promise<void> {
   // Load all assets
   await Assets.load(assets.map(asset => ({ alias: asset.alias, src: asset.src })))
 
+  // Initialize game engine
+  initializeGameEngine()
+
   // Create the game scene
   createGameScene()
+}
+
+function initializeGameEngine(): void {
+  gameEngine = new GameEngine()
+  humanPlayer = new HumanPlayer('human', 'Player')
+  aiPlayer = new AIPlayer('ai', 'AI Opponent', 'medium')
+
+  // Listen to game state changes
+  gameEngine.addEventListener((gameState: GameState) => {
+    updateVisualization(gameState)
+  })
+
+  // Initialize the game
+  gameEngine.initializeGame(humanPlayer, aiPlayer)
+
+  // Start the game loop
+  gameLoop()
+}
+
+async function gameLoop(): Promise<void> {
+  while (gameEngine.getGameState().gameStatus === 'playing') {
+    await gameEngine.processCurrentPlayerTurn()
+    
+    // Small delay between turns for better UX
+    await new Promise(resolve => setTimeout(resolve, 500))
+  }
 }
 
 function setupFullscreen(): void {
@@ -104,9 +141,11 @@ function exitFullscreen(): void {
   }
 }
 
-let dragTarget: GameCard | null = null
-let arenaCards: GameCard[] = [] // Track cards in arena
+let dragTarget: VisualCard | null = null
+let arenaCards: VisualCard[] = [] // Track cards in arena
 let arenaContainer: Container | null = null
+let humanHandContainer: Container | null = null
+let aiHandContainer: Container | null = null
 let gameScale: number = 1 // Global scale factor based on arena fitting
 
 function createGameScene(): void {
@@ -131,28 +170,61 @@ function createGameScene(): void {
   arenaContainer = new Container()
   app.stage.addChild(arenaContainer)
 
-  // Create card container for hand
-  const cardContainer = new Container()
-  app.stage.addChild(cardContainer)
+  // Create AI hand container (top)
+  aiHandContainer = new Container()
+  app.stage.addChild(aiHandContainer)
 
-  // Calculate card scale based on game scale (not arena scale)
-  const baseCardScale = gameScale * 0.15 // Cards are 15% of game scale
-  const cardScale = Math.max(0.05, Math.min(0.3, baseCardScale)) // Clamp for safety
+  // Create human hand container (bottom)
+  humanHandContainer = new Container()
+  app.stage.addChild(humanHandContainer)
 
-  // Calculate spacing based on game scale
-  const cardSpacing = gameScale * 100 // Fixed spacing relative to game scale
+  // Add global pointer events for dragging
+  app.stage.eventMode = 'static'
+  app.stage.on('pointermove', onDragMove)
+  app.stage.on('pointerup', onDragEnd)
+  app.stage.on('pointerupoutside', onDragEnd)
 
-  // Create cards in a hand formation
-  const cardNames: string[] = ['card1', 'card2', 'card3', 'card4', 'card5', 'card1', 'card2']
-  const cards: GameCard[] = []
+  // Update visualization with current game state
+  const gameState = gameEngine.getGameState()
+  updateVisualization(gameState)
+}
 
-  cardNames.forEach((cardName: string, index: number) => {
-    const card = Sprite.from(cardName) as GameCard
+function updateVisualization(gameState: GameState): void {
+  if (!humanHandContainer || !aiHandContainer || !arenaContainer) return
+
+  // Clear existing cards
+  humanHandContainer.removeChildren()
+  aiHandContainer.removeChildren()
+  arenaContainer.removeChildren()
+
+  const humanPlayerState = gameState.players.find(p => p.id === 'human')
+  const aiPlayerState = gameState.players.find(p => p.id === 'ai')
+
+  if (humanPlayerState) {
+    createPlayerHand(humanPlayerState, humanHandContainer, 'human', false)
+  }
+
+  if (aiPlayerState) {
+    createPlayerHand(aiPlayerState, aiHandContainer, 'ai', true)
+  }
+
+  // Create arena cards for both players
+  createArenaCards(gameState)
+}
+
+function createPlayerHand(playerState: any, container: Container, playerId: string, isAI: boolean): void {
+  const cardScale = gameScale * 0.15
+  const cardSpacing = gameScale * 100
+
+  playerState.hand.forEach((gameCard: GameCard, index: number) => {
+    const card = (isAI ? Sprite.from('card1') : Sprite.from(gameCard.name)) as VisualCard // AI cards are face down
     card.anchor.set(0.5)
     
-    // Position cards relative to screen size but scaled with game scale
-    const startX = (app.screen.width / 2) - ((cardNames.length - 1) * cardSpacing / 2)
-    const handY = app.screen.height - (gameScale * 120) // Bottom margin relative to game scale
+    // Position cards
+    const startX = (app.screen.width / 2) - ((playerState.hand.length - 1) * cardSpacing / 2)
+    const handY = isAI ? 
+      gameScale * 120 : // AI cards at top
+      app.screen.height - (gameScale * 120) // Human cards at bottom
     
     card.position.set(startX + index * cardSpacing, handY)
     card.scale.set(cardScale)
@@ -160,38 +232,75 @@ function createGameScene(): void {
     // Store original position and rotation
     card.originalX = card.position.x
     card.originalY = card.position.y
-    card.originalRotation = (index - 2) * 0.06
+    card.originalRotation = (index - Math.floor(playerState.hand.length / 2)) * 0.06
     card.originalScale = cardScale
     card.cardIndex = index
     card.isPlayed = false
     card.arenaPosition = null
+    card.gameCardId = gameCard.id
+    card.playerId = playerId
     
     // Add slight rotation for fan effect
     card.rotation = card.originalRotation
     
-    // Make cards interactive
-    card.eventMode = 'static'
-    card.cursor = 'pointer'
+    // Make human cards interactive
+    if (!isAI) {
+      card.eventMode = 'static'
+      card.cursor = 'pointer'
+      
+      // Add hover effects
+      card.on('pointerover', onCardHover)
+      card.on('pointerout', onCardOut)
+      card.on('pointerdown', onCardDragStart)
+    } else {
+      // AI cards are not interactive
+      card.eventMode = 'none'
+      card.alpha = 0.8 // Make AI cards slightly transparent
+    }
     
-    // Add hover effects
-    card.on('pointerover', onCardHover)
-    card.on('pointerout', onCardOut)
-    card.on('pointerdown', onCardDragStart)
-    
-    cardContainer.addChild(card)
-    cards.push(card)
+    container.addChild(card)
   })
+}
 
-  // Add global pointer events for dragging
-  app.stage.eventMode = 'static'
-  app.stage.on('pointermove', onDragMove)
-  app.stage.on('pointerup', onDragEnd)
-  app.stage.on('pointerupoutside', onDragEnd)
+function createArenaCards(gameState: GameState): void {
+  if (!arenaContainer) return
+
+  gameState.players.forEach(playerState => {
+    playerState.arenaCards.forEach((gameCard: GameCard, index: number) => {
+      const card = Sprite.from(gameCard.name) as VisualCard
+      card.anchor.set(0.5)
+      
+      // Calculate arena position
+      const cardSpacing = gameScale * 180
+      const rowWidth = 5 * cardSpacing
+      const startX = (app.screen.width / 2) - (rowWidth / 2)
+      const targetX = startX + (index * cardSpacing)
+      const targetY = app.screen.height / 2 - (gameScale * 60)
+      
+      card.position.set(targetX, targetY)
+      card.scale.set(gameScale * 0.12)
+      card.gameCardId = gameCard.id
+      card.playerId = playerState.id
+      
+      // Make arena cards clickable to remove them
+      card.eventMode = 'static'
+      card.cursor = 'pointer'
+      card.on('pointerdown', () => {
+        if (playerState.id === 'human' && humanPlayer.isWaitingForInput()) {
+          humanPlayer.removeCard(gameCard.id)
+        }
+      })
+      
+      if (arenaContainer) {
+        arenaContainer.addChild(card)
+      }
+    })
+  })
 }
 
 function onCardHover(event: FederatedPointerEvent): void {
-  const card = event.currentTarget as GameCard
-  if (!dragTarget && !card.isPlayed) {
+  const card = event.currentTarget as VisualCard
+  if (!dragTarget && !card.isPlayed && card.playerId === 'human') {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
     
@@ -204,8 +313,8 @@ function onCardHover(event: FederatedPointerEvent): void {
 }
 
 function onCardOut(event: FederatedPointerEvent): void {
-  const card = event.currentTarget as GameCard
-  if (!dragTarget && !card.isPlayed) {
+  const card = event.currentTarget as VisualCard
+  if (!dragTarget && !card.isPlayed && card.playerId === 'human') {
     card.scale.set(card.originalScale)
     card.position.y = card.originalY
     card.rotation = card.originalRotation
@@ -213,8 +322,8 @@ function onCardOut(event: FederatedPointerEvent): void {
 }
 
 function onCardDragStart(event: FederatedPointerEvent): void {
-  const card = event.currentTarget as GameCard
-  if (card.isPlayed) return
+  const card = event.currentTarget as VisualCard
+  if (card.isPlayed || card.playerId !== 'human') return
   
   dragTarget = card
   
@@ -244,14 +353,16 @@ function onDragMove(event: FederatedPointerEvent): void {
 }
 
 function onDragEnd(_event: FederatedPointerEvent): void {
-  if (dragTarget) {
+  if (dragTarget && dragTarget.playerId === 'human') {
     const card = dragTarget
     
     // Check if card is dropped in the arena area (above the hand area)
     const handAreaTop = app.screen.height - (gameScale * 200) // Hand area threshold
     if (card.position.y < handAreaTop) {
-      // Card dropped in play area - play it
-      playCardInArena(card)
+      // Card dropped in play area - play it via game engine
+      if (humanPlayer.isWaitingForInput() && card.gameCardId) {
+        humanPlayer.playCard(card.gameCardId)
+      }
     } else {
       // Card dropped in hand area - return to hand
       returnCardToHand(card)
@@ -261,113 +372,7 @@ function onDragEnd(_event: FederatedPointerEvent): void {
   }
 }
 
-function playCardInArena(card: GameCard): void {
-  console.log(`Card ${card.cardIndex + 1} played in arena!`)
-  
-  // Check if arena is full (6 cards max)
-  if (arenaCards.length >= 6) {
-    console.log('Arena is full! Returning card to hand.')
-    returnCardToHand(card)
-    return
-  }
-  
-  card.isPlayed = true
-  card.alpha = 1
-  
-  const occupiedPositions: number[] = arenaCards.map(c => c.arenaPosition).filter((pos): pos is number => pos !== null)
-
-  let found = false
-  const priorityOrder: number[] = [2, 3, 1, 4, 0, 5]
-  priorityOrder.forEach((position: number) => {
-    if (!found && !occupiedPositions.includes(position)) {
-      card.arenaPosition = position
-      found = true
-    }
-  })
-
-  arenaCards.push(card)
-     
-  console.log(`Card ${card.cardIndex + 1} assigned to arena position ${card.arenaPosition}`)
-  
-  // Move card to arena container
-  card.parent.removeChild(card)
-  if (arenaContainer) {
-    arenaContainer.addChild(card)
-  }
-  
-  // Add click handler for removing card from arena
-  card.removeAllListeners() // Clear previous event listeners
-  card.eventMode = 'static'
-  card.cursor = 'pointer'
-  card.on('pointerdown', () => removeCardFromArena(card))
-  
-  // Calculate target position in the row with arena-relative spacing
-  const cardSpacing = gameScale * 180 // Spacing relative to arena scale
-  const rowWidth = 5 * cardSpacing // 6 cards = 5 spaces between them
-  const startX = (app.screen.width / 2) - (rowWidth / 2)
-  const targetX = startX + (card.arenaPosition! * cardSpacing)
-  const targetY = app.screen.height / 2 - (gameScale * 60) // Above arena center
-  
-  // Arena cards scale relative to game scale
-  const finalArenaScale = gameScale * 0.12 // 12% of arena scale
-  
-  const animate = (): void => {
-    const dx = targetX - card.position.x
-    const dy = targetY - card.position.y
-    const dScale = finalArenaScale - card.scale.x
-    
-    card.position.x += dx * 0.12
-    card.position.y += dy * 0.12
-    card.scale.x += dScale * 0.12
-    card.scale.y += dScale * 0.12
-    
-    if (Math.abs(dx) > 1 || Math.abs(dy) > 1 || Math.abs(dScale) > 0.01) {
-      requestAnimationFrame(animate)
-    } else {
-      card.position.x = targetX
-      card.position.y = targetY
-      card.scale.set(finalArenaScale)
-      
-      // Cards stay in arena permanently - no auto return
-    }
-  }
-  
-  animate()
-}
-
-function removeCardFromArena(card: GameCard): void {
-  console.log(`Removing card ${card.cardIndex + 1} from arena`)
-  
-  // Remove click handler to prevent multiple clicks
-  card.removeAllListeners()
-  card.eventMode = 'none'
-  
-  // Remove from arena tracking
-  const index = arenaCards.indexOf(card)
-  if (index > -1) {
-    arenaCards.splice(index, 1)
-  }
-  
-  // Animate card upward and out of screen
-  const animate = (): void => {
-    card.position.y -= 15 // Move up quickly
-    card.alpha -= 0.03 // Fade out
-    card.scale.x += 0.01 // Slight scale increase
-    card.scale.y += 0.01
-    
-    if (card.position.y > -200 && card.alpha > 0) {
-      requestAnimationFrame(animate)
-    } else {
-      // Remove card completely
-      card.parent.removeChild(card)
-      card.destroy()
-    }
-  }
-  
-  animate()
-}
-
-function returnCardToHand(card: GameCard): void {
+function returnCardToHand(card: VisualCard): void {
   card.alpha = 1
   
   const animate = (): void => {
