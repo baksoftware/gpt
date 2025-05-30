@@ -335,6 +335,7 @@ class CardGenerator {
 
             const cardDataFile = await this.loadCardData();
             const generatedCards: string[] = [];
+            const gameCards: any[] = [];
 
             console.log(`📏 Using dimensions: ${this.cardWidth}x${this.cardHeight} pixels`);
 
@@ -342,7 +343,28 @@ class CardGenerator {
                 console.log(`Generating card: ${card.title}`);
                 const outputPath = await this.generateCard(card);
                 generatedCards.push(outputPath);
+
+                // Create game card data (excluding visual/generation-specific properties)
+                const outputFileName = `${card.title.replace(/\s+/g, '_').toLowerCase()}_card.png`;
+                const gameCard = {
+                    id: card.id,
+                    title: card.title,
+                    description: card.description,
+                    level: card.level,
+                    health: card.health,
+                    attack: card.attack,
+                    specialEffects: card.specialEffects || [],
+                    imageFileName: outputFileName
+                };
+                gameCards.push(gameCard);
             }
+
+            // Write game cards JSON file
+            const gameCardsPath = path.join(this.outputPath, 'gamecards.json');
+            const gameCardsData = {
+                cards: gameCards
+            };
+            fs.writeFileSync(gameCardsPath, JSON.stringify(gameCardsData, null, 2));
 
             console.log(`\n🎉 Successfully generated ${generatedCards.length} cards!`);
             console.log('📁 Output directory:', this.outputPath);
@@ -351,6 +373,7 @@ class CardGenerator {
             generatedCards.forEach(cardPath => {
                 console.log(`  - ${path.basename(cardPath)}`);
             });
+            console.log(`  - gamecards.json (game engine data)`);
 
             return generatedCards;
         } catch (error) {
