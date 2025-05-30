@@ -54,14 +54,14 @@ The simulation engine that handles all game logic and data storage:
 
 ```typescript
 interface Card {
-   id: string;
-   name: string;
-   type: string;
-   level: number; // 1-5, affects card generation
-   attack: number; // Damage dealt in combat
-   health: number; // Current health
-   maxHealth: number; // Original health value
-   specialAbilities?: string[];
+  id: string;
+  name: string;
+  type: string;
+  level: number; // 1-5, affects card generation
+  attack: number; // Damage dealt in combat
+  health: number; // Current health
+  maxHealth: number; // Original health value
+  specialAbilities?: string[];
 }
 ```
 
@@ -126,6 +126,45 @@ The visualization is completely separate from game logic:
 - **Turn Indicators**: Large colored text showing whose turn it is
 - **End Turn Button**: Green button in bottom-right corner
 - **Selection Highlighting**: Selected cards show visual feedback
+
+## Animation and Notification System
+
+### Floating Text Notifications
+
+The game features a comprehensive notification system that provides real-time
+feedback for all game events:
+
+- **Card Play Notifications**: Shows card name and type when played
+  - Heroes: "Arcane Wizard Enters Battle!" (gold text)
+  - Creatures: "Creature Played!" (green text)
+- **Damage Indicators**: Red floating numbers showing damage dealt (`-3`, `-5`,
+  etc.)
+- **Destruction Messages**: Red text announcing card destruction
+- **Turn Announcements**: Center screen notifications for turn changes
+- **Ability Tooltips**: Gold text showing hero special abilities on hover
+
+### Card Animations
+
+- **Combat Animation**: Attacking cards briefly move toward their target
+- **Destruction Effects**: Destroyed cards scale down, fade out, and spin
+- **Play Animations**: Cards show immediate visual feedback when played
+- **Hover Effects**: Cards lift and scale when hovered, with ability tooltips
+
+### Technical Implementation
+
+The animation system uses:
+
+- **Pixi.js Ticker**: 60fps animation loop for smooth effects
+- **Floating Text**: Automatically managed notification lifecycle
+- **State Comparison**: Detects game events by comparing previous/current states
+- **Visual Feedback**: Immediate response to user actions
+
+All animations are:
+
+- **Performance Optimized**: Efficient cleanup of expired notifications
+- **Responsive**: Scale with screen resolution and game scale
+- **Non-blocking**: Don't interfere with gameplay mechanics
+- **Informative**: Clear communication of game events
 
 ### Interactions
 

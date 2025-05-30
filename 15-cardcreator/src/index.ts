@@ -23,6 +23,69 @@ class CardGenerator {
         }
     }
 
+    private drawCurvedText(
+        ctx: CanvasRenderingContext2D,
+        text: string,
+        centerX: number,
+        centerY: number,
+        radius: number,
+        targetSize: number,
+        weight: string = 'normal',
+        fillColor: string = '#FFFFFF',
+        strokeColor: string = '#000000',
+        strokeWidth: number = 4
+    ): void {
+        ctx.save();
+
+        const baseFontSize = 20;
+        const scaleFactor = targetSize / baseFontSize;
+        ctx.font = `${weight} ${baseFontSize}px Arial`;
+
+        // Don't scale the entire context, just the font
+        ctx.font = `${weight} ${targetSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Calculate the total arc span for the text
+        const totalTextWidth = ctx.measureText(text).width;
+        const circumference = 2 * Math.PI * radius;
+        const arcSpan = (totalTextWidth / circumference) * 2 * Math.PI;
+        const anglePerChar = arcSpan / text.length;
+        const startAngle = -arcSpan / 2;
+
+        console.log(`Curved text: "${text}" - Size: ${targetSize}px, Radius: ${radius}px`);
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const angle = startAngle + anglePerChar * (i + 0.5);
+
+            const x = centerX + Math.cos(angle - Math.PI / 2) * radius;
+            const y = centerY + Math.sin(angle - Math.PI / 2) * radius;
+
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+
+            // Draw stroke first
+            if (strokeWidth > 0) {
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = strokeWidth;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.miterLimit = 2;
+                ctx.strokeText(char, 0, 0);
+            }
+
+            // Draw fill on top
+            ctx.fillStyle = fillColor;
+            ctx.fillText(char, 0, 0);
+
+            ctx.restore();
+        }
+
+        ctx.restore();
+    }
+
     private drawScaledText(
         ctx: CanvasRenderingContext2D,
         text: string,
@@ -151,60 +214,44 @@ class CardGenerator {
                 ctx.strokeRect(1, 1, this.cardWidth - 2, this.cardHeight - 2);
             }
 
-            // Draw card title (HUGE - 60px, white, normal weight)
+            // Draw card title (smaller and slightly curved - 40px, white, normal weight) - positioned below hero over curved banner
             ctx.textAlign = 'center';
-            this.drawScaledText(ctx, cardData.title, this.cardWidth / 2, 70, 60, 'normal', '#FFFFFF', '#000000', 8);
+            this.drawCurvedText(ctx, cardData.title, this.cardWidth / 2, 650, 300, 40, 'normal', '#FFFFFF', '#000000', 6);
 
-            // Draw level (LARGE - 50px, white, normal weight)
+            // Draw level (positioned over blue icon in center - 45px, white, normal weight)
             ctx.textAlign = 'center';
-            this.drawScaledText(ctx, cardData.level.toString(), 60, 120, 50, 'normal', '#FFFFFF', '#000000', 6);
+            this.drawScaledText(ctx, cardData.level.toString(), this.cardWidth / 2, 110, 50, 'normal', '#FFFFFF', '#000000', 5);
 
-            // Draw attack and health (MASSIVE - 70px, white, normal weight)
-            const attackX = 50;
-            const healthX = 350;
-            const statsY = 570;
+            // Draw attack and health (positioned directly over placeholders - 60px, white, normal weight)
+            const attackX = 55;
+            const healthX = 345;
+            const statsY = 572; // Moved up slightly to sit properly over placeholders
 
             ctx.textAlign = 'center';
 
             // Attack
-            this.drawScaledText(ctx, cardData.attack.toString(), attackX, statsY, 70, 'normal', '#FFFFFF', '#000000', 8);
+            this.drawScaledText(ctx, cardData.attack.toString(), attackX, statsY, 40, 'normal', '#FFFFFF', '#000000', 6);
 
             // Health
-            this.drawScaledText(ctx, cardData.health.toString(), healthX, statsY, 70, 'normal', '#FFFFFF', '#000000', 8);
+            this.drawScaledText(ctx, cardData.health.toString(), healthX, statsY, 40, 'normal', '#FFFFFF', '#000000', 6);
 
-            // Draw description (LARGER - 28px, white, normal weight)
+            // Draw description (even smaller - 18px, white, normal weight)
             ctx.textAlign = 'left';
 
-            const descFontSize = 28;
+            const descFontSize = 18; // Reduced from 22
             const baseFontSize = 20;
             const descScaleFactor = descFontSize / baseFontSize;
-            const descLineHeight = 32;
-            const descLines = this.wrapText(ctx, cardData.description, 300, baseFontSize, descScaleFactor);
-            let descY = 390;
+            const descLineHeight = 22; // Reduced from 26
+            const descLines = this.wrapText(ctx, cardData.description
+                + (cardData.specialEffects ? cardData.specialEffects.join(', ') : '')
+                , 300, baseFontSize, descScaleFactor);
+            let descY = 400; // Adjusted starting position
 
             descLines.forEach(line => {
-                this.drawScaledText(ctx, line, 50, descY, descFontSize, 'normal', '#FFFFFF', '#000000', 5);
+                this.drawScaledText(ctx, line, 50, descY, descFontSize, 'normal', '#FFFFFF', '#000000', 3);
                 descY += descLineHeight;
             });
 
-            // Draw special effects (LARGE - 30px header, 24px items, white, normal weight)
-            if (cardData.specialEffects && cardData.specialEffects.length > 0) {
-                this.drawScaledText(ctx, 'Special Effects:', 50, descY + 35, 30, 'normal', '#FFFFFF', '#000000', 5);
-
-                const effectFontSize = 24;
-                const effectScaleFactor = effectFontSize / baseFontSize;
-                const effectLineHeight = 28;
-                let effectY = descY + 70;
-
-                cardData.specialEffects.forEach((effect: string) => {
-                    const effectLines = this.wrapText(ctx, `• ${effect}`, 300, baseFontSize, effectScaleFactor);
-                    effectLines.forEach(line => {
-                        this.drawScaledText(ctx, line, 50, effectY, effectFontSize, 'normal', '#FFFFFF', '#000000', 4);
-                        effectY += effectLineHeight;
-                    });
-                    effectY += 12;
-                });
-            }
 
             // Save the generated card
             const outputFileName = `${cardData.title.replace(/\s+/g, '_').toLowerCase()}_card.png`;
@@ -261,9 +308,6 @@ async function main(): Promise<void> {
     }
 }
 
-// Only run if this file is executed directly
-if (require.main === module) {
-    main();
-}
+main();
 
 export default CardGenerator; 

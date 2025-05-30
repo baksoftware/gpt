@@ -266,8 +266,86 @@ function createUI(): void {
   uiContainer.addChild(endTurnButton)
 }
 
+// Check for game events and trigger animations
+function checkForGameEvents(previousState: GameState, currentState: GameState): void {
+  // Check for cards played
+  for (let i = 0; i < currentState.players.length; i++) {
+    const prevPlayer = previousState.players[i]
+    const currPlayer = currentState.players[i]
+
+    // Check for new cards in arena (cards played)
+    const newArenaCards = currPlayer.arenaCards.filter(card =>
+      !prevPlayer.arenaCards.some(prevCard => prevCard.id === card.id)
+    )
+
+    for (const newCard of newArenaCards) {
+      const isHero = newCard.type === 'Hero'
+      const cardName = isHero ?
+        newCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
+        'Creature'
+
+      // Find the visual position for the animation
+      const arenaY = i === 0 ? // First player is human
+        app.screen.height / 2 + gameScale * 100 :   // Human arena below center
+        app.screen.height / 2 - gameScale * 100     // AI arena above center
+
+      animateCardPlay(cardName, isHero, app.screen.width / 2, arenaY)
+    }
+
+    // Check for cards that took damage
+    for (const currCard of currPlayer.arenaCards) {
+      const prevCard = prevPlayer.arenaCards.find(pc => pc.id === currCard.id)
+      if (prevCard && prevCard.health > currCard.health) {
+        const damage = prevCard.health - currCard.health
+        // Find the visual card to show damage
+        const container = i === 0 ? humanArenaContainer : aiArenaContainer
+        if (container) {
+          const visualCard = container.children.find(child =>
+            (child as VisualCard).gameCardId === currCard.id
+          ) as VisualCard
+
+          if (visualCard) {
+            createNotification(`-${damage}`, visualCard.position.x, visualCard.position.y - 30, 0xFF4444, 1500)
+          }
+        }
+      }
+    }
+
+    // Check for destroyed cards
+    const destroyedCards = prevPlayer.arenaCards.filter(prevCard =>
+      !currPlayer.arenaCards.some(currCard => currCard.id === prevCard.id)
+    )
+
+    for (const destroyedCard of destroyedCards) {
+      const cardName = destroyedCard.type === 'Hero' ?
+        destroyedCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
+        'Creature'
+
+      // Show destruction notification at arena center
+      const arenaY = i === 0 ?
+        app.screen.height / 2 + gameScale * 100 :
+        app.screen.height / 2 - gameScale * 100
+
+      createNotification(`${cardName} Destroyed!`, app.screen.width / 2, arenaY, 0xFF6B6B, 2000)
+    }
+  }
+
+  // Check for turn changes
+  if (previousState.currentPlayerIndex !== currentState.currentPlayerIndex) {
+    const newPlayerName = currentState.players[currentState.currentPlayerIndex].name
+    const isHumanTurn = currentState.players[currentState.currentPlayerIndex].id === 'human'
+    const turnText = isHumanTurn ? 'Your Turn!' : `${newPlayerName}'s Turn!`
+    const color = isHumanTurn ? 0x4CAF50 : 0xF44336
+
+    createNotification(turnText, app.screen.width / 2, app.screen.height / 2, color, 2000)
+  }
+}
+
 function updateVisualization(gameState: GameState): void {
   if (!humanHandContainer || !aiHandContainer || !humanArenaContainer || !aiArenaContainer || !uiContainer) return
+
+  // Store previous state for comparison
+  const previousState = (updateVisualization as any).previousState as GameState | undefined
 
   // Clear existing cards
   humanHandContainer.removeChildren()
@@ -290,6 +368,14 @@ function updateVisualization(gameState: GameState): void {
     createPlayerHand(aiPlayerState, aiHandContainer, 'ai', true)
     createPlayerArena(aiPlayerState, aiArenaContainer, 'ai', true)
   }
+
+  // Check for game events and trigger animations
+  if (previousState) {
+    checkForGameEvents(previousState, gameState)
+  }
+
+  // Store current state for next comparison
+  ; (updateVisualization as any).previousState = JSON.parse(JSON.stringify(gameState))
 }
 
 function updateTurnIndicator(gameState: GameState): void {
@@ -316,7 +402,7 @@ function updateTurnIndicator(gameState: GameState): void {
   })
   turnText.name = 'turnIndicator'
   turnText.anchor.set(0.5)
-  turnText.position.set(app.screen.width / 2, gameScale * 50)
+  turnText.position.set(app.screen.width / 4, gameScale * 50)
 
   uiContainer.addChild(turnText)
 }
@@ -560,6 +646,12 @@ function onCardHover(event: FederatedPointerEvent): void {
     card.scale.set(hoverScale)
     card.position.y = card.originalY - (gameScale * 60) // Lift relative to arena scale
     card.rotation = 0
+
+    // Show abilities for hero cards
+    if (card.cardData && card.cardData.type === 'Hero' && card.cardData.specialAbilities && card.cardData.specialAbilities.length > 0) {
+      const abilities = card.cardData.specialAbilities.join(', ')
+      createNotification(abilities, card.position.x, card.position.y - 100, 0xFFD700, 3000)
+    }
   }
 }
 
@@ -616,7 +708,15 @@ function onDragEnd(_event: FederatedPointerEvent): void {
 
     if (card.position.y > centerY - arenaThreshold && card.position.y < centerY + arenaThreshold) {
       // Card dropped in play area - play it via game engine
-      if (humanPlayer.isWaitingForInput() && card.gameCardId) {
+      if (humanPlayer.isWaitingForInput() && card.gameCardId && card.cardData) {
+        // Show immediate feedback for card play
+        const isHero = card.cardData.type === 'Hero'
+        const cardName = isHero ?
+          card.cardData.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
+          'Creature'
+
+        animateCardPlay(cardName, isHero, card.position.x, card.position.y)
+
         humanPlayer.playCard(card.gameCardId)
       }
     } else {
@@ -654,6 +754,156 @@ function returnCardToHand(card: VisualCard): void {
   }
 
   animate()
+}
+
+// Animation update function
+function updateAnimations(): void {
+  const currentTime = Date.now()
+
+  // Update notifications
+  for (let i = notifications.length - 1; i >= 0; i--) {
+    const notification = notifications[i]
+    const elapsed = currentTime - notification.startTime
+    const progress = elapsed / notification.duration
+
+    if (progress >= 1) {
+      // Remove expired notification
+      if (notificationContainer) {
+        notificationContainer.removeChild(notification.textSprite)
+      }
+      notifications.splice(i, 1)
+    } else {
+      // Animate notification (float up and fade out)
+      const floatDistance = gameScale * 100
+      notification.textSprite.y = notification.y - (progress * floatDistance)
+      notification.textSprite.alpha = 1 - (progress * 0.8) // Fade to 20% opacity
+
+      // Scale effect for impact
+      const scale = 1 + (Math.sin(progress * Math.PI) * 0.2)
+      notification.textSprite.scale.set(scale)
+    }
+  }
+}
+
+// Create floating notification
+function createNotification(text: string, x: number, y: number, color: number = 0xFFFFFF, duration: number = 2000): void {
+  if (!notificationContainer) return
+
+  const textSprite = new Text({
+    text,
+    style: {
+      fontSize: gameScale * 16,
+      fill: color,
+      fontFamily: 'Arial',
+      fontWeight: 'bold',
+      stroke: { color: 0x000000, width: 3 }
+    }
+  })
+
+  textSprite.anchor.set(0.5)
+  textSprite.position.set(x, y)
+
+  const notification: GameNotification = {
+    id: `notification_${Date.now()}_${Math.random()}`,
+    text,
+    x,
+    y,
+    color,
+    duration,
+    startTime: Date.now(),
+    textSprite
+  }
+
+  notifications.push(notification)
+  notificationContainer.addChild(textSprite)
+}
+
+// Combat animation for cards
+function animateCardCombat(attackerCard: VisualCard, defenderCard: VisualCard, attackerDamage: number, defenderDamage: number): void {
+  // Attacker animation - quick move toward target
+  const originalX = attackerCard.position.x
+  const originalY = attackerCard.position.y
+  const targetX = defenderCard.position.x
+  const targetY = defenderCard.position.y
+
+  // Calculate direction
+  const deltaX = (targetX - originalX) * 0.3
+  const deltaY = (targetY - originalY) * 0.3
+
+  // Attacker strikes
+  const attackDuration = 300
+  const startTime = Date.now()
+
+  const animateAttack = () => {
+    const elapsed = Date.now() - startTime
+    const progress = Math.min(elapsed / attackDuration, 1)
+
+    if (progress < 0.5) {
+      // Move toward target
+      const moveProgress = progress * 2
+      attackerCard.position.x = originalX + (deltaX * moveProgress)
+      attackerCard.position.y = originalY + (deltaY * moveProgress)
+    } else {
+      // Return to original position
+      const returnProgress = (progress - 0.5) * 2
+      attackerCard.position.x = originalX + deltaX - (deltaX * returnProgress)
+      attackerCard.position.y = originalY + deltaY - (deltaY * returnProgress)
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(animateAttack)
+    } else {
+      // Ensure card is back at original position
+      attackerCard.position.x = originalX
+      attackerCard.position.y = originalY
+    }
+  }
+
+  animateAttack()
+
+  // Show damage notifications
+  setTimeout(() => {
+    if (defenderDamage > 0) {
+      createNotification(`-${defenderDamage}`, defenderCard.position.x, defenderCard.position.y - 30, 0xFF4444, 1500)
+    }
+    if (attackerDamage > 0) {
+      createNotification(`-${attackerDamage}`, attackerCard.position.x, attackerCard.position.y - 30, 0xFF4444, 1500)
+    }
+  }, 150)
+}
+
+// Card destruction animation
+function animateCardDestruction(card: VisualCard, cardName: string): void {
+  const originalScale = card.scale.x
+  const duration = 500
+  const startTime = Date.now()
+
+  const animateDestruction = () => {
+    const elapsed = Date.now() - startTime
+    const progress = Math.min(elapsed / duration, 1)
+
+    // Scale down and fade out
+    const scale = originalScale * (1 - progress)
+    card.scale.set(scale)
+    card.alpha = 1 - progress
+    card.rotation += 0.1 // Spin while disappearing
+
+    if (progress < 1) {
+      requestAnimationFrame(animateDestruction)
+    }
+  }
+
+  animateDestruction()
+
+  // Show destruction notification
+  createNotification(`${cardName} Destroyed!`, card.position.x, card.position.y, 0xFF6B6B, 2000)
+}
+
+// Card play animation
+function animateCardPlay(cardName: string, isHero: boolean, x: number, y: number): void {
+  const color = isHero ? 0xFFD700 : 0x4CAF50
+  const text = isHero ? `${cardName} Enters Battle!` : `${cardName} Played!`
+  createNotification(text, x, y, color, 2500)
 }
 
 // Start the application
