@@ -16,6 +16,7 @@ export interface TextConfig {
     fontSize: number;
     width?: number;
     height?: number;
+    fontColor?: string;
 }
 
 export interface ImageConfig {
@@ -32,6 +33,9 @@ export interface HeroImageConfig {
 }
 
 export interface BaseConfig {
+    fontColor: string;
+    fontStrokeColor: string;
+    fontStrokeWidthForSize100: number;
     backImage: ImageConfig;
     heroImage: HeroImageConfig;
     levelText: TextConfig;
@@ -39,7 +43,7 @@ export interface BaseConfig {
     attackText: TextConfig;
     descriptionText: TextConfig;
     titleText: TextConfig;
-    specialEffects: TextConfig;
+    specialEffects: TextConfig & { fontColor?: string };
 }
 
 export interface CardsFile {

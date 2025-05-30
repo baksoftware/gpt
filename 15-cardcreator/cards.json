@@ -2,7 +2,7 @@
     "base": {
         "fontColor": "#fafafa",
         "fontStrokeColor": "#333377",
-        "fontStrokeWidth": 5,
+        "fontStrokeWidthForSize100": 5,
         "backImage": {
             "imageName": "back-blue.png",
             "width": 909,
@@ -17,12 +17,14 @@
         "levelText": {
             "x": 130,
             "y": 130,
-            "fontSize": 100
+            "fontSize": 100,
+            "fontColor": "#fafafa"
         },
         "healthText": {
             "x": 812,
             "y": 1258,
-            "fontSize": 80
+            "fontSize": 80,
+            "fontColor": "#fa3030"
         },
         "attackText": {
             "x": 703,
@@ -49,14 +51,14 @@
             "width": 526,
             "height": 77,
             "fontSize": 32,
-            "fontColor": "#FFD700"
+            "fontColor": "#ffd700"
         }
     },
     "cards": [
         {
             "id": 1,
             "title": "Hausfrau",
-            "description": "Strength from within, dedication and protection",
+            "description": "When the world crumbles, she holds the foundation steady",
             "level": 8,
             "health": 4,
             "attack": 3,
@@ -70,7 +72,7 @@
         {
             "id": 2,
             "title": "Homeless",
-            "description": "Walking the streets, looking for a place to call home",
+            "description": "Society's shadow, invisible until desperately needed",
             "level": 5,
             "health": 3,
             "attack": 4,
@@ -84,13 +86,13 @@
         {
             "id": 3,
             "title": "Kaufmann",
-            "description": "Shrewd merchant with deep pockets and connections throughout the trading world",
+            "description": "Every soul has a price, and he knows exactly what it is",
             "level": 5,
             "health": 3,
             "attack": 4,
             "specialEffects": [
-                "Gain extra resources each turn",
-                "Reduce enemy card costs permanently"
+                "Gain resources",
+                "Increase enemy card cost"
             ],
             "heroImageName": "hero-kaufmann.png",
             "heroImageBottomCutoff": 500
@@ -98,7 +100,7 @@
         {
             "id": 4,
             "title": "Philosopher",
-            "description": "Deep thinker who seeks truth and wisdom through contemplation and debate",
+            "description": "Questions that shatter certainty, thoughts that reshape reality",
             "level": 6,
             "health": 2,
             "attack": 2,
@@ -112,7 +114,7 @@
         {
             "id": 5,
             "title": "Steelworker",
-            "description": "Hardened laborer who forges strength through sweat and determination",
+            "description": "Forged in fire, tempered by struggle, unbreakable",
             "level": 7,
             "health": 5,
             "attack": 6,

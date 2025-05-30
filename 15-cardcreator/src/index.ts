@@ -34,13 +34,28 @@ class CardGenerator {
         y: number,
         fontSize: number,
         weight: string = 'normal',
-        fillColor: string = '#FFFFFF',
-        strokeColor: string = '#000000',
-        strokeWidth: number = 2,
+        fillColor?: string,
+        strokeColor?: string,
+        strokeWidth?: number,
         textAlign: CanvasTextAlign = 'center',
         textBaseline: CanvasTextBaseline = 'middle'
     ): void {
         ctx.save();
+
+        // Use base config values if not provided
+        const actualFillColor = fillColor || this.baseConfig?.fontColor || '#FFFFFF';
+        const actualStrokeColor = strokeColor || this.baseConfig?.fontStrokeColor || '#000000';
+
+        // Calculate proportional stroke width based on font size
+        let actualStrokeWidth: number;
+        if (strokeWidth !== undefined) {
+            actualStrokeWidth = strokeWidth;
+        } else if (this.baseConfig?.fontStrokeWidthForSize100) {
+            // Scale stroke width proportionally: (fontSize / 100) * baseStrokeWidth
+            actualStrokeWidth = (fontSize / 100) * this.baseConfig.fontStrokeWidthForSize100;
+        } else {
+            actualStrokeWidth = 2; // fallback
+        }
 
         // Set text alignment to center the text at the given coordinates
         ctx.textAlign = textAlign;
@@ -48,9 +63,9 @@ class CardGenerator {
         ctx.font = `${weight} ${fontSize}px Arial`;
 
         // Draw stroke first (outline)
-        if (strokeWidth > 0) {
-            ctx.strokeStyle = strokeColor;
-            ctx.lineWidth = strokeWidth;
+        if (actualStrokeWidth > 0) {
+            ctx.strokeStyle = actualStrokeColor;
+            ctx.lineWidth = actualStrokeWidth;
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
             ctx.miterLimit = 2;
@@ -58,7 +73,7 @@ class CardGenerator {
         }
 
         // Draw fill on top
-        ctx.fillStyle = fillColor;
+        ctx.fillStyle = actualFillColor;
         ctx.fillText(text, x, y);
 
         ctx.restore();
@@ -97,9 +112,9 @@ class CardGenerator {
         fontSize: number,
         lineHeight: number,
         weight: string = 'normal',
-        fillColor: string = '#FFFFFF',
-        strokeColor: string = '#000000',
-        strokeWidth: number = 2,
+        fillColor?: string,
+        strokeColor?: string,
+        strokeWidth?: number,
         textAlign: CanvasTextAlign = 'center'
     ): void {
         const lines = this.wrapText(ctx, text, maxWidth, fontSize);
@@ -218,9 +233,7 @@ class CardGenerator {
                 levelText.y,
                 levelText.fontSize,
                 'bold',
-                '#FFFFFF',
-                '#000000',
-                3
+                levelText.fontColor
             );
 
             // Draw attack
@@ -231,9 +244,7 @@ class CardGenerator {
                 attackText.y,
                 attackText.fontSize,
                 'bold',
-                '#FFFFFF',
-                '#000000',
-                4
+                attackText.fontColor
             );
 
             // Draw health
@@ -244,9 +255,7 @@ class CardGenerator {
                 healthText.y,
                 healthText.fontSize,
                 'bold',
-                '#FFFFFF',
-                '#000000',
-                4
+                healthText.fontColor
             );
 
             // Draw title (might need wrapping)
@@ -260,9 +269,7 @@ class CardGenerator {
                     titleText.fontSize,
                     titleText.fontSize + 5,
                     'bold',
-                    '#FFFFFF',
-                    '#000000',
-                    3
+                    titleText.fontColor
                 );
             } else {
                 this.drawScaledText(
@@ -272,9 +279,7 @@ class CardGenerator {
                     titleText.y,
                     titleText.fontSize,
                     'bold',
-                    '#FFFFFF',
-                    '#000000',
-                    3
+                    titleText.fontColor
                 );
             }
 
@@ -289,9 +294,7 @@ class CardGenerator {
                     descriptionText.fontSize,
                     descriptionText.fontSize + 4,
                     'normal',
-                    '#FFFFFF',
-                    '#000000',
-                    2
+                    descriptionText.fontColor
                 );
             }
 
@@ -307,9 +310,7 @@ class CardGenerator {
                     specialEffects.fontSize,
                     specialEffects.fontSize + 4,
                     'italic',
-                    '#FFD700',
-                    '#000000',
-                    2
+                    specialEffects.fontColor
                 );
             }
 
