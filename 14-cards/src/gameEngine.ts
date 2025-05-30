@@ -358,25 +358,120 @@ export class GameEngine {
 
   private generateRandomCard(playerId: string): Card {
     const rand = getRand()
-    const cardTypes = ['card1', 'card2', 'card3', 'card4', 'card5']
-    const cardType = cardTypes[Math.floor(rand() * cardTypes.length)]
 
-    // Generate random stats
-    const level = Math.floor(rand() * 5) + 1 // 1-5
-    const attack = Math.floor(rand() * 6) + level // level to level+5
-    const health = Math.floor(rand() * 6) + level // level to level+5
+    // Hero cards with predefined stats and abilities
+    const heroCards = [
+      {
+        name: 'arcane_wizard',
+        type: 'Hero',
+        level: 4,
+        attack: 6,
+        health: 5,
+        specialAbilities: ['Spell Power', 'Mana Surge']
+      },
+      {
+        name: 'mountain_dwarf',
+        type: 'Hero',
+        level: 3,
+        attack: 5,
+        health: 8,
+        specialAbilities: ['Armor', 'Berserker Rage']
+      },
+      {
+        name: 'shadow_rogue',
+        type: 'Hero',
+        level: 3,
+        attack: 7,
+        health: 4,
+        specialAbilities: ['Stealth', 'Backstab']
+      },
+      {
+        name: 'holy_paladin',
+        type: 'Hero',
+        level: 4,
+        attack: 4,
+        health: 7,
+        specialAbilities: ['Divine Shield', 'Healing']
+      },
+      {
+        name: 'forest_ranger',
+        type: 'Hero',
+        level: 2,
+        attack: 4,
+        health: 4,
+        specialAbilities: ['Beast Taming', 'Track']
+      },
+      {
+        name: 'fire_elemental',
+        type: 'Hero',
+        level: 5,
+        attack: 8,
+        health: 6,
+        specialAbilities: ['Fire Aura', 'Immolation']
+      },
+      {
+        name: 'ice_mage',
+        type: 'Hero',
+        level: 3,
+        attack: 5,
+        health: 5,
+        specialAbilities: ['Freeze', 'Ice Shield']
+      },
+      {
+        name: 'dragon_knight',
+        type: 'Hero',
+        level: 5,
+        attack: 9,
+        health: 8,
+        specialAbilities: ['Dragon Bond', 'Fire Breath']
+      }
+    ]
 
-    const cardId = `${playerId}_${cardType}_${Date.now()}_${Math.floor(rand() * 1000)}`
+    // Generic creature cards
+    const genericCards = [
+      { name: 'card1', type: 'Creature' },
+      { name: 'card2', type: 'Creature' },
+      { name: 'card3', type: 'Creature' },
+      { name: 'card4', type: 'Creature' },
+      { name: 'card5', type: 'Creature' }
+    ]
 
-    return {
-      id: cardId,
-      name: cardType,
-      type: cardType,
-      level,
-      attack,
-      health,
-      maxHealth: health,
-      specialAbilities: []
+    // 40% chance for hero card, 60% chance for generic creature
+    const isHeroCard = rand() < 0.4
+
+    if (isHeroCard) {
+      // Select a random hero card
+      const heroTemplate = heroCards[Math.floor(rand() * heroCards.length)]
+      const cardId = `${playerId}_${heroTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`
+
+      return {
+        id: cardId,
+        name: heroTemplate.name,
+        type: heroTemplate.type,
+        level: heroTemplate.level,
+        attack: heroTemplate.attack,
+        health: heroTemplate.health,
+        maxHealth: heroTemplate.health,
+        specialAbilities: [...heroTemplate.specialAbilities]
+      }
+    } else {
+      // Generate a generic creature card with random stats
+      const genericTemplate = genericCards[Math.floor(rand() * genericCards.length)]
+      const level = Math.floor(rand() * 5) + 1 // 1-5
+      const attack = Math.floor(rand() * 6) + level // level to level+5
+      const health = Math.floor(rand() * 6) + level // level to level+5
+      const cardId = `${playerId}_${genericTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`
+
+      return {
+        id: cardId,
+        name: genericTemplate.name,
+        type: genericTemplate.type,
+        level,
+        attack,
+        health,
+        maxHealth: health,
+        specialAbilities: []
+      }
     }
   }
 

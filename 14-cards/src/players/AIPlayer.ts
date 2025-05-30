@@ -147,16 +147,29 @@ export class AIPlayer implements Player {
         return myPlayerState.hand[Math.floor(Math.random() * myPlayerState.hand.length)]
 
       case 'medium':
-        // Prefer cards with good attack/health ratio
+        // Prefer hero cards and cards with good attack/health ratio
         return myPlayerState.hand.reduce((best, card) => {
-          const cardValue = card.attack + card.health
-          const bestValue = best.attack + best.health
+          const cardValue = card.attack + card.health + (card.type === 'Hero' ? 3 : 0) // Bonus for heroes
+          const bestValue = best.attack + best.health + (best.type === 'Hero' ? 3 : 0)
           return cardValue > bestValue ? card : best
         })
 
       case 'hard':
-        // Strategic: Prefer cards that counter opponent or have good stats
+        // Strategic: Prefer heroes and cards that counter opponent or have good stats
         const opponentState = this.getOpponentPlayerState()
+
+        // Always prioritize heroes if available
+        const heroCards = myPlayerState.hand.filter(c => c.type === 'Hero')
+        if (heroCards.length > 0) {
+          // Select best hero based on abilities and stats
+          const bestHero = heroCards.reduce((best, card) => {
+            const cardValue = this.evaluateCardValue(card, opponentState)
+            const bestValue = this.evaluateCardValue(best, opponentState)
+            return cardValue > bestValue ? card : best
+          })
+          return bestHero
+        }
+
         if (opponentState && opponentState.arenaCards.length > 0) {
           // If opponent has weak cards, play strong attackers
           const opponentMaxHealth = Math.max(...opponentState.arenaCards.map(c => c.health))
@@ -167,16 +180,69 @@ export class AIPlayer implements Player {
           }
         }
 
-        // Otherwise play card with best overall stats
+        // Otherwise play card with best overall value
         return myPlayerState.hand.reduce((best, card) => {
-          const cardValue = card.attack + card.health + card.level
-          const bestValue = best.attack + best.health + best.level
+          const cardValue = this.evaluateCardValue(card, opponentState)
+          const bestValue = this.evaluateCardValue(best, opponentState)
           return cardValue > bestValue ? card : best
         })
 
       default:
         return myPlayerState.hand[0]
     }
+  }
+
+  // Evaluate card value based on stats, type, and abilities
+  private evaluateCardValue(card: Card, opponentState: PlayerState | null): number {
+    let value = card.attack + card.health + card.level
+
+    // Hero bonus
+    if (card.type === 'Hero') {
+      value += 5
+
+      // Specific hero ability bonuses
+      if (card.specialAbilities) {
+        for (const ability of card.specialAbilities) {
+          switch (ability) {
+            case 'Divine Shield':
+            case 'Stealth':
+              value += 3
+              break
+            case 'Fire Aura':
+            case 'Dragon Bond':
+              value += 2
+              break
+            case 'Healing':
+            case 'Armor':
+              value += 2
+              break
+            default:
+              value += 1
+          }
+        }
+      }
+    }
+
+    // Situational bonuses based on opponent
+    if (opponentState) {
+      const opponentCards = opponentState.arenaCards
+      if (opponentCards.length > 0) {
+        const avgOpponentHealth = opponentCards.reduce((sum, c) => sum + c.health, 0) / opponentCards.length
+        const avgOpponentAttack = opponentCards.reduce((sum, c) => sum + c.attack, 0) / opponentCards.length
+
+        // Bonus for high attack against low health enemies
+        if (card.attack > avgOpponentHealth) {
+          value += 2
+        }
+
+        // Bonus for high health against high attack enemies
+        if (card.health > avgOpponentAttack) {
+          value += 1
+        }
+      }
+    }
+
+    return value
   }
 
   // Select position to play card (0-5 for arena positions)

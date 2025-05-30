@@ -12,6 +12,21 @@ let gameEngine: GameEngine
 let humanPlayer: HumanPlayer
 let aiPlayer: AIPlayer
 
+// Notification system
+interface GameNotification {
+  id: string
+  text: string
+  x: number
+  y: number
+  color: number
+  duration: number
+  startTime: number
+  textSprite: Text
+}
+
+let notifications: GameNotification[] = []
+let notificationContainer: Container | null = null
+
 // Type definitions for visual cards
 interface VisualCard extends Sprite {
   originalX: number
@@ -64,7 +79,9 @@ async function init(): Promise<void> {
     { alias: 'card2', src: '/card-2.png' },
     { alias: 'card3', src: '/card-3.png' },
     { alias: 'card4', src: '/card-4.png' },
-    { alias: 'card5', src: '/card-5.png' }
+    { alias: 'card5', src: '/card-5.png' },
+    { alias: 'arcane_wizard', src: '/arcane_wizard_card.png' },
+    { alias: 'mountain_dwarf', src: '/mountain_dwarf_card.png' }
   ]
 
   // Load all assets
@@ -95,12 +112,18 @@ function initializeGameEngine(): void {
 }
 
 async function gameLoop(): Promise<void> {
+  // Start animation ticker
+  app.ticker.add(updateAnimations)
+
   while (gameEngine.getGameState().gameStatus === 'playing') {
     await gameEngine.processCurrentPlayerTurn()
 
     // Small delay between turns for better UX
     await new Promise(resolve => setTimeout(resolve, 500))
   }
+
+  // Stop animation ticker when game ends
+  app.ticker.remove(updateAnimations)
 }
 
 function setupFullscreen(): void {
@@ -176,6 +199,10 @@ function createGameScene(): void {
   // Create UI container for buttons and text
   uiContainer = new Container()
   app.stage.addChild(uiContainer)
+
+  // Create notification container for floating text
+  notificationContainer = new Container()
+  app.stage.addChild(notificationContainer)
 
   // Create AI arena container (top half)
   aiArenaContainer = new Container()
@@ -375,11 +402,49 @@ function createPlayerArena(playerState: any, container: Container, playerId: str
 }
 
 function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
-  const cardSprite = (isHidden ?
-    Sprite.from('card1') :
-    Sprite.from(gameCard.name)) as VisualCard
+  let cardAssetName: string
+
+  if (isHidden) {
+    cardAssetName = 'card1'
+  } else {
+    // Check if we have a specific asset for this card
+    const availableHeroAssets = ['arcane_wizard', 'mountain_dwarf']
+    if (availableHeroAssets.includes(gameCard.name)) {
+      cardAssetName = gameCard.name
+    } else {
+      // Fallback to generic cards for heroes without assets
+      const heroFallbacks: Record<string, string> = {
+        'shadow_rogue': 'card1',
+        'holy_paladin': 'card2',
+        'forest_ranger': 'card3',
+        'fire_elemental': 'card4',
+        'ice_mage': 'card5',
+        'dragon_knight': 'card4'
+      }
+      cardAssetName = heroFallbacks[gameCard.name] || gameCard.name
+    }
+  }
+
+  const cardSprite = Sprite.from(cardAssetName) as VisualCard
 
   if (!isHidden) {
+    // Add hero type indicator for hero cards
+    if (gameCard.type === 'Hero') {
+      const heroIndicator = new Text({
+        text: '★',
+        style: {
+          fontSize: gameScale * 14,
+          fill: 0xFFD700,
+          fontFamily: 'Arial',
+          fontWeight: 'bold',
+          stroke: { color: 0x000000, width: 2 }
+        }
+      })
+      heroIndicator.anchor.set(0.5)
+      heroIndicator.position.set(cardSprite.width * 0.3, -cardSprite.height * 0.35) // Top right
+      cardSprite.addChild(heroIndicator)
+    }
+
     // Add stats text for visible cards
     const statsText = new Text({
       text: `${gameCard.attack}/${gameCard.health}`,
@@ -401,7 +466,7 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
       text: `${gameCard.level}`,
       style: {
         fontSize: gameScale * 10,
-        fill: 0xFFD700,
+        fill: gameCard.type === 'Hero' ? 0xFF6B6B : 0xFFD700, // Red for heroes, gold for creatures
         fontFamily: 'Arial',
         fontWeight: 'bold',
         stroke: { color: 0x000000, width: 2 }
@@ -410,6 +475,23 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
     levelText.anchor.set(0.5)
     levelText.position.set(-cardSprite.width * 0.3, -cardSprite.height * 0.35) // Top left
     cardSprite.addChild(levelText)
+
+    // Add card name for hero cards
+    if (gameCard.type === 'Hero') {
+      const nameText = new Text({
+        text: gameCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        style: {
+          fontSize: gameScale * 8,
+          fill: 0xFFFFFF,
+          fontFamily: 'Arial',
+          fontWeight: 'bold',
+          stroke: { color: 0x000000, width: 1 }
+        }
+      })
+      nameText.anchor.set(0.5)
+      nameText.position.set(0, -cardSprite.height * 0.15) // Middle of card
+      cardSprite.addChild(nameText)
+    }
   }
 
   return cardSprite
