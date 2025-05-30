@@ -9,10 +9,13 @@ class CardGenerator {
     private baseImagePath: string;
     private heroImagesPath: string;
     private outputPath: string;
+    private scaleFactor: number; // Add scale factor for proportional scaling
 
     constructor(config?: Partial<CardGeneratorConfig>) {
-        this.cardWidth = config?.cardWidth || 400;
-        this.cardHeight = config?.cardHeight || 600;
+        // Increase default resolution by 3x for much higher quality
+        this.cardWidth = config?.cardWidth || 1200; // 400 * 3
+        this.cardHeight = config?.cardHeight || 1800; // 600 * 3
+        this.scaleFactor = this.cardWidth / 400; // Calculate scale factor based on original 400px width
         this.baseImagePath = config?.baseImagePath || './assets/base_card.png';
         this.heroImagesPath = config?.heroImagesPath || './assets/heroes/';
         this.outputPath = config?.outputPath || './output/';
@@ -185,10 +188,10 @@ class CardGenerator {
                 const heroImagePath = path.join(this.heroImagesPath, cardData.heroImageName);
                 const heroImage = await loadImage(heroImagePath);
 
-                const heroSize = 300;
+                const heroSize = 250 * this.scaleFactor; // Scale hero size
                 const aspectRatio = heroImage.width / heroImage.height;
                 const heroX = (this.cardWidth - heroSize) / 2;
-                const heroY = (this.cardHeight - heroSize) / 2 - 50;
+                const heroY = (this.cardHeight - heroSize) / 2 - (50 * this.scaleFactor); // Scale offset
                 const heroWidth = heroSize;
                 const heroHeight = heroSize / aspectRatio;
                 ctx.drawImage(heroImage, heroX, heroY, heroWidth, heroHeight);
@@ -210,48 +213,101 @@ class CardGenerator {
             } catch (error) {
                 console.log('Base image not found, skipping overlay...');
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 2 * this.scaleFactor; // Scale line width
                 ctx.strokeRect(1, 1, this.cardWidth - 2, this.cardHeight - 2);
             }
 
-            // Draw card title (smaller and slightly curved - 40px, white, normal weight) - positioned below hero over curved banner
+            // Draw card title (scaled positions and sizes)
             ctx.textAlign = 'center';
-            this.drawCurvedText(ctx, cardData.title, this.cardWidth / 2, 650, 300, 40, 'normal', '#FFFFFF', '#000000', 6);
+            this.drawScaledText(
+                ctx,
+                cardData.title,
+                this.cardWidth / 2,
+                450 * this.scaleFactor, // Scale Y position
+                40 * this.scaleFactor,  // Scale font size
+                'normal',
+                '#FFFFFF',
+                '#000000',
+                6 * this.scaleFactor   // Scale stroke width
+            );
 
-            // Draw level (positioned over blue icon in center - 45px, white, normal weight)
+            // Draw level (scaled)
             ctx.textAlign = 'center';
-            this.drawScaledText(ctx, cardData.level.toString(), this.cardWidth / 2, 110, 50, 'normal', '#FFFFFF', '#000000', 5);
+            this.drawScaledText(
+                ctx,
+                cardData.level.toString(),
+                this.cardWidth / 2,
+                120 * this.scaleFactor, // Scale Y position
+                50 * this.scaleFactor,  // Scale font size
+                'normal',
+                '#FFFFFF',
+                '#000000',
+                5 * this.scaleFactor   // Scale stroke width
+            );
 
-            // Draw attack and health (positioned directly over placeholders - 60px, white, normal weight)
-            const attackX = 55;
-            const healthX = 345;
-            const statsY = 572; // Moved up slightly to sit properly over placeholders
+            // Draw attack and health (scaled positions and sizes)
+            const attackX = 55 * this.scaleFactor;  // Scale X position
+            const healthX = 345 * this.scaleFactor; // Scale X position
+            const statsY = 572 * this.scaleFactor;  // Scale Y position
 
             ctx.textAlign = 'center';
 
             // Attack
-            this.drawScaledText(ctx, cardData.attack.toString(), attackX, statsY, 40, 'normal', '#FFFFFF', '#000000', 6);
+            this.drawScaledText(
+                ctx,
+                cardData.attack.toString(),
+                attackX,
+                statsY,
+                40 * this.scaleFactor, // Scale font size
+                'normal',
+                '#FFFFFF',
+                '#000000',
+                6 * this.scaleFactor  // Scale stroke width
+            );
 
             // Health
-            this.drawScaledText(ctx, cardData.health.toString(), healthX, statsY, 40, 'normal', '#FFFFFF', '#000000', 6);
+            this.drawScaledText(
+                ctx,
+                cardData.health.toString(),
+                healthX,
+                statsY,
+                40 * this.scaleFactor, // Scale font size
+                'normal',
+                '#FFFFFF',
+                '#000000',
+                6 * this.scaleFactor  // Scale stroke width
+            );
 
-            // Draw description (even smaller - 18px, white, normal weight)
+            // Draw description (scaled font size, line height, and positions)
             ctx.textAlign = 'left';
 
-            const descFontSize = 18; // Reduced from 22
+            const descFontSize = 16 * this.scaleFactor; // Scale font size
             const baseFontSize = 20;
             const descScaleFactor = descFontSize / baseFontSize;
-            const descLineHeight = 22; // Reduced from 26
-            const descLines = this.wrapText(ctx, cardData.description
-                + (cardData.specialEffects ? cardData.specialEffects.join(', ') : '')
-                , 300, baseFontSize, descScaleFactor);
-            let descY = 400; // Adjusted starting position
+            const descLineHeight = 16 * this.scaleFactor; // Scale line height
+            const descLines = this.wrapText(
+                ctx,
+                cardData.description + (cardData.specialEffects ? cardData.specialEffects.join(', ') : ''),
+                250 * this.scaleFactor, // Scale max width
+                baseFontSize,
+                descScaleFactor
+            );
+            let descY = 450 * this.scaleFactor; // Scale starting Y position
 
             descLines.forEach(line => {
-                this.drawScaledText(ctx, line, 50, descY, descFontSize, 'normal', '#FFFFFF', '#000000', 3);
+                this.drawScaledText(
+                    ctx,
+                    line,
+                    50 * this.scaleFactor, // Scale X position
+                    descY,
+                    descFontSize,
+                    'normal',
+                    '#FFFFFF',
+                    '#000000',
+                    2 * this.scaleFactor  // Scale stroke width
+                );
                 descY += descLineHeight;
             });
-
 
             // Save the generated card
             const outputFileName = `${cardData.title.replace(/\s+/g, '_').toLowerCase()}_card.png`;
@@ -260,7 +316,7 @@ class CardGenerator {
             const buffer = canvas.toBuffer('image/png');
             fs.writeFileSync(outputPath, buffer);
 
-            console.log(`✓ Generated card: ${outputFileName}`);
+            console.log(`✓ Generated card: ${outputFileName} at ${this.cardWidth}x${this.cardHeight} resolution`);
             return outputPath;
         } catch (error) {
             console.error(`Error generating card for ${cardData.title}:`, error);
@@ -270,7 +326,7 @@ class CardGenerator {
 
     async generateAllCards(): Promise<string[]> {
         try {
-            console.log('🎴 Starting card generation with transparent background and white text...\n');
+            console.log(`🎴 Starting high-resolution card generation (${this.cardWidth}x${this.cardHeight}) with transparent background and white text...\n`);
 
             const cardDataFile = await this.loadCardData();
             const generatedCards: string[] = [];
@@ -281,8 +337,9 @@ class CardGenerator {
                 generatedCards.push(outputPath);
             }
 
-            console.log(`\n🎉 Successfully generated ${generatedCards.length} cards!`);
+            console.log(`\n🎉 Successfully generated ${generatedCards.length} high-resolution cards!`);
             console.log('📁 Output directory:', this.outputPath);
+            console.log(`📏 Resolution: ${this.cardWidth}x${this.cardHeight} pixels`);
             console.log('Generated files:');
             generatedCards.forEach(cardPath => {
                 console.log(`  - ${path.basename(cardPath)}`);
