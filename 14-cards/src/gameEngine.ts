@@ -1,10 +1,9 @@
-import getRand from "./getRand"
+import { setRandSeed, getRand } from "./getRand"
 
 // Core game interfaces and types
 export interface Card {
   id: string
   name: string
-  type: string
   level: number
   attack: number
   health: number
@@ -72,10 +71,11 @@ export class GameEngine {
   private gameState: GameState
   private players: Map<string, Player> = new Map()
   private eventListeners: Array<(gameState: GameState) => void> = []
-  private cardSetData: CardSetData | null = null
+  private cardSetData: CardSetData
 
   constructor() {
     this.gameState = this.createInitialGameState()
+    this.cardSetData = { cards: [] }
   }
 
   // Set card set data
@@ -363,8 +363,6 @@ export class GameEngine {
   }
 
   private dealInitialCards(): void {
-    var rand = getRand();
-
     // Deal 4 cards to each player initially
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 4; j++) {
@@ -378,139 +376,47 @@ export class GameEngine {
     const rand = getRand()
 
     // Use loaded card set data if available
-    let heroCards: Array<{
-      name: string
-      type: string
-      level: number
-      attack: number
-      health: number
-      specialAbilities: string[]
-    }> = []
-
     if (this.cardSetData && this.cardSetData.cards.length > 0) {
-      // Convert card set data to hero cards format
-      heroCards = this.cardSetData.cards.map(card => ({
-        name: card.title.toLowerCase().replace(/\s+/g, '_'),
-        type: 'Hero',
-        level: card.level,
-        attack: card.attack,
-        health: card.health,
-        specialAbilities: card.specialEffects || []
-      }))
-    } else {
-      // Fallback to hardcoded hero cards if card set data not available
-      heroCards = [
-        {
-          name: 'arcane_wizard',
-          type: 'Hero',
-          level: 4,
-          attack: 6,
-          health: 5,
-          specialAbilities: ['Spell Power', 'Mana Surge']
-        },
-        {
-          name: 'mountain_dwarf',
-          type: 'Hero',
-          level: 3,
-          attack: 5,
-          health: 8,
-          specialAbilities: ['Armor', 'Berserker Rage']
-        },
-        {
-          name: 'shadow_rogue',
-          type: 'Hero',
-          level: 3,
-          attack: 7,
-          health: 4,
-          specialAbilities: ['Stealth', 'Backstab']
-        },
-        {
-          name: 'holy_paladin',
-          type: 'Hero',
-          level: 4,
-          attack: 4,
-          health: 7,
-          specialAbilities: ['Divine Shield', 'Healing']
-        },
-        {
-          name: 'forest_ranger',
-          type: 'Hero',
-          level: 2,
-          attack: 4,
-          health: 4,
-          specialAbilities: ['Beast Taming', 'Track']
-        },
-        {
-          name: 'fire_elemental',
-          type: 'Hero',
-          level: 5,
-          attack: 8,
-          health: 6,
-          specialAbilities: ['Fire Aura', 'Immolation']
-        },
-        {
-          name: 'ice_mage',
-          type: 'Hero',
-          level: 3,
-          attack: 5,
-          health: 5,
-          specialAbilities: ['Freeze', 'Ice Shield']
-        },
-        {
-          name: 'dragon_knight',
-          type: 'Hero',
-          level: 5,
-          attack: 9,
-          health: 8,
-          specialAbilities: ['Dragon Bond', 'Fire Breath']
-        }
-      ]
-    }
+      // Select a random card from the cardSet
+      const cardTemplate = this.cardSetData.cards[Math.floor(rand() * this.cardSetData.cards.length)]
 
-    // Generic creature cards
-    const genericCards = [
-      { name: 'card1', type: 'Creature' },
-      { name: 'card2', type: 'Creature' },
-      { name: 'card3', type: 'Creature' },
-      { name: 'card4', type: 'Creature' },
-      { name: 'card5', type: 'Creature' }
-    ]
+      // Add some randomization to the stats (±1 to keep it interesting)
+      const statVariation = Math.floor(rand() * 3) - 1 // -1, 0, or +1
+      const attack = Math.max(1, cardTemplate.attack + statVariation)
+      const health = Math.max(1, cardTemplate.health + statVariation)
 
-    // 40% chance for hero card, 60% chance for generic creature
-    const isHeroCard = rand() < 0.4
-
-    if (isHeroCard && heroCards.length > 0) {
-      // Select a random hero card
-      const heroTemplate = heroCards[Math.floor(rand() * heroCards.length)]
-      const cardId = `${playerId}_${heroTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`
+      const cardId = `${playerId}_${cardTemplate.title.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}_${Math.floor(rand() * 1000)}`
 
       return {
         id: cardId,
-        name: heroTemplate.name,
-        type: heroTemplate.type,
-        level: heroTemplate.level,
-        attack: heroTemplate.attack,
-        health: heroTemplate.health,
-        maxHealth: heroTemplate.health,
-        specialAbilities: [...heroTemplate.specialAbilities]
+        name: cardTemplate.title.toLowerCase().replace(/\s+/g, '_'),
+        level: cardTemplate.level,
+        attack: attack,
+        health: health,
+        maxHealth: health,
+        specialAbilities: cardTemplate.specialEffects || []
       }
     } else {
-      // Generate a generic creature card with random stats
-      const genericTemplate = genericCards[Math.floor(rand() * genericCards.length)]
-      const level = Math.floor(rand() * 5) + 1 // 1-5
-      const attack = Math.floor(rand() * 6) + level // level to level+5
-      const health = Math.floor(rand() * 6) + level // level to level+5
-      const cardId = `${playerId}_${genericTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`
+      // Fallback cards if cardSet data not available
+      const fallbackCards = [
+        { name: 'warrior', level: 3, attack: 4, health: 5, abilities: ['Charge'] },
+        { name: 'mage', level: 2, attack: 3, health: 3, abilities: ['Spell Power'] },
+        { name: 'rogue', level: 2, attack: 5, health: 2, abilities: ['Stealth'] },
+        { name: 'paladin', level: 4, attack: 3, health: 6, abilities: ['Divine Shield'] },
+        { name: 'archer', level: 1, attack: 2, health: 2, abilities: ['Range'] }
+      ]
+
+      const cardTemplate = fallbackCards[Math.floor(rand() * fallbackCards.length)]
+      const cardId = `${playerId}_${cardTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`
 
       return {
         id: cardId,
-        name: genericTemplate.name,
-        type: genericTemplate.type,
-        level,
-        attack,
-        health,
-        maxHealth: health,
-        specialAbilities: []
+        name: cardTemplate.name,
+        level: cardTemplate.level,
+        attack: cardTemplate.attack,
+        health: cardTemplate.health,
+        maxHealth: cardTemplate.health,
+        specialAbilities: cardTemplate.abilities
       }
     }
   }

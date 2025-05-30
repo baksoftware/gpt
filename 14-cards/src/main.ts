@@ -284,17 +284,14 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
     )
 
     for (const newCard of newArenaCards) {
-      const isHero = newCard.type === 'Hero'
-      const cardName = isHero ?
-        newCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
-        'Creature'
+      const cardName = newCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
       // Find the visual position for the animation
       const arenaY = i === 0 ? // First player is human
         app.screen.height / 2 + gameScale * 100 :   // Human arena below center
         app.screen.height / 2 - gameScale * 100     // AI arena above center
 
-      animateCardPlay(cardName, isHero, app.screen.width / 2, arenaY)
+      animateCardPlay(cardName, app.screen.width / 2, arenaY)
     }
 
     // Check for cards that took damage
@@ -322,9 +319,7 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
     )
 
     for (const destroyedCard of destroyedCards) {
-      const cardName = destroyedCard.type === 'Hero' ?
-        destroyedCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
-        'Creature'
+      const cardName = destroyedCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
       // Show destruction notification at arena center
       const arenaY = i === 0 ?
@@ -519,37 +514,14 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
         cardAssetName = cardSetData.cards[0].title.toLowerCase().replace(/\s+/g, '_')
       }
     } else {
-      // Legacy fallback for hardcoded cards
-      const availableHeroAssets = ['arcane_wizard', 'mountain_dwarf']
-      if (availableHeroAssets.includes(gameCard.name)) {
-        cardAssetName = gameCard.name
-      } else {
-        // Use a known fallback
-        cardAssetName = 'hausfrau'
-      }
+      // Use a known fallback
+      cardAssetName = 'hausfrau'
     }
   }
 
   const cardSprite = Sprite.from(cardAssetName) as VisualCard
 
   if (!isHidden) {
-    // Add hero type indicator for hero cards
-    if (gameCard.type === 'Hero') {
-      const heroIndicator = new Text({
-        text: '★',
-        style: {
-          fontSize: gameScale * 14,
-          fill: 0xFFD700,
-          fontFamily: 'Arial',
-          fontWeight: 'bold',
-          stroke: { color: 0x000000, width: 2 }
-        }
-      })
-      heroIndicator.anchor.set(0.5)
-      heroIndicator.position.set(cardSprite.width * 0.3, -cardSprite.height * 0.35) // Top right
-      cardSprite.addChild(heroIndicator)
-    }
-
     // Add stats text for visible cards
     const statsText = new Text({
       text: `${gameCard.attack}/${gameCard.health}`,
@@ -571,7 +543,7 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
       text: `${gameCard.level}`,
       style: {
         fontSize: gameScale * 10,
-        fill: gameCard.type === 'Hero' ? 0xFF6B6B : 0xFFD700, // Red for heroes, gold for creatures
+        fill: 0xFFD700, // Gold color for all cards
         fontFamily: 'Arial',
         fontWeight: 'bold',
         stroke: { color: 0x000000, width: 2 }
@@ -581,22 +553,20 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
     levelText.position.set(-cardSprite.width * 0.3, -cardSprite.height * 0.35) // Top left
     cardSprite.addChild(levelText)
 
-    // Add card name for hero cards
-    if (gameCard.type === 'Hero') {
-      const nameText = new Text({
-        text: gameCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        style: {
-          fontSize: gameScale * 8,
-          fill: 0xFFFFFF,
-          fontFamily: 'Arial',
-          fontWeight: 'bold',
-          stroke: { color: 0x000000, width: 1 }
-        }
-      })
-      nameText.anchor.set(0.5)
-      nameText.position.set(0, -cardSprite.height * 0.15) // Middle of card
-      cardSprite.addChild(nameText)
-    }
+    // Add card name
+    const nameText = new Text({
+      text: gameCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      style: {
+        fontSize: gameScale * 8,
+        fill: 0xFFFFFF,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        stroke: { color: 0x000000, width: 1 }
+      }
+    })
+    nameText.anchor.set(0.5)
+    nameText.position.set(0, -cardSprite.height * 0.15) // Middle of card
+    cardSprite.addChild(nameText)
   }
 
   return cardSprite
@@ -666,8 +636,8 @@ function onCardHover(event: FederatedPointerEvent): void {
     card.position.y = card.originalY - (gameScale * 60) // Lift relative to arena scale
     card.rotation = 0
 
-    // Show abilities for hero cards
-    if (card.cardData && card.cardData.type === 'Hero' && card.cardData.specialAbilities && card.cardData.specialAbilities.length > 0) {
+    // Show abilities for all cards
+    if (card.cardData && card.cardData.specialAbilities && card.cardData.specialAbilities.length > 0) {
       const abilities = card.cardData.specialAbilities.join(', ')
       createNotification(abilities, card.position.x, card.position.y - 100, 0xFFD700, 3000)
     }
@@ -729,12 +699,9 @@ function onDragEnd(_event: FederatedPointerEvent): void {
       // Card dropped in play area - play it via game engine
       if (humanPlayer.isWaitingForInput() && card.gameCardId && card.cardData) {
         // Show immediate feedback for card play
-        const isHero = card.cardData.type === 'Hero'
-        const cardName = isHero ?
-          card.cardData.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) :
-          'Creature'
+        const cardName = card.cardData.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
-        animateCardPlay(cardName, isHero, card.position.x, card.position.y)
+        animateCardPlay(cardName, app.screen.width / 2, card.position.y)
 
         humanPlayer.playCard(card.gameCardId)
       }
@@ -919,9 +886,9 @@ function animateCardDestruction(card: VisualCard, cardName: string): void {
 }
 
 // Card play animation
-function animateCardPlay(cardName: string, isHero: boolean, x: number, y: number): void {
-  const color = isHero ? 0xFFD700 : 0x4CAF50
-  const text = isHero ? `${cardName} Enters Battle!` : `${cardName} Played!`
+function animateCardPlay(cardName: string, x: number, y: number): void {
+  const color = 0xFFD700
+  const text = `${cardName} Played!`
   createNotification(text, x, y, color, 2500)
 }
 
