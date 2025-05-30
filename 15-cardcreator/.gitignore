@@ -4,6 +4,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# TypeScript build artifacts
+dist/
+*.tsbuildinfo
+
 # Output directory (optional - you might want to include sample outputs)
 # output/
 

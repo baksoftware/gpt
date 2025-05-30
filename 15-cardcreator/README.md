@@ -1,7 +1,7 @@
 # Card Creator - Hearthstone-Style Game Cards
 
-A Node.js program that generates beautiful PNG game cards similar to Hearthstone
-style, with customizable text, stats, and hero images.
+A TypeScript/Node.js program that generates beautiful PNG game cards similar to
+Hearthstone style, with customizable text, stats, and hero images.
 
 ## Features
 
@@ -11,6 +11,7 @@ style, with customizable text, stats, and hero images.
 - 📝 Automatic text wrapping for descriptions and special effects
 - 🎨 Attractive styling with gradients, borders, and badges
 - 📁 Batch processing of multiple cards from JSON data
+- ⚡ TypeScript support with full type safety
 
 ## Installation
 
@@ -29,33 +30,47 @@ style, with customizable text, stats, and hero images.
 
 ### Basic Usage
 
-Run the card generator with the default cards:
+#### Production Build and Run
 
 ```bash
+npm run build
 npm start
 ```
 
-or
+#### Development with Watch Mode
 
 ```bash
-node index.js
+npm run dev  # Starts TypeScript compiler in watch mode
+```
+
+#### Type Checking Only
+
+```bash
+npm run type-check
 ```
 
 ### File Structure
 
 ```
 card-creator/
-├── index.js              # Main card generation script
+├── src/                   # TypeScript source files
+│   ├── index.ts          # Main card generation script
+│   └── types.ts          # TypeScript type definitions
+├── dist/                 # Compiled JavaScript (generated)
+│   ├── index.js
+│   ├── index.d.ts
+│   └── types.js
 ├── cards.json            # Card data definitions
+├── tsconfig.json         # TypeScript configuration
 ├── package.json          # Node.js dependencies
 ├── assets/               # Asset files
 │   ├── base_card.png     # Base card background (optional)
 │   └── heroes/           # Hero images directory
-│       ├── fire_dragon.png
-│       └── frost_mage.png
+│       ├── dwarf.png
+│       └── wizard.png
 └── output/               # Generated cards (created automatically)
-    ├── fire_dragon_card.png
-    └── frost_mage_card.png
+    ├── mountain_dwarf_card.png
+    └── arcane_wizard_card.png
 ```
 
 ### Card Data Format
@@ -79,6 +94,23 @@ The `cards.json` file defines your cards with the following structure:
             "heroImageName": "hero_image.png"
         }
     ]
+}
+```
+
+### TypeScript Types
+
+The project includes comprehensive TypeScript types:
+
+```typescript
+interface CardData {
+    id: number;
+    title: string;
+    description: string;
+    level: number;
+    health: number;
+    attack: number;
+    specialEffects?: string[];
+    heroImageName: string;
 }
 ```
 
@@ -107,16 +139,33 @@ The generated cards include:
 - **Attack Stat:** Orange circular badge in bottom-left (sword icon area)
 - **Health Stat:** Green circular badge in bottom-right (heart icon area)
 
+## Development
+
+### Building the Project
+
+```bash
+npm run build    # Clean build
+npm run clean    # Remove dist directory
+```
+
+### TypeScript Configuration
+
+The project uses strict TypeScript settings for better type safety:
+
+- Strict mode enabled
+- Source maps generated
+- Declaration files generated
+
 ## Customization
 
 ### Modifying Card Dimensions
 
-Edit the constructor in `index.js`:
+Edit the constructor in `src/index.ts`:
 
-```javascript
-constructor() {
-  this.cardWidth = 400;   // Change card width
-  this.cardHeight = 600;  // Change card height
+```typescript
+constructor(config?: Partial<CardGeneratorConfig>) {
+  this.cardWidth = config?.cardWidth || 400;   // Change card width
+  this.cardHeight = config?.cardHeight || 600; // Change card height
   // ...
 }
 ```
@@ -124,7 +173,7 @@ constructor() {
 ### Styling Changes
 
 You can modify colors, fonts, and layout by editing the `generateCard()` method
-in `index.js`. Key styling areas:
+in `src/index.ts`. Key styling areas:
 
 - **Colors:** Search for hex color codes (e.g., `#F1C40F`)
 - **Fonts:** Modify `ctx.font` statements
@@ -156,8 +205,8 @@ Simply add more card objects to the `cards` array in `cards.json`:
 
 The program generates PNG files in the `output/` directory with names like:
 
-- `fire_dragon_card.png`
-- `frost_mage_card.png`
+- `mountain_dwarf_card.png`
+- `arcane_wizard_card.png`
 
 Each card will be 400x600 pixels and include all the formatted text and images.
 

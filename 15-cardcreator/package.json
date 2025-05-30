@@ -2,9 +2,14 @@
     "name": "card-creator",
     "version": "1.0.0",
     "description": "A Node.js program to create PNG game cards like Hearthstone",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "start": "node index.js",
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "prebuild": "npm run clean",
         "install-deps": "npm install"
     },
     "dependencies": {
@@ -20,5 +25,9 @@
         "generation"
     ],
     "author": "Card Creator",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^22.15.27",
+        "typescript": "^5.8.3"
+    }
 }
