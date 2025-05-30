@@ -1,5 +1,8 @@
 {
     "base": {
+        "fontColor": "#fafafa",
+        "fontStrokeColor": "#333377",
+        "fontStrokeWidth": 5,
         "backImage": {
             "imageName": "back-blue.png",
             "width": 909,
@@ -7,45 +10,46 @@
         },
         "heroImage": {
             "x": 454,
-            "y": 627,
+            "y": 362,
             "width": 567,
             "height": 543
         },
         "levelText": {
-            "x": 123,
-            "y": 125,
-            "fontSize": 40
+            "x": 130,
+            "y": 130,
+            "fontSize": 100
         },
         "healthText": {
-            "x": 805,
-            "y": 1255,
-            "fontSize": 100
+            "x": 812,
+            "y": 1258,
+            "fontSize": 80
         },
         "attackText": {
-            "x": 697,
-            "y": 1255,
-            "fontSize": 100
+            "x": 703,
+            "y": 1258,
+            "fontSize": 80
         },
         "descriptionText": {
             "x": 454,
             "y": 903,
             "width": 738,
             "height": 321,
-            "fontSize": 18
+            "fontSize": 50
         },
         "titleText": {
             "x": 454,
             "y": 707,
             "width": 660,
             "height": 72,
-            "fontSize": 30
+            "fontSize": 70
         },
         "specialEffects": {
             "x": 356,
-            "y": 1202,
+            "y": 1185,
             "width": 526,
-            "height": 780,
-            "fontSize": 18
+            "height": 77,
+            "fontSize": 32,
+            "fontColor": "#FFD700"
         }
     },
     "cards": [
@@ -60,7 +64,8 @@
                 "Raise morale",
                 "Raise health"
             ],
-            "heroImageName": "hero-hausfrau.png"
+            "heroImageName": "hero-hausfrau.png",
+            "heroImageBottomCutoff": 500
         },
         {
             "id": 2,
@@ -73,33 +78,50 @@
                 "Spreads disease",
                 "Cause despair"
             ],
-            "heroImageName": "hero-homeless.png"
-        },
-        {
-            "id": 2,
-            "title": "Homeless",
-            "description": "Walking the streets, looking for a place to call home",
-            "level": 5,
-            "health": 3,
-            "attack": 4,
-            "specialEffects": [
-                "Spreads disease",
-                "Cause despair"
-            ],
-            "heroImageName": "hero-homeless.png"
+            "heroImageName": "hero-homeless.png",
+            "heroImageBottomCutoff": 500
         },
         {
             "id": 3,
             "title": "Kaufmann",
-            "description": "",
+            "description": "Shrewd merchant with deep pockets and connections throughout the trading world",
             "level": 5,
             "health": 3,
             "attack": 4,
             "specialEffects": [
-                "Spreads disease",
-                "Cause despair"
+                "Gain extra resources each turn",
+                "Reduce enemy card costs permanently"
             ],
-            "heroImageName": "hero-homeless.png"
+            "heroImageName": "hero-kaufmann.png",
+            "heroImageBottomCutoff": 500
         },
+        {
+            "id": 4,
+            "title": "Philosopher",
+            "description": "Deep thinker who seeks truth and wisdom through contemplation and debate",
+            "level": 6,
+            "health": 2,
+            "attack": 2,
+            "specialEffects": [
+                "Draw extra cards this turn",
+                "Counter one enemy special effect"
+            ],
+            "heroImageName": "hero-philosopher.png",
+            "heroImageBottomCutoff": 500
+        },
+        {
+            "id": 5,
+            "title": "Steelworker",
+            "description": "Hardened laborer who forges strength through sweat and determination",
+            "level": 7,
+            "health": 5,
+            "attack": 6,
+            "specialEffects": [
+                "Immune to damage this turn",
+                "Double attack power next turn"
+            ],
+            "heroImageName": "hero-steelworker.png",
+            "heroImageBottomCutoff": 500
+        }
     ]
 }
