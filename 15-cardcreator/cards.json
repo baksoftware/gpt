@@ -1,0 +1,30 @@
+{
+    "cards": [
+        {
+            "id": 1,
+            "title": "Mountain Dwarf",
+            "description": "A sturdy warrior from the mountains, skilled in combat and forging. His axe has tasted the blood of many enemies.",
+            "level": 6,
+            "health": 10,
+            "attack": 7,
+            "specialEffects": [
+                "Armor Plating: Takes 1 less damage from all sources",
+                "Battle Rage: +2 Attack when below half health"
+            ],
+            "heroImageName": "dwarf.png"
+        },
+        {
+            "id": 2,
+            "title": "Arcane Wizard",
+            "description": "A master of the mystical arts who weaves powerful spells to control the battlefield and bend reality to his will.",
+            "level": 5,
+            "health": 6,
+            "attack": 4,
+            "specialEffects": [
+                "Teleport: Can move to any position on the battlefield",
+                "Magic Missile: Deal 3 damage to any target"
+            ],
+            "heroImageName": "wizard.png"
+        }
+    ]
+}
