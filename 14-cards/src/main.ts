@@ -2,7 +2,6 @@ import './style.css'
 import { Application, Assets, Sprite, Container, FederatedPointerEvent, Text, Graphics } from 'pixi.js'
 import { GameEngine, GameState, Card as GameCard, CardSetData } from './gameEngine'
 import { HumanPlayer } from './players/HumanPlayer'
-import { AIPlayer } from './players/AIPlayer'
 
 const cardSet = 'berlin1920';
 
@@ -14,8 +13,8 @@ const app = new Application()
 
 // Game engine and players
 let gameEngine: GameEngine
-let humanPlayer: HumanPlayer
-let aiPlayer: AIPlayer
+let humanPlayer1: HumanPlayer
+let humanPlayer2: HumanPlayer
 
 // Notification system
 interface GameNotification {
@@ -101,8 +100,8 @@ function initializeGameEngine(): void {
     gameEngine.setCardSetData(cardSetData)
   }
 
-  humanPlayer = new HumanPlayer('human', 'Player')
-  aiPlayer = new AIPlayer('ai', 'AI Opponent', 'medium')
+  humanPlayer1 = new HumanPlayer('human1', 'Player 1')
+  humanPlayer2 = new HumanPlayer('human2', 'Player 2')
 
   // Listen to game state changes
   gameEngine.addEventListener((gameState: GameState) => {
@@ -110,7 +109,7 @@ function initializeGameEngine(): void {
   })
 
   // Initialize the game
-  gameEngine.initializeGame(humanPlayer, aiPlayer)
+  gameEngine.initializeGame(humanPlayer1, humanPlayer2)
 
   // Start the game loop
   gameLoop()
@@ -263,8 +262,13 @@ function createUI(): void {
   endTurnButton.eventMode = 'static'
   endTurnButton.cursor = 'pointer'
   endTurnButton.on('pointerdown', () => {
-    if (humanPlayer.isWaitingForInput()) {
-      humanPlayer.endTurn()
+    const currentGameState = gameEngine.getGameState()
+    const currentPlayer = currentGameState.players[currentGameState.currentPlayerIndex]
+
+    if (currentPlayer.id === 'human1' && humanPlayer1.isWaitingForInput()) {
+      humanPlayer1.endTurn()
+    } else if (currentPlayer.id === 'human2' && humanPlayer2.isWaitingForInput()) {
+      humanPlayer2.endTurn()
     }
   })
 
@@ -356,17 +360,17 @@ function updateVisualization(gameState: GameState): void {
   // Update turn indicator
   updateTurnIndicator(gameState)
 
-  const humanPlayerState = gameState.players.find(p => p.id === 'human')
-  const aiPlayerState = gameState.players.find(p => p.id === 'ai')
+  const humanPlayerState = gameState.players.find(p => p.id === 'human1')
+  const player2State = gameState.players.find(p => p.id === 'human2')
 
   if (humanPlayerState) {
-    createPlayerHand(humanPlayerState, humanHandContainer, 'human', false)
-    createPlayerArena(humanPlayerState, humanArenaContainer, 'human', false)
+    createPlayerHand(humanPlayerState, humanHandContainer, 'human1', false)
+    createPlayerArena(humanPlayerState, humanArenaContainer, 'human1', false)
   }
 
-  if (aiPlayerState) {
-    createPlayerHand(aiPlayerState, aiHandContainer, 'ai', true)
-    createPlayerArena(aiPlayerState, aiArenaContainer, 'ai', true)
+  if (player2State) {
+    createPlayerHand(player2State, aiHandContainer, 'human2', true)
+    createPlayerArena(player2State, aiArenaContainer, 'human2', true)
   }
 
   // Check for game events and trigger animations
@@ -389,13 +393,13 @@ function updateTurnIndicator(gameState: GameState): void {
 
   // Create new turn indicator
   const currentPlayer = gameState.players[gameState.currentPlayerIndex]
-  const isPlayerTurn = currentPlayer.id === 'human'
+  const playerName = currentPlayer.name.toUpperCase()
 
   const turnText = new Text({
-    text: isPlayerTurn ? 'YOUR TURN' : 'OPPONENT\'S TURN',
+    text: `${playerName} TURN`,
     style: {
       fontSize: gameScale * 24,
-      fill: isPlayerTurn ? 0x4CAF50 : 0xF44336,
+      fill: currentPlayer.id === 'human1' ? 0x4CAF50 : 0x2196F3, // Green for Player 1, Blue for Player 2
       fontFamily: 'Arial',
       fontWeight: 'bold'
     }
@@ -407,19 +411,19 @@ function updateTurnIndicator(gameState: GameState): void {
   uiContainer.addChild(turnText)
 }
 
-function createPlayerHand(playerState: any, container: Container, playerId: string, isAI: boolean): void {
+function createPlayerHand(playerState: any, container: Container, playerId: string, isTopPlayer: boolean): void {
   const cardScale = gameScale * 0.12
   const cardSpacing = gameScale * 80
 
   playerState.hand.forEach((gameCard: GameCard, index: number) => {
-    const card = createCardSprite(gameCard, isAI) as VisualCard
+    const card = createCardSprite(gameCard, false) as VisualCard // Both players can see their cards
     card.anchor.set(0.5)
 
     // Position cards
     const startX = (app.screen.width / 2) - ((playerState.hand.length - 1) * cardSpacing / 2)
-    const handY = isAI ?
-      gameScale * 100 : // AI cards at top
-      app.screen.height - (gameScale * 100) // Human cards at bottom
+    const handY = isTopPlayer ?
+      gameScale * 100 : // Top player cards at top
+      app.screen.height - (gameScale * 100) // Bottom player cards at bottom
 
     card.position.set(startX + index * cardSpacing, handY)
     card.scale.set(cardScale)
@@ -439,26 +443,20 @@ function createPlayerHand(playerState: any, container: Container, playerId: stri
     // Add slight rotation for fan effect
     card.rotation = card.originalRotation
 
-    // Make human cards interactive
-    if (!isAI) {
-      card.eventMode = 'static'
-      card.cursor = 'pointer'
+    // Make both players' cards interactive (they'll only respond during their turn)
+    card.eventMode = 'static'
+    card.cursor = 'pointer'
 
-      // Add hover effects
-      card.on('pointerover', onCardHover)
-      card.on('pointerout', onCardOut)
-      card.on('pointerdown', onCardDragStart)
-    } else {
-      // AI cards are not interactive
-      card.eventMode = 'none'
-      card.alpha = 0.8 // Make AI cards slightly transparent
-    }
+    // Add hover effects
+    card.on('pointerover', onCardHover)
+    card.on('pointerout', onCardOut)
+    card.on('pointerdown', onCardDragStart)
 
     container.addChild(card)
   })
 }
 
-function createPlayerArena(playerState: any, container: Container, playerId: string, isAI: boolean): void {
+function createPlayerArena(playerState: any, container: Container, playerId: string, isTopPlayer: boolean): void {
   const cardScale = gameScale * 0.1
   const cardSpacing = gameScale * 120
 
@@ -468,9 +466,9 @@ function createPlayerArena(playerState: any, container: Container, playerId: str
 
     // Calculate arena position
     const startX = (app.screen.width / 2) - ((playerState.arenaCards.length - 1) * cardSpacing / 2)
-    const arenaY = isAI ?
-      app.screen.height / 2 - gameScale * 100 : // AI arena above center
-      app.screen.height / 2 + gameScale * 100   // Human arena below center
+    const arenaY = isTopPlayer ?
+      app.screen.height / 2 - gameScale * 100 : // Top player arena above center
+      app.screen.height / 2 + gameScale * 100   // Bottom player arena below center
 
     card.position.set(startX + index * cardSpacing, arenaY)
     card.scale.set(cardScale)
@@ -575,29 +573,33 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
 function onArenaCardClick(event: FederatedPointerEvent, card: VisualCard): void {
   event.stopPropagation()
 
-  if (!humanPlayer.isWaitingForInput()) return
-
   const currentGameState = gameEngine.getGameState()
-  const isPlayerTurn = currentGameState.players[currentGameState.currentPlayerIndex].id === 'human'
+  const currentPlayer = currentGameState.players[currentGameState.currentPlayerIndex]
+  const currentPlayerId = currentPlayer.id
 
-  if (!isPlayerTurn) return
+  // Check if either player is waiting for input
+  const isPlayerWaiting = (currentPlayerId === 'human1' && humanPlayer1.isWaitingForInput()) ||
+    (currentPlayerId === 'human2' && humanPlayer2.isWaitingForInput())
+
+  if (!isPlayerWaiting) return
 
   if (selectedCard && selectedCard !== card) {
     // Attack if we have a selected card and clicking on enemy card
-    if (selectedCard.playerId === 'human' && card.playerId === 'ai') {
-      humanPlayer.attackCard(selectedCard.gameCardId!, card.gameCardId!)
+    if (selectedCard.playerId === currentPlayerId && card.playerId !== currentPlayerId) {
+      if (currentPlayerId === 'human1') {
+        humanPlayer1.attackCard(selectedCard.gameCardId!, card.gameCardId!)
+      } else if (currentPlayerId === 'human2') {
+        humanPlayer2.attackCard(selectedCard.gameCardId!, card.gameCardId!)
+      }
       clearSelection()
-    } else if (selectedCard.playerId === 'human' && card.playerId === 'human') {
+    } else if (selectedCard.playerId === currentPlayerId && card.playerId === currentPlayerId) {
       // Select different own card
       clearSelection()
       selectCard(card)
     }
-  } else if (card.playerId === 'human') {
+  } else if (card.playerId === currentPlayerId) {
     // Select own card for attacking
     selectCard(card)
-  } else if (card.playerId === 'ai') {
-    // Remove enemy card (if we implement this mechanic)
-    // For now, do nothing
   }
 }
 
@@ -626,7 +628,7 @@ function clearSelection(): void {
 
 function onCardHover(event: FederatedPointerEvent): void {
   const card = event.currentTarget as VisualCard
-  if (!dragTarget && !card.isPlayed && card.playerId === 'human') {
+  if (!dragTarget && !card.isPlayed) {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
 
@@ -646,7 +648,7 @@ function onCardHover(event: FederatedPointerEvent): void {
 
 function onCardOut(event: FederatedPointerEvent): void {
   const card = event.currentTarget as VisualCard
-  if (!dragTarget && !card.isPlayed && card.playerId === 'human') {
+  if (!dragTarget && !card.isPlayed) {
     card.scale.set(card.originalScale)
     card.position.y = card.originalY
     card.rotation = card.originalRotation
@@ -655,7 +657,13 @@ function onCardOut(event: FederatedPointerEvent): void {
 
 function onCardDragStart(event: FederatedPointerEvent): void {
   const card = event.currentTarget as VisualCard
-  if (card.isPlayed || card.playerId !== 'human') return
+  if (card.isPlayed) return
+
+  // Check if it's this player's turn
+  const currentGameState = gameEngine.getGameState()
+  const currentPlayer = currentGameState.players[currentGameState.currentPlayerIndex]
+
+  if (card.playerId !== currentPlayer.id) return
 
   // Clear any selection when starting to drag
   clearSelection()
@@ -688,26 +696,39 @@ function onDragMove(event: FederatedPointerEvent): void {
 }
 
 function onDragEnd(_event: FederatedPointerEvent): void {
-  if (dragTarget && dragTarget.playerId === 'human') {
+  if (dragTarget) {
     const card = dragTarget
+    const currentGameState = gameEngine.getGameState()
+    const currentPlayer = currentGameState.players[currentGameState.currentPlayerIndex]
+    const currentPlayerId = currentPlayer.id
 
-    // Check if card is dropped in the arena area (center area)
-    const centerY = app.screen.height / 2
-    const arenaThreshold = gameScale * 150
+    // Check if card belongs to current player
+    if (card.playerId === currentPlayerId) {
+      // Check if card is dropped in the arena area (center area)
+      const centerY = app.screen.height / 2
+      const arenaThreshold = gameScale * 150
 
-    if (card.position.y > centerY - arenaThreshold && card.position.y < centerY + arenaThreshold) {
-      // Card dropped in play area - play it via game engine
-      if (humanPlayer.isWaitingForInput() && card.gameCardId && card.cardData) {
-        // Show immediate feedback for card play
-        const cardName = card.cardData.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+      if (card.position.y > centerY - arenaThreshold && card.position.y < centerY + arenaThreshold) {
+        // Card dropped in play area - play it via game engine
+        const isPlayerWaiting = (currentPlayerId === 'human1' && humanPlayer1.isWaitingForInput()) ||
+          (currentPlayerId === 'human2' && humanPlayer2.isWaitingForInput())
 
-        animateCardPlay(cardName, app.screen.width / 2, card.position.y)
+        if (isPlayerWaiting && card.gameCardId && card.cardData) {
+          // Show immediate feedback for card play
+          const cardName = card.cardData.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
-        humanPlayer.playCard(card.gameCardId)
+          animateCardPlay(cardName, app.screen.width / 2, card.position.y)
+
+          if (currentPlayerId === 'human1') {
+            humanPlayer1.playCard(card.gameCardId)
+          } else if (currentPlayerId === 'human2') {
+            humanPlayer2.playCard(card.gameCardId)
+          }
+        }
+      } else {
+        // Card dropped outside arena - return to hand
+        returnCardToHand(card)
       }
-    } else {
-      // Card dropped outside arena - return to hand
-      returnCardToHand(card)
     }
 
     dragTarget = null

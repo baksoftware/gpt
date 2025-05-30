@@ -1,8 +1,8 @@
 {
     "base": {
         "fontColor": "#fafafa",
-        "fontStrokeColor": "#333377",
-        "fontStrokeWidthForSize100": 5,
+        "fontStrokeColor": "#000000",
+        "fontStrokeWidthForSize100": 10,
         "backImage": {
             "imageName": "back-blue.png",
             "width": 909,
@@ -17,26 +17,25 @@
         "levelText": {
             "x": 130,
             "y": 130,
-            "fontSize": 100,
-            "fontColor": "#fafafa"
-        },
-        "healthText": {
-            "x": 812,
-            "y": 1258,
-            "fontSize": 80,
-            "fontColor": "#fa3030"
+            "fontSize": 100
         },
         "attackText": {
-            "x": 703,
-            "y": 1258,
-            "fontSize": 80
+            "x": 695,
+            "y": 1248,
+            "fontSize": 85
+        },
+        "healthText": {
+            "x": 822,
+            "y": 1250,
+            "fontSize": 85,
+            "fontColor": "#ff3030"
         },
         "descriptionText": {
             "x": 454,
             "y": 903,
             "width": 738,
             "height": 321,
-            "fontSize": 50
+            "fontSize": 60
         },
         "titleText": {
             "x": 454,
@@ -50,8 +49,7 @@
             "y": 1185,
             "width": 526,
             "height": 77,
-            "fontSize": 32,
-            "fontColor": "#ffd700"
+            "fontSize": 32
         }
     },
     "cards": [
