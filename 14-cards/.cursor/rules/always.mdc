@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Guidelines
+- Don't start the dev server, I will test it myself, just say its ready for me to test
+- There are two players which are controlled by the same user
+
+# Primarily look in these files
+- [main.ts](mdc:src/main.ts) contains the application setup code
+- [HumanPlayer.ts](mdc:src/players/HumanPlayer.ts) is the code that controls what a player do
+- [gameEngine.ts](mdc:src/gameEngine.ts) is the game engine
+- [gamecards.json](mdc:public/berlin1920/gamecards.json) defines which specific cards are in this card set

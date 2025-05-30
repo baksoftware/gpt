@@ -54,9 +54,10 @@ async function init(): Promise<void> {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0x2c3e50,
+    background: 0xeeeeee,
+    resolution: window.devicePixelRatio * 1.5,
+    autoDensity: true,
     antialias: true,
-    resizeTo: window,
-    resolution: window.devicePixelRatio
   })
 
   // Add the canvas to the DOM
@@ -173,14 +174,13 @@ function exitFullscreen(): void {
 
 let dragTarget: VisualCard | null = null
 let selectedCard: VisualCard | null = null // For attack targeting
-let arenaCards: VisualCard[] = [] // Track cards in arena
-let arenaContainer: Container | null = null
-let humanHandContainer: Container | null = null
-let aiHandContainer: Container | null = null
-let humanArenaContainer: Container | null = null
-let aiArenaContainer: Container | null = null
+let player1HandContainer: Container | null = null
+let player2HandContainer: Container | null = null
+let player1ArenaContainer: Container | null = null
+let player2ArenaContainer: Container | null = null
 let uiContainer: Container | null = null
 let gameScale: number = 1 // Global scale factor based on arena fitting
+let cardScale: number = 1 // Card scale factor based purely on screen height
 
 function createGameScene(): void {
   // Create arena background that fills the entire screen
@@ -198,6 +198,9 @@ function createGameScene(): void {
   // Store the global game scale for all other elements (use smaller scale for UI consistency)
   gameScale = Math.min(scaleX, scaleY)
 
+  // Create card scale based purely on screen height for consistent card sizing
+  cardScale = app.screen.height / 1080 // Normalize to 1080p height as reference
+
   app.stage.addChild(arena)
 
   // Create UI container for buttons and text
@@ -208,21 +211,21 @@ function createGameScene(): void {
   notificationContainer = new Container()
   app.stage.addChild(notificationContainer)
 
-  // Create AI arena container (top half)
-  aiArenaContainer = new Container()
-  app.stage.addChild(aiArenaContainer)
+  // Create Player2 arena container (top half)
+  player2ArenaContainer = new Container()
+  app.stage.addChild(player2ArenaContainer)
 
-  // Create human arena container (bottom half)
-  humanArenaContainer = new Container()
-  app.stage.addChild(humanArenaContainer)
+  // Create Player1 arena container (bottom half)
+  player1ArenaContainer = new Container()
+  app.stage.addChild(player1ArenaContainer)
 
-  // Create AI hand container (top)
-  aiHandContainer = new Container()
-  app.stage.addChild(aiHandContainer)
+  // Create Player1 hand container (top)
+  player1HandContainer = new Container()
+  app.stage.addChild(player1HandContainer)
 
-  // Create human hand container (bottom)
-  humanHandContainer = new Container()
-  app.stage.addChild(humanHandContainer)
+  // Create Player2 hand container (bottom)
+  player2HandContainer = new Container()
+  app.stage.addChild(player2HandContainer)
 
   // Create UI elements
   createUI()
@@ -290,10 +293,10 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
     for (const newCard of newArenaCards) {
       const cardName = newCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
-      // Find the visual position for the animation
-      const arenaY = i === 0 ? // First player is human
-        app.screen.height / 2 + gameScale * 100 :   // Human arena below center
-        app.screen.height / 2 - gameScale * 100     // AI arena above center
+      // Find the visual position for the animation - use 4-zone layout
+      const arenaY = i === 0 ? // First player is human1
+        app.screen.height * 0.625 :   // Player 1 arena (lower middle quarter)
+        app.screen.height * 0.375     // Player 2 arena (upper middle quarter)
 
       animateCardPlay(cardName, app.screen.width / 2, arenaY)
     }
@@ -304,7 +307,7 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
       if (prevCard && prevCard.health > currCard.health) {
         const damage = prevCard.health - currCard.health
         // Find the visual card to show damage
-        const container = i === 0 ? humanArenaContainer : aiArenaContainer
+        const container = i === 0 ? player1ArenaContainer : player2ArenaContainer
         if (container) {
           const visualCard = container.children.find(child =>
             (child as VisualCard).gameCardId === currCard.id
@@ -325,10 +328,10 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
     for (const destroyedCard of destroyedCards) {
       const cardName = destroyedCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
-      // Show destruction notification at arena center
+      // Show destruction notification at arena center - use 4-zone layout
       const arenaY = i === 0 ?
-        app.screen.height / 2 + gameScale * 100 :
-        app.screen.height / 2 - gameScale * 100
+        app.screen.height * 0.625 :   // Player 1 arena (lower middle quarter)
+        app.screen.height * 0.375     // Player 2 arena (upper middle quarter)
 
       createNotification(`${cardName} Destroyed!`, app.screen.width / 2, arenaY, 0xFF6B6B, 2000)
     }
@@ -337,40 +340,40 @@ function checkForGameEvents(previousState: GameState, currentState: GameState): 
   // Check for turn changes
   if (previousState.currentPlayerIndex !== currentState.currentPlayerIndex) {
     const newPlayerName = currentState.players[currentState.currentPlayerIndex].name
-    const isHumanTurn = currentState.players[currentState.currentPlayerIndex].id === 'human'
-    const turnText = isHumanTurn ? 'Your Turn!' : `${newPlayerName}'s Turn!`
-    const color = isHumanTurn ? 0x4CAF50 : 0xF44336
+    const isPlayer1Turn = currentState.players[currentState.currentPlayerIndex].id === 'human1'
+    const turnText = isPlayer1Turn ? 'Your Turn!' : `${newPlayerName}'s Turn!`
+    const color = isPlayer1Turn ? 0x4CAF50 : 0xF44336
 
     createNotification(turnText, app.screen.width / 2, app.screen.height / 2, color, 2000)
   }
 }
 
 function updateVisualization(gameState: GameState): void {
-  if (!humanHandContainer || !aiHandContainer || !humanArenaContainer || !aiArenaContainer || !uiContainer) return
+  if (!player1HandContainer || !player2HandContainer || !player1ArenaContainer || !player2ArenaContainer || !uiContainer) return
 
   // Store previous state for comparison
   const previousState = (updateVisualization as any).previousState as GameState | undefined
 
   // Clear existing cards
-  humanHandContainer.removeChildren()
-  aiHandContainer.removeChildren()
-  humanArenaContainer.removeChildren()
-  aiArenaContainer.removeChildren()
+  player1HandContainer.removeChildren()
+  player2HandContainer.removeChildren()
+  player1ArenaContainer.removeChildren()
+  player2ArenaContainer.removeChildren()
 
   // Update turn indicator
   updateTurnIndicator(gameState)
 
-  const humanPlayerState = gameState.players.find(p => p.id === 'human1')
+  const player1State = gameState.players.find(p => p.id === 'human1')
   const player2State = gameState.players.find(p => p.id === 'human2')
 
-  if (humanPlayerState) {
-    createPlayerHand(humanPlayerState, humanHandContainer, 'human1', false)
-    createPlayerArena(humanPlayerState, humanArenaContainer, 'human1', false)
+  if (player1State) {
+    createPlayerHand(player1State, player1HandContainer, 'human1', false)
+    createPlayerArena(player1State, player1ArenaContainer, 'human1', false)
   }
 
   if (player2State) {
-    createPlayerHand(player2State, aiHandContainer, 'human2', true)
-    createPlayerArena(player2State, aiArenaContainer, 'human2', true)
+    createPlayerHand(player2State, player2HandContainer, 'human2', true)
+    createPlayerArena(player2State, player2ArenaContainer, 'human2', true)
   }
 
   // Check for game events and trigger animations
@@ -411,28 +414,30 @@ function updateTurnIndicator(gameState: GameState): void {
   uiContainer.addChild(turnText)
 }
 
+const cardSize = 0.19;
+
 function createPlayerHand(playerState: any, container: Container, playerId: string, isTopPlayer: boolean): void {
-  const cardScale = gameScale * 0.12
-  const cardSpacing = gameScale * 80
+  const handCardScale = cardScale * cardSize  // Base card scale on screen height only
+  const cardSpacing = cardScale * 140     // Dramatically increased spacing to eliminate overlap
 
   playerState.hand.forEach((gameCard: GameCard, index: number) => {
     const card = createCardSprite(gameCard, false) as VisualCard // Both players can see their cards
     card.anchor.set(0.5)
 
-    // Position cards
+    // Position cards - split screen into 4 vertical zones
     const startX = (app.screen.width / 2) - ((playerState.hand.length - 1) * cardSpacing / 2)
     const handY = isTopPlayer ?
-      gameScale * 100 : // Top player cards at top
-      app.screen.height - (gameScale * 100) // Bottom player cards at bottom
+      app.screen.height * 0.125 : // Top quarter (12.5% from top) for Player 2
+      app.screen.height * 0.875   // Bottom quarter (87.5% from top) for Player 1
 
     card.position.set(startX + index * cardSpacing, handY)
-    card.scale.set(cardScale)
+    card.scale.set(handCardScale)
 
     // Store original position and rotation
     card.originalX = card.position.x
     card.originalY = card.position.y
     card.originalRotation = (index - Math.floor(playerState.hand.length / 2)) * 0.04
-    card.originalScale = cardScale
+    card.originalScale = handCardScale
     card.cardIndex = index
     card.isPlayed = false
     card.arenaPosition = null
@@ -457,21 +462,21 @@ function createPlayerHand(playerState: any, container: Container, playerId: stri
 }
 
 function createPlayerArena(playerState: any, container: Container, playerId: string, isTopPlayer: boolean): void {
-  const cardScale = gameScale * 0.1
-  const cardSpacing = gameScale * 120
+  const arenaCardScale = cardScale * cardSize  // Base card scale on screen height only
+  const cardSpacing = cardScale * 380       // Dramatically increased spacing to eliminate overlap
 
   playerState.arenaCards.forEach((gameCard: GameCard, index: number) => {
     const card = createCardSprite(gameCard, false) as VisualCard // Arena cards are always face up
     card.anchor.set(0.5)
 
-    // Calculate arena position
+    // Calculate arena position - split screen into 4 vertical zones
     const startX = (app.screen.width / 2) - ((playerState.arenaCards.length - 1) * cardSpacing / 2)
     const arenaY = isTopPlayer ?
-      app.screen.height / 2 - gameScale * 100 : // Top player arena above center
-      app.screen.height / 2 + gameScale * 100   // Bottom player arena below center
+      app.screen.height * 0.375 : // Upper middle quarter (37.5% from top) for Player 2
+      app.screen.height * 0.625   // Lower middle quarter (62.5% from top) for Player 1
 
     card.position.set(startX + index * cardSpacing, arenaY)
-    card.scale.set(cardScale)
+    card.scale.set(arenaCardScale)
     card.gameCardId = gameCard.id
     card.playerId = playerId
     card.cardData = gameCard
@@ -524,11 +529,11 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
     const statsText = new Text({
       text: `${gameCard.attack}/${gameCard.health}`,
       style: {
-        fontSize: gameScale * 12,
+        fontSize: cardScale * 18,  // Use height-based cardScale instead of gameScale
         fill: 0xFFFFFF,
         fontFamily: 'Arial',
         fontWeight: 'bold',
-        stroke: { color: 0x000000, width: 2 }
+        stroke: { color: 0x000000, width: 3 }
       }
     })
     statsText.anchor.set(0.5)
@@ -540,11 +545,11 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
     const levelText = new Text({
       text: `${gameCard.level}`,
       style: {
-        fontSize: gameScale * 10,
+        fontSize: cardScale * 15,  // Use height-based cardScale instead of gameScale
         fill: 0xFFD700, // Gold color for all cards
         fontFamily: 'Arial',
         fontWeight: 'bold',
-        stroke: { color: 0x000000, width: 2 }
+        stroke: { color: 0x000000, width: 3 }
       }
     })
     levelText.anchor.set(0.5)
@@ -555,11 +560,11 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
     const nameText = new Text({
       text: gameCard.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
       style: {
-        fontSize: gameScale * 8,
+        fontSize: cardScale * 12,  // Use height-based cardScale instead of gameScale
         fill: 0xFFFFFF,
         fontFamily: 'Arial',
         fontWeight: 'bold',
-        stroke: { color: 0x000000, width: 1 }
+        stroke: { color: 0x000000, width: 2 }
       }
     })
     nameText.anchor.set(0.5)
@@ -618,8 +623,8 @@ function clearSelection(): void {
     selectedCard.isSelected = false
     selectedCard.alpha = 1
     if (selectedCard.cardData) {
-      const baseScale = selectedCard.parent === humanArenaContainer || selectedCard.parent === aiArenaContainer ?
-        gameScale * 0.1 : gameScale * 0.12
+      const baseScale = selectedCard.parent === player1ArenaContainer || selectedCard.parent === player2ArenaContainer ?
+        cardScale * 0.35 : cardScale * 0.4  // Use height-based cardScale values
       selectedCard.scale.set(baseScale)
     }
     selectedCard = null
@@ -632,10 +637,10 @@ function onCardHover(event: FederatedPointerEvent): void {
     // Bring card to front
     card.parent.setChildIndex(card, card.parent.children.length - 1)
 
-    // Scale up proportionally based on game scale
+    // Scale up proportionally based on original scale
     const hoverScale = card.originalScale * 1.3
     card.scale.set(hoverScale)
-    card.position.y = card.originalY - (gameScale * 60) // Lift relative to arena scale
+    card.position.y = card.originalY - (cardScale * 60) // Lift based on height-based scale
     card.rotation = 0
 
     // Show abilities for all cards
@@ -704,11 +709,11 @@ function onDragEnd(_event: FederatedPointerEvent): void {
 
     // Check if card belongs to current player
     if (card.playerId === currentPlayerId) {
-      // Check if card is dropped in the arena area (center area)
-      const centerY = app.screen.height / 2
-      const arenaThreshold = gameScale * 150
+      // Check if card is dropped in the arena area (middle two quarters of screen)
+      const arenaTopBoundary = app.screen.height * 0.25    // Start of upper arena zone (25%)
+      const arenaBottomBoundary = app.screen.height * 0.75  // End of lower arena zone (75%)
 
-      if (card.position.y > centerY - arenaThreshold && card.position.y < centerY + arenaThreshold) {
+      if (card.position.y > arenaTopBoundary && card.position.y < arenaBottomBoundary) {
         // Card dropped in play area - play it via game engine
         const isPlayerWaiting = (currentPlayerId === 'human1' && humanPlayer1.isWaitingForInput()) ||
           (currentPlayerId === 'human2' && humanPlayer2.isWaitingForInput())

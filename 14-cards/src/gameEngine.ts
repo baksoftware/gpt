@@ -45,7 +45,7 @@ export interface GameState {
 }
 
 export interface GameAction {
-  type: 'playCard' | 'removeCard' | 'endTurn' | 'attackCard' | 'drawCard'
+  type: 'playCard' | 'removeCard' | 'endTurn' | 'attackCard'
   playerId: string
   cardId?: string
   targetCardId?: string
@@ -126,9 +126,6 @@ export class GameEngine {
         break
       case 'attackCard':
         success = this.attackCard(action.playerId, action.cardId!, action.targetCardId!)
-        break
-      case 'drawCard':
-        success = this.drawCard(action.playerId)
         break
     }
 
@@ -235,25 +232,6 @@ export class GameEngine {
     }
   }
 
-  // Draw a card for the player
-  private drawCard(playerId: string): boolean {
-    const playerState = this.getPlayerState(playerId)
-    if (!playerState) return false
-
-    // Check if player has already drawn a card this turn
-    if (playerState.hasDrawnCard) {
-      return false
-    }
-
-    // Generate a random card
-    const newCard = this.generateRandomCard(playerId)
-    playerState.hand.push(newCard)
-    playerState.hasDrawnCard = true
-
-    console.log(`${playerState.name} draws ${newCard.name}`)
-    return true
-  }
-
   // Remove a card from arena
   private removeCard(playerId: string, cardId: string): boolean {
     const playerState = this.getPlayerState(playerId)
@@ -280,10 +258,10 @@ export class GameEngine {
 
     const currentPlayerState = this.gameState.players[this.gameState.currentPlayerIndex]
 
-    // Draw a card at end of turn if player hasn't drawn one yet
-    if (!currentPlayerState.hasDrawnCard) {
-      this.drawCard(playerId)
-    }
+    // Always draw a card at end of turn
+    const newCard = this.generateRandomCard(playerId)
+    currentPlayerState.hand.push(newCard)
+    console.log(`${currentPlayerState.name} draws ${newCard.name} at end of turn`)
 
     // Reset turn flags
     currentPlayerState.hasPlayedCard = false

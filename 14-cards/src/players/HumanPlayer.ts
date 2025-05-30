@@ -20,15 +20,7 @@ export class HumanPlayer implements Player {
     // Create a promise that will be resolved when the human makes a move via UI
     this.pendingAction = new Promise<GameAction | null>((resolve) => {
       this.resolveAction = resolve
-
-      // Set a timeout for the turn (optional)
-      setTimeout(() => {
-        if (this.resolveAction) {
-          console.log(`${this.name}'s turn timed out`)
-          this.resolveAction({ type: 'endTurn', playerId: this.id })
-          this.resolveAction = null
-        }
-      }, 60000) // 60 second timeout for more complex decisions
+      // Removed automatic timeout - players must manually end their turn
     })
 
     return this.pendingAction
@@ -71,15 +63,6 @@ export class HumanPlayer implements Player {
       type: 'removeCard',
       playerId: this.id,
       cardId
-    }
-    this.submitAction(action)
-  }
-
-  // Called when human manually draws a card via UI
-  drawCard(): void {
-    const action: GameAction = {
-      type: 'drawCard',
-      playerId: this.id
     }
     this.submitAction(action)
   }
