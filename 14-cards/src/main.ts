@@ -1,8 +1,13 @@
 import './style.css'
 import { Application, Assets, Sprite, Container, FederatedPointerEvent, Text, Graphics } from 'pixi.js'
-import { GameEngine, GameState, Card as GameCard } from './gameEngine'
+import { GameEngine, GameState, Card as GameCard, CardSetData } from './gameEngine'
 import { HumanPlayer } from './players/HumanPlayer'
 import { AIPlayer } from './players/AIPlayer'
+
+const cardSet = 'berlin1920';
+
+// Card set data loaded from JSON
+let cardSetData: CardSetData | null = null
 
 // Create the application
 const app = new Application()
@@ -72,20 +77,14 @@ async function init(): Promise<void> {
   // Add fullscreen functionality
   setupFullscreen()
 
-  // Load assets
-  const assets = [
-    { alias: 'arena', src: '/arena-1.png' },
-    { alias: 'card1', src: '/card-1.png' },
-    { alias: 'card2', src: '/card-2.png' },
-    { alias: 'card3', src: '/card-3.png' },
-    { alias: 'card4', src: '/card-4.png' },
-    { alias: 'card5', src: '/card-5.png' },
-    { alias: 'arcane_wizard', src: '/arcane_wizard_card.png' },
-    { alias: 'mountain_dwarf', src: '/mountain_dwarf_card.png' }
-  ]
+  // Load card set data first
+  await loadCardSetData()
+
+  // Load assets dynamically from cardSet folder
+  const assets = await buildAssetList()
 
   // Load all assets
-  await Assets.load(assets.map(asset => ({ alias: asset.alias, src: asset.src })))
+  await Assets.load(assets)
 
   // Initialize game engine
   initializeGameEngine()
@@ -96,6 +95,12 @@ async function init(): Promise<void> {
 
 function initializeGameEngine(): void {
   gameEngine = new GameEngine()
+
+  // Set the loaded card set data
+  if (cardSetData) {
+    gameEngine.setCardSetData(cardSetData)
+  }
+
   humanPlayer = new HumanPlayer('human', 'Player')
   aiPlayer = new AIPlayer('ai', 'AI Opponent', 'medium')
 
@@ -491,23 +496,37 @@ function createCardSprite(gameCard: GameCard, isHidden: boolean): VisualCard {
   let cardAssetName: string
 
   if (isHidden) {
-    cardAssetName = 'card1'
-  } else {
-    // Check if we have a specific asset for this card
-    const availableHeroAssets = ['arcane_wizard', 'mountain_dwarf']
-    if (availableHeroAssets.includes(gameCard.name)) {
-      cardAssetName = gameCard.name
+    // For hidden cards, use the first available card image as fallback
+    if (cardSetData && cardSetData.cards.length > 0) {
+      cardAssetName = cardSetData.cards[0].title.toLowerCase().replace(/\s+/g, '_')
     } else {
-      // Fallback to generic cards for heroes without assets
-      const heroFallbacks: Record<string, string> = {
-        'shadow_rogue': 'card1',
-        'holy_paladin': 'card2',
-        'forest_ranger': 'card3',
-        'fire_elemental': 'card4',
-        'ice_mage': 'card5',
-        'dragon_knight': 'card4'
+      // Ultimate fallback - this shouldn't happen but just in case
+      cardAssetName = 'hausfrau' // Use a known card
+    }
+  } else {
+    // Check if we have a specific asset for this card from the loaded card set
+    if (cardSetData) {
+      // Look for the card in the cardSetData
+      const cardData = cardSetData.cards.find(card =>
+        card.title.toLowerCase().replace(/\s+/g, '_') === gameCard.name
+      )
+
+      if (cardData) {
+        // Use the asset alias we created (card title in lowercase with underscores)
+        cardAssetName = gameCard.name
+      } else {
+        // Fallback to first available card for unknown cards
+        cardAssetName = cardSetData.cards[0].title.toLowerCase().replace(/\s+/g, '_')
       }
-      cardAssetName = heroFallbacks[gameCard.name] || gameCard.name
+    } else {
+      // Legacy fallback for hardcoded cards
+      const availableHeroAssets = ['arcane_wizard', 'mountain_dwarf']
+      if (availableHeroAssets.includes(gameCard.name)) {
+        cardAssetName = gameCard.name
+      } else {
+        // Use a known fallback
+        cardAssetName = 'hausfrau'
+      }
     }
   }
 
@@ -904,6 +923,41 @@ function animateCardPlay(cardName: string, isHero: boolean, x: number, y: number
   const color = isHero ? 0xFFD700 : 0x4CAF50
   const text = isHero ? `${cardName} Enters Battle!` : `${cardName} Played!`
   createNotification(text, x, y, color, 2500)
+}
+
+async function loadCardSetData(): Promise<void> {
+  try {
+    const response = await fetch(`/${cardSet}/gamecards.json`)
+    if (!response.ok) {
+      throw new Error(`Failed to load gamecards.json: ${response.statusText}`)
+    }
+    cardSetData = await response.json()
+    console.log(`Loaded ${cardSetData?.cards.length} cards from ${cardSet}`)
+  } catch (error) {
+    console.error('Error loading card set data:', error)
+    // Fallback to empty card set
+    cardSetData = { cards: [] }
+  }
+}
+
+async function buildAssetList(): Promise<Array<{ alias: string; src: string }>> {
+  const assets = []
+
+  // Add arena
+  assets.push({ alias: 'arena', src: `/${cardSet}/arena.png` })
+
+  // Add card assets from the cardSet data
+  if (cardSetData) {
+    for (const card of cardSetData.cards) {
+      // Use the imageFileName directly
+      assets.push({
+        alias: card.title.toLowerCase().replace(/\s+/g, '_'),
+        src: `/${cardSet}/${card.imageFileName}`
+      })
+    }
+  }
+
+  return assets
 }
 
 // Start the application

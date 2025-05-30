@@ -12,6 +12,20 @@ export interface Card {
   specialAbilities?: string[]
 }
 
+// Card set data interface
+export interface CardSetData {
+  cards: Array<{
+    id: number
+    title: string
+    description: string
+    level: number
+    health: number
+    attack: number
+    specialEffects: string[]
+    imageFileName: string
+  }>
+}
+
 export interface PlayerState {
   id: string
   name: string
@@ -56,13 +70,17 @@ export interface Player {
 
 export class GameEngine {
   private gameState: GameState
-  private players: Map<string, Player>
-  private eventListeners: ((gameState: GameState) => void)[]
+  private players: Map<string, Player> = new Map()
+  private eventListeners: Array<(gameState: GameState) => void> = []
+  private cardSetData: CardSetData | null = null
 
   constructor() {
-    this.players = new Map()
-    this.eventListeners = []
     this.gameState = this.createInitialGameState()
+  }
+
+  // Set card set data
+  setCardSetData(cardSetData: CardSetData): void {
+    this.cardSetData = cardSetData
   }
 
   // Initialize the game with two players
@@ -359,73 +377,95 @@ export class GameEngine {
   private generateRandomCard(playerId: string): Card {
     const rand = getRand()
 
-    // Hero cards with predefined stats and abilities
-    const heroCards = [
-      {
-        name: 'arcane_wizard',
+    // Use loaded card set data if available
+    let heroCards: Array<{
+      name: string
+      type: string
+      level: number
+      attack: number
+      health: number
+      specialAbilities: string[]
+    }> = []
+
+    if (this.cardSetData && this.cardSetData.cards.length > 0) {
+      // Convert card set data to hero cards format
+      heroCards = this.cardSetData.cards.map(card => ({
+        name: card.title.toLowerCase().replace(/\s+/g, '_'),
         type: 'Hero',
-        level: 4,
-        attack: 6,
-        health: 5,
-        specialAbilities: ['Spell Power', 'Mana Surge']
-      },
-      {
-        name: 'mountain_dwarf',
-        type: 'Hero',
-        level: 3,
-        attack: 5,
-        health: 8,
-        specialAbilities: ['Armor', 'Berserker Rage']
-      },
-      {
-        name: 'shadow_rogue',
-        type: 'Hero',
-        level: 3,
-        attack: 7,
-        health: 4,
-        specialAbilities: ['Stealth', 'Backstab']
-      },
-      {
-        name: 'holy_paladin',
-        type: 'Hero',
-        level: 4,
-        attack: 4,
-        health: 7,
-        specialAbilities: ['Divine Shield', 'Healing']
-      },
-      {
-        name: 'forest_ranger',
-        type: 'Hero',
-        level: 2,
-        attack: 4,
-        health: 4,
-        specialAbilities: ['Beast Taming', 'Track']
-      },
-      {
-        name: 'fire_elemental',
-        type: 'Hero',
-        level: 5,
-        attack: 8,
-        health: 6,
-        specialAbilities: ['Fire Aura', 'Immolation']
-      },
-      {
-        name: 'ice_mage',
-        type: 'Hero',
-        level: 3,
-        attack: 5,
-        health: 5,
-        specialAbilities: ['Freeze', 'Ice Shield']
-      },
-      {
-        name: 'dragon_knight',
-        type: 'Hero',
-        level: 5,
-        attack: 9,
-        health: 8,
-        specialAbilities: ['Dragon Bond', 'Fire Breath']
-      }
-    ]
+        level: card.level,
+        attack: card.attack,
+        health: card.health,
+        specialAbilities: card.specialEffects || []
+      }))
+    } else {
+      // Fallback to hardcoded hero cards if card set data not available
+      heroCards = [
+        {
+          name: 'arcane_wizard',
+          type: 'Hero',
+          level: 4,
+          attack: 6,
+          health: 5,
+          specialAbilities: ['Spell Power', 'Mana Surge']
+        },
+        {
+          name: 'mountain_dwarf',
+          type: 'Hero',
+          level: 3,
+          attack: 5,
+          health: 8,
+          specialAbilities: ['Armor', 'Berserker Rage']
+        },
+        {
+          name: 'shadow_rogue',
+          type: 'Hero',
+          level: 3,
+          attack: 7,
+          health: 4,
+          specialAbilities: ['Stealth', 'Backstab']
+        },
+        {
+          name: 'holy_paladin',
+          type: 'Hero',
+          level: 4,
+          attack: 4,
+          health: 7,
+          specialAbilities: ['Divine Shield', 'Healing']
+        },
+        {
+          name: 'forest_ranger',
+          type: 'Hero',
+          level: 2,
+          attack: 4,
+          health: 4,
+          specialAbilities: ['Beast Taming', 'Track']
+        },
+        {
+          name: 'fire_elemental',
+          type: 'Hero',
+          level: 5,
+          attack: 8,
+          health: 6,
+          specialAbilities: ['Fire Aura', 'Immolation']
+        },
+        {
+          name: 'ice_mage',
+          type: 'Hero',
+          level: 3,
+          attack: 5,
+          health: 5,
+          specialAbilities: ['Freeze', 'Ice Shield']
+        },
+        {
+          name: 'dragon_knight',
+          type: 'Hero',
+          level: 5,
+          attack: 9,
+          health: 8,
+          specialAbilities: ['Dragon Bond', 'Fire Breath']
+        }
+      ]
+    }
 
     // Generic creature cards
     const genericCards = [
@@ -439,7 +479,7 @@ export class GameEngine {
     // 40% chance for hero card, 60% chance for generic creature
     const isHeroCard = rand() < 0.4
 
-    if (isHeroCard) {
+    if (isHeroCard && heroCards.length > 0) {
       // Select a random hero card
       const heroTemplate = heroCards[Math.floor(rand() * heroCards.length)]
       const cardId = `${playerId}_${heroTemplate.name}_${Date.now()}_${Math.floor(rand() * 1000)}`

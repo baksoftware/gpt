@@ -1,0 +1,69 @@
+{
+  "cards": [
+    {
+      "id": 1,
+      "title": "Hausfrau",
+      "description": "When the world crumbles, she holds the foundation steady",
+      "level": 8,
+      "health": 4,
+      "attack": 3,
+      "specialEffects": [
+        "Raise morale",
+        "Raise health"
+      ],
+      "imageFileName": "hausfrau_card.png"
+    },
+    {
+      "id": 2,
+      "title": "Homeless",
+      "description": "Society's shadow, invisible until desperately needed",
+      "level": 5,
+      "health": 3,
+      "attack": 4,
+      "specialEffects": [
+        "Spreads disease",
+        "Cause despair"
+      ],
+      "imageFileName": "homeless_card.png"
+    },
+    {
+      "id": 3,
+      "title": "Kaufmann",
+      "description": "Every soul has a price, and he knows exactly what it is",
+      "level": 5,
+      "health": 3,
+      "attack": 4,
+      "specialEffects": [
+        "Gain resources",
+        "Increase enemy card cost"
+      ],
+      "imageFileName": "kaufmann_card.png"
+    },
+    {
+      "id": 4,
+      "title": "Philosopher",
+      "description": "Questions that shatter certainty, thoughts that reshape reality",
+      "level": 6,
+      "health": 2,
+      "attack": 2,
+      "specialEffects": [
+        "Draw extra cards this turn",
+        "Counter one enemy special effect"
+      ],
+      "imageFileName": "philosopher_card.png"
+    },
+    {
+      "id": 5,
+      "title": "Steelworker",
+      "description": "Forged in fire, tempered by struggle, unbreakable",
+      "level": 7,
+      "health": 5,
+      "attack": 6,
+      "specialEffects": [
+        "Immune to damage this turn",
+        "Double attack power next turn"
+      ],
+      "imageFileName": "steelworker_card.png"
+    }
+  ]
+}
